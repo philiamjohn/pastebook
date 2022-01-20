@@ -5,7 +5,7 @@ import { IoMdNotifications } from 'react-icons/io';
 import { ImSearch } from 'react-icons/im';
 import MenuModal from '../menu-modal/MenuModal';
 import './Header.css';
-import NotificationsModal from '../notifications-modal/NotificationsModal';
+import NotificationsModal from '../notifications/notifications-modal/NotificationsModal';
 
 const Header = () => {
 
@@ -14,7 +14,7 @@ const Header = () => {
       <div><a href="/"><img id="pastebook-logo" src={pastebookLogo} alt="pastebook-logo"></img></a></div>
 
       <div>
-        <input type="text" id="search-bar" placeholder="  Search People" />
+        <input type="text" id="search-bar" placeholder="Search People" />
       </div>
 
       <a id="search-anchor" href="#">
@@ -47,9 +47,10 @@ const Header = () => {
             onMouseOver={({ target }) => target.style.color = "white"}
             onMouseOut={({ target }) => target.style.color = "black"} />
         </a>
-        <NotificationsModal/>
-        <MenuModal />
       </div>
+
+      <NotificationsModal/>
+      <MenuModal />
     </div>);
 };
 

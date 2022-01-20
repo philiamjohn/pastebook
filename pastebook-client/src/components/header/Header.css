@@ -6,9 +6,9 @@
 }
 
 #pastebook-logo {
-    width: 32px;
-    margin-top: 15px;
-    margin-left: 25px;
+    width: 40px;
+    margin-top: 10px;
+    margin-left: 20px;
 }
 
 #search-bar {
@@ -16,7 +16,14 @@
     margin-left: 10px;
     height: 28px;
     width: 300px;
-    border: 0;
+    border: none;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px; 
+    padding-left: 15px; 
+}
+
+#search-bar:focus {
+    outline: none;
 }
 
 #search-anchor {
@@ -27,11 +34,13 @@
     width: 25px;
     height: 26px;
     background-color: white;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;  
 }
 
 #header-right {
     margin-top: 17px;
-    margin-left:  675px;
+    margin-left:  665px;
 }
 
 #home-anchor, #notifications-anchor, #menu-anchor {
