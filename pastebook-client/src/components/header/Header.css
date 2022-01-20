@@ -1,0 +1,39 @@
+#header {
+    background-color:dodgerblue;
+    height: 60px;
+    width: 100vw;
+    display: flex;
+}
+
+#pastebook-logo {
+    width: 32px;
+    margin-top: 15px;
+    margin-left: 25px;
+}
+
+#search-bar {
+    margin-top: 15px;
+    margin-left: 10px;
+    height: 28px;
+    width: 300px;
+    border: 0;
+}
+
+#search-anchor {
+    margin-top: 15px;
+    padding-top: 4px;
+    padding-right: 2px;
+    padding-left: 5px;
+    width: 25px;
+    height: 26px;
+    background-color: white;
+}
+
+#header-right {
+    margin-top: 17px;
+    margin-left:  675px;
+}
+
+#home-anchor, #notifications-anchor, #menu-anchor {
+    margin-left: 15px;
+}
