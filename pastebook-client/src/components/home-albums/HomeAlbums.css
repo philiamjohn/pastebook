@@ -1,0 +1,46 @@
+#home-albums {
+    border: 3px solid #dfe3ee;
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 20vw;
+}
+
+#home-albums h3{
+    padding-left: 20px;
+}
+
+#albums-list-preview {
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+}
+
+#home-album-square {
+    display: flex;
+}
+
+#home-album-name {
+    padding-left: 5px;
+    padding-top: 3px;
+}
+
+#albums-anchor {
+    display: flex;
+    color: black;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    text-decoration: none;
+}
+
+#albums-anchor div{
+    padding-left: 5px;
+}
+
+#albums-anchor:hover {
+    text-decoration: underline;
+}
+
+#albums-anchor:active {
+    color: #3b5998;
+}

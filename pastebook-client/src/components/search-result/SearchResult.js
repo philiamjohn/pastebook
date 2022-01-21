@@ -15,12 +15,14 @@ const SearchResult = (props) => {
                     ? <button>
                         <FaUserFriends
                             size={20}
+                            onMouseOver={({ target }) => target.style.color = "#3b5998"}
+                            onMouseOut={({ target }) => target.style.color = "black"}
                         />
                         <p>Friends</p>
                     </button>
                     : <button>
-                        <IoPersonAdd 
-                            size={20} 
+                        <IoPersonAdd
+                            size={20}
                         />
                         <p>Add Friend</p>
                     </button>}
