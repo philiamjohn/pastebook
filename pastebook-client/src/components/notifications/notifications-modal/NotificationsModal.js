@@ -12,10 +12,10 @@ const NotificationsModal = () => {
         // Get the modal
         var notificationsModal = document.getElementById("notifications-modal");
         var menuModal = document.getElementById("menu-modal");
-
+        var searchResultsModal = document.getElementById("search-results-modal");
 
         // Get the button that opens the modal
-        var notificationsAnchor = document.getElementById("notifications-anchor");
+        var notificationsAnchor = document.getElementById("notifications-button");
 
         // When the user clicks the button, open the modal 
         notificationsAnchor.onclick = () => {
@@ -29,6 +29,9 @@ const NotificationsModal = () => {
             }
             else if (event.target == menuModal) {
                 menuModal.style.display = "none";
+            }
+            else if (event.target == searchResultsModal) {
+                searchResultsModal.style.display = "none";
             }
         }
     }, []);

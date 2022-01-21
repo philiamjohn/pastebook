@@ -10,12 +10,13 @@ const MenuModal = () => {
         // Get the modal
         var menuModal = document.getElementById("menu-modal");
         var notificationsModal = document.getElementById("notifications-modal");
+        var searchResultsModal = document.getElementById("search-results-modal");
 
         // Get the button that opens the modal
-        var menuAnchor = document.getElementById("menu-anchor");
+        var menuButton = document.getElementById("menu-button");
 
         // When the user clicks the button, open the modal 
-        menuAnchor.onclick = () => {
+        menuButton.onclick = () => {
             menuModal.style.display = "block";
         }
 
@@ -27,12 +28,15 @@ const MenuModal = () => {
             else if (event.target == notificationsModal) {
                 notificationsModal.style.display = "none";
             }
+            else if (event.target == searchResultsModal) {
+                searchResultsModal.style.display = "none";
+            }
         }
     }, []);
 
     return (
         <div id="menu-modal" class="menu-modal">
-            <div class="modal-content">
+            <div class="menu-modal-content">
                 <p>
                     <FaUserAlt
                         id="profile-icon"

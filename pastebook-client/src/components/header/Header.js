@@ -1,11 +1,13 @@
 import React from 'react'
 import pastebookLogo from '../../images/pastebook-logo.png';
-import { AiFillHome, AiOutlineMenu } from 'react-icons/ai';
+import { AiFillHome } from 'react-icons/ai';
+import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdNotifications } from 'react-icons/io';
 import { ImSearch } from 'react-icons/im';
 import MenuModal from '../menu-modal/MenuModal';
 import './Header.css';
 import NotificationsModal from '../notifications/notifications-modal/NotificationsModal';
+import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 
 const Header = () => {
 
@@ -17,13 +19,13 @@ const Header = () => {
         <input type="text" id="search-bar" placeholder="Search People" />
       </div>
 
-      <a id="search-anchor" href="#">
+      <button id="search-button" href="#">
         <ImSearch
           size={20} color='gray'
           onMouseOver={({ target }) => target.style.color = "black"}
           onMouseOut={({ target }) => target.style.color = "gray"}
         />
-      </a>
+      </button>
 
       <div id="header-right">
         <a id="home-anchor" href="/">
@@ -33,23 +35,24 @@ const Header = () => {
             onMouseOver={({ target }) => target.style.color = "white"}
             onMouseOut={({ target }) => target.style.color = "black"} />
         </a>
-        <a id="notifications-anchor" href="#">
+        <button id="notifications-button" href="#">
           <IoMdNotifications
             size={25}
             color='black'
             onMouseOver={({ target }) => target.style.color = "white"}
             onMouseOut={({ target }) => target.style.color = "black"} />
-        </a>
-        <a id="menu-anchor" href="#">
-          <AiOutlineMenu
+        </button>
+        <button id="menu-button" href="#">
+          <GiHamburgerMenu
             size={25}
             color='black'
             onMouseOver={({ target }) => target.style.color = "white"}
             onMouseOut={({ target }) => target.style.color = "black"} />
-        </a>
+        </button>
       </div>
 
-      <NotificationsModal/>
+      <SearchResultsModal />
+      <NotificationsModal />
       <MenuModal />
     </div>);
 };

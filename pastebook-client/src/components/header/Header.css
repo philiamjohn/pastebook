@@ -26,23 +26,34 @@
     outline: none;
 }
 
-#search-anchor {
+#search-button {
     margin-top: 15px;
     padding-top: 4px;
     padding-right: 2px;
     padding-left: 5px;
-    width: 25px;
-    height: 26px;
+    width: 35px;
+    height: 30px;
     background-color: white;
+    border: none;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;  
 }
 
-#header-right {
-    margin-top: 17px;
-    margin-left:  665px;
+#search-button:active {
+    background-color: gainsboro;
 }
 
-#home-anchor, #notifications-anchor, #menu-anchor {
+#header-right {
+    margin-top: 17px;
+    margin-left: 650px;
+}
+
+#home-anchor, #notifications-button, #menu-button {
     margin-left: 15px;
+}
+
+#notifications-button, #menu-button {
+    padding: 0;
+    border: none;
+    background-color: transparent;
 }
