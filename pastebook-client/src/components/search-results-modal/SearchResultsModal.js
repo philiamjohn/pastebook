@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { IoMdSettings } from 'react-icons/io';
+import SearchResult from '../search-result/SearchResult';
 import './SearchResultsModal.css';
 
 const SearchResultsModal = () => {
@@ -35,25 +35,21 @@ const SearchResultsModal = () => {
     return (
         <div id="search-results-modal" class="search-results-modal">
             <div class="search-results-modal-content">
-                <p>Search result 1</p>
-                <p>Search result 2</p>
-                <p>Search result 3</p>
-                <p>Search result 4</p>
-                <p>Search result 5</p>
-                <p>Search result 6</p>
-                <p>Search result 7</p>
-                <p>Search result 8</p>
-                <p>Search result 9</p>
-                <p>Search result 10</p>
-                <p>Search result 11</p>
-                <p>Search result 12</p>
-                <p>Search result 13</p>
-                <p>Search result 14</p>
-                <p>Search result 15</p>
-                <p>Search result 16</p>
-                <p>Search result 17</p>
-                <p>Search result 18</p>
-                <p>Search result 19</p>
+                <SearchResult name="Ben Santos" friends/>
+                <SearchResult name="John Doe" friends/>
+                <SearchResult name="Anna Marie" friends/>
+                <SearchResult name="Taylor Swift" friends/>
+                <SearchResult name="Justin Bieber" friends/>
+                <SearchResult name="Billie Eilish" friends/>
+                <SearchResult name="Katy Perry" friends/>
+                <SearchResult name="Dua Lipa" friends/>
+                <SearchResult name="Nadine Lustre" />
+                <SearchResult name="James Reid" />
+                <SearchResult name="Kathryn Bernardo" />
+                <SearchResult name="Ed Sheeran" />
+                <SearchResult name="Bruno Mars" />
+                <SearchResult name="Ruel" />
+                <SearchResult name="Zayn Malik" />
             </div>
         </div>
     );

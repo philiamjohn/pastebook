@@ -30,7 +30,7 @@
     padding-left: 15px;
 }
 
-.search-results-modal-content p:hover {
+#search-result:hover {
     background-color: rgba(0,0,0,0.1);
 }
 

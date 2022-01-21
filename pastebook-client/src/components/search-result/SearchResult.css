@@ -1,0 +1,29 @@
+#search-result {
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#search-result-profile-picture {
+    padding-left: 30px;
+}
+
+#search-result-name {
+    padding-left: 10px;
+    padding-top: 10px;
+    width: 190px;
+}
+
+#search-result-relationship {
+    padding-left: 10px;
+    padding-right: 18px;
+}
+
+#search-result-relationship p {
+    padding: 0;
+}
+
+#search-result-relationship button {
+    border: none;
+    background-color: transparent;
+}
