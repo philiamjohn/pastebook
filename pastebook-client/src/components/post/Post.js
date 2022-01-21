@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import './Post.css';
+import Comment from '../comment/Comment';
 import LikeIcon from '../../images/like.png';
 import LikedIcon from '../../images/liked.png';
 import CommentIcon from '../../images/comment.png';
@@ -17,7 +18,7 @@ const Post = (props) => {
            likeStatus} = props
     
     const [like, setLike] = useState(likeStatus);
-    const [comment, setComment] = useState(commentCount); 
+    const [comment, setComment] = useState(true); 
 
     // like/unlike  toggle
     const toggleLike = () => {
@@ -33,6 +34,13 @@ const Post = (props) => {
     // show/hide comment toggle
     const toggleComment = () => {
         setComment(v => !v);
+    }
+
+    const addComment = () => {
+        setComment(v => !v);
+        setTimeout(function(){
+            document.getElementById('comment-box').focus();
+        });  
     }
     
     return (
@@ -60,23 +68,14 @@ const Post = (props) => {
                         <img src={like? LikedIcon : LikeIcon} alt='like-icon'/>
                         Like
                     </div>
-                    <div className='post-interactions-btns-comment' onClick={comment}>
+                    <div className='post-interactions-btns-comment' onClick={addComment}>
                         <img src={CommentIcon} alt='comment-icon'/>
                         Comment
                     </div>
                 </div>
-                <div className='post-interactions-comment'></div>
+                {comment ? <Comment postAuthorImg={authorImg}/> : null }
             </div>
-            <div className='post-comments'>
-                <div className='post-comments-expand'><a href='#'>View more comment</a></div>
-                <div className='post-comments-list'>
-                    
-                </div>
-                <div className='post-comments-create'>
-                    <img src={authorImg ? authorImg  : GrayStock } alt="author-img"/>
-                    <input type='text' placeholder="Write a comment"/>
-                </div>
-            </div>
+            
         </div>
     );
   };

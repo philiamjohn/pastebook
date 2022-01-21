@@ -9,11 +9,9 @@ a {
 
 /* POST */
 div.post {
-    height: 100%;
     width: 40%;
     display: flex;
     flex-direction: column;
-    background: #dfe3ee;
     padding-bottom: 5px;
     border-radius: 10px;
 }
@@ -21,10 +19,12 @@ div.post {
 /* POST-AUTHOR */
 
 div.post-author {
-    height: 8%;
+    height: 50px;
+    background: #dfe3ee;
     display: flex;
-    padding: 10px 10px 0 10px;
-    margin-bottom: 1%;
+    padding: 15px 10px 7.5px 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 div.post-author-details {
@@ -50,14 +50,16 @@ div.post-author-img  img{
 /* POST-CONTENT */
 
 div.post-content {
-    height: 60%;
-    margin-bottom: 1%;
+    height: 400px;
+    background: #dfe3ee;
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
 }
 
 div.post-content-p {
     height: 7%;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 div.post-content-img {
@@ -73,12 +75,16 @@ div.post-content-img img {
 /* POST INTERACTIONS */
 
 div.post-interactions {
-    height: 10%;
+    height: 200%;
+    background: #dfe3ee;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    margin-bottom: 1%;
+    padding-top: 7.5px;
+    padding-bottom: 15px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 div.post-interactions-counts {
@@ -86,8 +92,8 @@ div.post-interactions-counts {
     width: 96%;
     display: flex;
     justify-content: space-between;
-    padding-right: 1.5%;
-    padding-left: 1.5%;
+    padding-right: 15px;
+    padding-left: 15px;
     margin-bottom: 5px;
 }
 
@@ -123,48 +129,4 @@ div.post-interactions-btns-like img, div.post-interactions-btns-comment img {
     max-height: 20px;
     max-width: 20px;
     margin-right: 5px;
-}
-
-/* POST-COMMENTS */
-div.post-comments {
-    height: 19%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-}
-
-div.post-comments-expand {
-    height: 10%;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
-}
-
-div.post-comments-list {
-    height: 65%;
-}
-
-div.post-comments-create {
-    height: 25%;
-    display: flex;
-    align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
-}
-
-div.post-comments-create  img{
-    max-height: 100%;
-    max-width: 20%;
-    border-radius: 50%;
-    margin-right: 5px;
-}
-
-div.post-comments-create  input{
-    height: 100%;
-    width: 110%;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 32px;
-    border: none;
 }
