@@ -5,12 +5,12 @@ import './HomeProfile.css';
 const HomeProfile = (props) => {
     const { currentUser } = props;
     return (
-        <a id="home-profile-anchor" href="#">
-            <div id="home-profile">
+        <div id="home-profile">
+            <a id="home-profile-anchor" href="#">
                 <CgProfile id="current-user-profile-picture" size={45} />
-                <div id="current-user-name">{currentUser}</div>
-            </div>
-        </a>);
+                <h3 id="current-user-name">{currentUser}</h3>
+            </a>
+        </div>);
 };
 
 export default HomeProfile;

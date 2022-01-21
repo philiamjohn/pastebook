@@ -27,10 +27,22 @@
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 15px;
+    width: 100px;
 }
 
-.menu-modal-content p:hover {
+.menu-modal-content a {
+    display: flex;
+    color: black;
+    text-decoration: none;
+}
+
+.menu-modal-content a:hover {
+    text-decoration: underline;
     background-color: rgba(0,0,0,0.1);
+}
+
+.menu-modal-content a:active {
+    color: #3b5998;
 }
 
 #profile-icon, #settings-icon, #logout-icon {

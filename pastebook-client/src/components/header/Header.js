@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import pastebookLogo from '../../images/pastebook-logo.png';
 import { AiFillHome } from 'react-icons/ai';
 import { GiHamburgerMenu } from 'react-icons/gi';
@@ -10,7 +10,26 @@ import NotificationsModal from '../notifications/notifications-modal/Notificatio
 import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 
 const Header = () => {
+  //Triggers after first render
+  useEffect(() => {
+    // Get the modal
+    var menuModal = document.getElementById("menu-modal");
+    var notificationsModal = document.getElementById("notifications-modal");
+    var searchResultsModal = document.getElementById("search-results-modal");
 
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = (event) => {
+      if (event.target == menuModal) {
+        menuModal.style.display = "none";
+      }
+      else if (event.target == notificationsModal) {
+        notificationsModal.style.display = "none";
+      }
+      else if (event.target == searchResultsModal) {
+        searchResultsModal.style.display = "none";
+      }
+    }
+  }, []);
   return (
     <div id='header'>
       <div><a href="/"><img id="pastebook-logo" src={pastebookLogo} alt="pastebook-logo"></img></a></div>

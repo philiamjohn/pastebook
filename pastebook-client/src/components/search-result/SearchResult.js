@@ -23,6 +23,8 @@ const SearchResult = (props) => {
                     : <button>
                         <IoPersonAdd
                             size={20}
+                            onMouseOver={({ target }) => target.style.color = "#3b5998"}
+                            onMouseOut={({ target }) => target.style.color = "black"}
                         />
                         <p>Add Friend</p>
                     </button>}

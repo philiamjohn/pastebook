@@ -1,22 +1,18 @@
 import React from 'react';
-import { CgProfile, CgDetailsMore } from 'react-icons/cg';
 import './HomeFriends.css';
+import { FaUserFriends } from 'react-icons/fa';
 
-const HomeFriends = (props) => {
-  const { friends } = props;
+
+const HomeFriends = () => {
   return (
     <div id="home-friends">
-      <h3>Friends</h3>
-      <div>
-        {
-          friends.map(friendName =>
-            <div id="friends-list-preview">
-              <CgProfile size={30} />
-              <div id="home-friend-name">{friendName}</div>
-            </div>)
-        }
-      </div>
-      <a id="friends-anchor" href="#" ><CgDetailsMore size={25} color="black" /> <div>See all friends</div></a>
+      <a id="friends-anchor" href="#">
+        <FaUserFriends
+          id="home-friends-icon"
+          size={25}
+        />
+        <h4>Friends</h4>
+      </a>
     </div>);
 };
 

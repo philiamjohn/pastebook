@@ -11,28 +11,13 @@ const NotificationsModal = () => {
     useEffect(() => {
         // Get the modal
         var notificationsModal = document.getElementById("notifications-modal");
-        var menuModal = document.getElementById("menu-modal");
-        var searchResultsModal = document.getElementById("search-results-modal");
 
         // Get the button that opens the modal
-        var notificationsAnchor = document.getElementById("notifications-button");
+        var notificationsButton = document.getElementById("notifications-button");
 
         // When the user clicks the button, open the modal 
-        notificationsAnchor.onclick = () => {
+        notificationsButton.onclick = () => {
             notificationsModal.style.display = "block";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = (event) => {
-            if (event.target == notificationsModal) {
-                notificationsModal.style.display = "none";
-            }
-            else if (event.target == menuModal) {
-                menuModal.style.display = "none";
-            }
-            else if (event.target == searchResultsModal) {
-                searchResultsModal.style.display = "none";
-            }
         }
     }, []);
 

@@ -7,28 +7,13 @@ const SearchResultsModal = () => {
     useEffect(() => {
         // Get the modal
         var searchResultsModal = document.getElementById("search-results-modal");
-        var menuModal = document.getElementById("menu-modal");
-        var notificationsModal = document.getElementById("notifications-modal");
-
+        
         // Get the button that opens the modal
         var searchButton = document.getElementById("search-button");
 
         // When the user clicks the button, open the modal 
         searchButton.onclick = () => {
             searchResultsModal.style.display = "block";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = (event) => {
-            if (event.target == searchResultsModal) {
-                searchResultsModal.style.display = "none";
-            }
-            else if (event.target == notificationsModal) {
-                notificationsModal.style.display = "none";
-            }
-            else if (event.target == menuModal) {
-                menuModal.style.display = "none";
-            }
         }
     }, []);
 
