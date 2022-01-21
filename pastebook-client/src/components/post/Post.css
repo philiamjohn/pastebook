@@ -21,10 +21,10 @@ div.post {
 /* POST-AUTHOR */
 
 div.post-author {
-    height: 10%;
+    height: 8%;
     display: flex;
     padding: 10px 10px 0 10px;
-    margin-bottom: 10px;
+    margin-bottom: 1%;
 }
 
 div.post-author-details {
@@ -50,14 +50,14 @@ div.post-author-img  img{
 /* POST-CONTENT */
 
 div.post-content {
-    height: 70%;
-    margin-bottom: 10px;
+    height: 60%;
+    margin-bottom: 1%;
 }
 
 div.post-content-p {
     height: 7%;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
 }
 
 div.post-content-img {
@@ -73,26 +73,98 @@ div.post-content-img img {
 /* POST INTERACTIONS */
 
 div.post-interactions {
-    height: 20%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 1%;
+}
+
+div.post-interactions-counts {
+    height: 50%;
+    width: 96%;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 1.5%;
+    padding-left: 1.5%;
+    margin-bottom: 5px;
+}
+
+div.post-interactions-btns {
+    height: 50%;
+    width: 96%;
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+div.post-interactions-btns-like, div.post-interactions-btns-comment {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.post-interactions-btns-like:hover {
+    background: #8b9dc3;
+    cursor:pointer;
+}
+
+div.post-interactions-btns-comment:hover {
+    background: #8b9dc3;
+    cursor:pointer;
+}
+
+div.post-interactions-btns-like img, div.post-interactions-btns-comment img {
+    max-height: 20px;
+    max-width: 20px;
+    margin-right: 5px;
+}
+
+/* POST-COMMENTS */
+div.post-comments {
+    height: 19%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
 }
 
-div.post-interactions-counts {
-    height: 50%;
+div.post-comments-expand {
+    height: 10%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+}
+
+div.post-comments-list {
+    height: 65%;
+}
+
+div.post-comments-create {
+    height: 25%;
     display: flex;
-    justify-content: space-between;
-    padding-right: 10px;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+}
+
+div.post-comments-create  img{
+    max-height: 100%;
+    max-width: 20%;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+div.post-comments-create  input{
+    height: 100%;
+    width: 110%;
     padding-left: 10px;
-}
-
-div.post-interactions-btns {
-    height: 50%;
-    display: flex;
-    justify-content: space-around;
-}
-
-div.post-interactions-btns button {
-    width: 100%;
+    padding-right: 10px;
+    border-radius: 32px;
+    border: none;
 }
