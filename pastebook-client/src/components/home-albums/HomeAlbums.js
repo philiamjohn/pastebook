@@ -1,12 +1,12 @@
 import React from 'react';
-import { AiFillPicture } from 'react-icons/ai';
+import { IoImagesSharp } from 'react-icons/io5';
 import './HomeAlbums.css';
 
 const HomeAlbums = () => {
   return (
     <div id="home-albums">
       <a id="albums-anchor">
-        <AiFillPicture 
+        <IoImagesSharp 
           id="home-albums-icon"
           size={25}/>
         <h4>Albums</h4>

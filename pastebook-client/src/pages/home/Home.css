@@ -23,5 +23,6 @@
     margin-top: 15px;
     margin-left: 15px;
     width: 50vw;
-    height: calc(100vh - 111px);
+    min-height: calc(100vh - 111px);
+    height: auto;
 }
