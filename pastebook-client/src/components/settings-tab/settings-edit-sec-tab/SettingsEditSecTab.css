@@ -1,0 +1,23 @@
+/* .edit-pass{
+    padding: 10px;
+    margin: 10px;
+} */
+.borderline{
+    border-bottom: 1px solid #def3ee;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.edit-pass-new-pass{
+    display: grid;
+    grid-template-columns: 300px;
+    justify-items: end;
+    align-items: center;
+    /* height: 200px; */
+    /* border: solid 1px black; */
+}
+.edit-pass-new-pass input{
+    padding: 10px;
+    width: 175px;
+    border-radius: 6px;
+    border: solid 1px #696a69;
+}

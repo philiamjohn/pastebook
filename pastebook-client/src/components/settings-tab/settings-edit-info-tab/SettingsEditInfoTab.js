@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import EditInfo from '../edit-info/EditInfo';
-import EditSettings from '../edit-settings/EditSettings';
+import EditSettings from '../edit-settings-info/EditSettingsInfo';
 import '../settings-edit-info-tab/SettingsEditInfoTab.css';
 const SettingEditInfoTab = () => {
     const [editState, setEditState] = useState("infoTab");
@@ -12,7 +12,7 @@ const SettingEditInfoTab = () => {
         e.preventDefault();
         setEditState("infoTab");
     }
-    return <div className='edit-info'>
+    return <div className='edit-info-settings'>
         <h2>General Account Settings</h2>
         <div className='bordeline'></div>
         <div className='edit-info-container'>

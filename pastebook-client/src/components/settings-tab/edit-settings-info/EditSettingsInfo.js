@@ -1,7 +1,8 @@
 import React from 'react';
+import './EditSettingsInfo.css'
 
 const EditSettings = ({handleEditCancelClick}) => {
-    return <div>
+    return <div className='edit-settings'>
         <label htmlFor='first-name-setiings'>First Name:</label>
         <input type='text' name='first-name-settings' id='first-name-settings' placeholder='Juan' />
         <label htmlFor='last-name-setiings'>Last Name:</label>
