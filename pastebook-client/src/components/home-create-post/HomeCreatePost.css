@@ -4,6 +4,32 @@
     text-align: right;
 }
 
+#home-post-picture-preview {
+    padding-left: 2px;
+    padding-right: 6px;
+    margin: auto;
+    text-align: center;
+    display: none;
+}
+
+#home-post-picture-preview img {  
+    width: 100%;
+    height: auto;   
+}
+
+#remove-picture {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+#remove-picture:hover, #remover-picture:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+  
 #home-post-text-div {
     text-align: left;
     padding-left: 3px;
@@ -19,10 +45,21 @@
     display: flex;
 }
 
-#home-add-picture-div {
+label.label input[type="file"] {
+    position: absolute;
+    top: -1000px;
+  }
+
+.label {
+    cursor: pointer;
+    display: inline-block;
+    height: 35px;
+    width: 110px;
+}
+
+#home-add-picture-label {
     padding-left: 3px;
     text-align: left;
-    padding-bottom: 5px;
 }
 
 #home-add-picture-button {
@@ -31,8 +68,10 @@
     background-color: black;
     color: white;
     height: 35px;
-    width: 105px;
+    width: 110px;
     padding-top: 5px;
+    padding-left: 5px;
+    margin-bottom: 5px;
 }
 
 #home-add-picture-button:hover {
@@ -48,16 +87,18 @@
 }
 
 #home-add-picture-button-text{
-    padding-top: 5px;
+    padding-top: 3px;
     padding-left: 3px;
+    padding-right: 3px;
 }
 
 #home-post-button-div {
-    padding-left: 34.1vw;
+    padding-left: 33.7vw;
+    margin-bottom: 5px;
 }
 
 #home-post-button {
-    height: 35px;
+    height: 40px;
     width: 76px;
     border: none;
     background-color: #3b5998;
@@ -75,4 +116,3 @@
     color: #3b5998;
     border: 1px solid #3b5998;
 }
-
