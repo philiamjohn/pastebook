@@ -17,7 +17,7 @@ const Register = () => {
           <input type='text' name='lastName' id='last-ame' placeholder='Last Name' />
         </div>
         <div className='credentials'>
-          <input type='email' name='email' id='email' placeholder='Email Or Phone Number' />
+          <input type='text' name='email' id='email' placeholder='Email Or Phone Number' />
           <input type='password' name='password' id='password' placeholder='Password' />
         </div>
         <div className='date'>
