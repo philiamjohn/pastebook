@@ -26,7 +26,7 @@ const HomeCreatePost = () => {
         <div id="home-create-post">
             <div id="home-post-picture-preview">
                 <span id="remove-picture" onClick={onRemovePicture}>&times;</span>
-                <img id="home-post-picture" src={imageSource} alt="preview image" />
+                <img id="home-post-picture" src={imageSource} alt="post-picture-preview" />
             </div>
 
             <div id="home-post-text-div">
