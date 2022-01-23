@@ -1,0 +1,26 @@
+/* .edit-settings  input{
+    padding: 5px;
+    margin: 10px;
+    margin-left: 15px;
+    width: 275px;
+} */
+.edit-settings {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 100px 300px;
+    grid-row-gap: 10px;
+}
+.edit-settings input {
+    padding: 5px;
+    border-radius: 6px;
+    border: solid 1px gray;
+}
+.edit-settings .button-change-info {
+    width: 300px;
+}
+.edit-settings .button-change-info button {
+    width: 100px;
+    padding: 5px;
+    margin: 0 0 0 5px;
+    line-height: 16px;
+}
