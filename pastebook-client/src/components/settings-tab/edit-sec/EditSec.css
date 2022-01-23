@@ -1,3 +1,18 @@
-.set-new-email{
-    display: grid;
+.edit-email-settings input{
+    padding: 10px;
+    margin: 10px;
+    width: 250px;
+    border: none;
+}
+.edit-email-settings button{
+    text-decoration: underline;
+    padding: 5px;
+    width: 50px;
+    border: none;
+    border-radius: 6px;
+    background: white;
+
+}
+.edit-email-settings button:hover{
+    color: #3b5998;
 }

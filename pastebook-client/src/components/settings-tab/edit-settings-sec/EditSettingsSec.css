@@ -1,10 +1,35 @@
-.edit-email-settings input{
+/* .edit-email-settings input{
     margin-left: 10px;
     margin-right: 10px;
     padding: 10px;
     line-height: 15px;
 
-}
+} */
 /* .edit-email-settings {
     padding: 10px;
 } */
+/* .set-new-email input{
+    margin: 5px;
+    padding: 5px;
+    width: 300px;
+} */
+.set-new-email{
+    display: grid;
+    grid-template-columns: 150px 250px;
+    grid-template-rows: 30px;
+    grid-row-gap: 9px;
+}
+.set-new-email input{
+    padding: 5px;
+    /* width: 200px; */
+    border-radius: 6px;
+    border: 1px solid gray;
+}
+.set-new-email .buttons-change-email{
+    margin-top: 10px;
+}
+.set-new-email .buttons-change-email button{
+    width: 60px;
+    margin-left: 10px;
+    padding: 5px;
+}

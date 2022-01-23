@@ -14,7 +14,6 @@ const SettingEditInfoTab = () => {
     }
     return <div className='edit-info-settings'>
         <h2>General Account Settings</h2>
-        <div className='bordeline'></div>
         <div className='edit-info-container'>
             {/* <label htmlFor='first-name-setiings'>First Name:</label>
             <input type='text' name='first-name-settings' id='first-name-settings' placeholder='Juan' readOnly='readonly' />

@@ -13,13 +13,26 @@ label{
     margin: 10px;
     padding: 10px;
 } */
-.edit-info{
+ .edit-info{
+     margin-top: 50px;
     display: grid;
-    grid-template-columns: 100px 600px;
+    grid-template-columns: 100px 300px;
+    grid-row-gap: 10px;
     margin-top: 5px;
 }
-button{
+.edit-info input{
+    border: none;
+    /* padding: 5px; */
+    font-size: 15px;
+}
+.edit-info button{
     padding: 5px;
-    line-height: 15px;
-    font-size: 20px;
+    border: none;
+    background: white;
+    font-size: 15px;
+    text-decoration: underline;
+
+}
+.edit-info button:hover{
+    color: #3b5998;
 }

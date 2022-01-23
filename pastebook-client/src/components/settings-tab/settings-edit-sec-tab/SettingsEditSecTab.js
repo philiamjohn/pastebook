@@ -15,19 +15,20 @@ const SettingEditSecTab = () => {
     }
 
     return <div className='edit-pass'>
-        <h2>Email and Password</h2>
+        <h2>Change Email</h2>
         <div className='edit-email-with-pass'>
-            {editSecState === "secTab" ? <EditSettingsSec handeleEditSecClick={handeleEditSecClick} /> : <EditSec handeleCancelEditSecClick={handeleCancelEditSecClick}  />}
+            {editSecState === "secTab" ? <EditSec handeleEditSecClick={handeleEditSecClick} /> : <EditSettingsSec handeleCancelEditSecClick={handeleCancelEditSecClick}  />}
         </div>
         <div className='borderline'>
-
         </div>
+        <h2>Change Password</h2>
         <div className='edit-pass-new-pass'>
+    
             <input type='password' required='require' placeholder='Old Password' />
             <input type='password' required='require' placeholder='New Password' />
             <input type='password' required='require' placeholder='Confirm New Password' />
-            <button>Save?</button>
-        </div>
+            <button id='save-new-pass-button'>Save</button>
+        </div>  
     </div>;
 };
 export default SettingEditSecTab
