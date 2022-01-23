@@ -1,0 +1,39 @@
+.search-results-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 65px; /* Location of the box */
+    padding-left: 60px;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
+}
+  
+.search-results-modal-content {
+    background-color: white;
+    border: 1px solid #888;
+    width: 30%;
+    height: calc(100vh - 80px);
+    border-radius: 6px;
+    overflow-y: auto;
+}
+
+.search-results-modal-content p {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+}
+
+#search-result:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+#profile-icon, #settings-icon, #logout-icon {
+    padding-right: 5px;
+}

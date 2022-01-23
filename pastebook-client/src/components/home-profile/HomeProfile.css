@@ -1,0 +1,33 @@
+#home-profile {
+    display: flex;
+    border: 3px solid #dfe3ee;
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 20vw;
+}
+
+#current-user-profile-picture {
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-bottom: 15px;
+}
+
+#current-user-name {
+    padding-top: 5px;
+    padding-left: 15px;
+}
+
+#home-profile-anchor {
+    display: flex;
+    text-decoration: none;
+    color: black;
+    width: 15vw;
+}
+
+#home-profile-anchor:hover {
+    text-decoration: underline;
+}
+
+#home-profile-anchor:active {
+    color: #3b5998;
+}
