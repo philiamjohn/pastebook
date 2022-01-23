@@ -31,7 +31,7 @@ const MenuModal = () => {
                         Profile
                     </p>
                 </a>
-                <a href="#">
+                <a href="/settings">
                     <p>
                         <IoMdSettings
                             id="settings-icon"

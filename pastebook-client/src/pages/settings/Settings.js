@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from '../../components/header/Header';
 import SettingEditInfoTab from '../../components/settings-tab/settings-edit-info-tab/SettingsEditInfoTab';
 import SettingEditSecTab from '../../components/settings-tab/settings-edit-sec-tab/SettingsEditSecTab';
 import '../settings/Settings.css';
@@ -12,6 +13,7 @@ const Settings = () => {
     }
     return <div>
         <div className='header'>
+            <Header />
         </div>
         <div className='settings-container'>
             <div className='settings'>
