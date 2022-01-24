@@ -1,3 +1,7 @@
+body {
+    background: #dfe3ee;
+}
+
 div.post-page {
     height: 90vh;
     display: flex;

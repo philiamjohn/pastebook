@@ -15,6 +15,14 @@ const Post = () => {
                            likeCount="123" 
                            commentCount="321"
                            likeStatus={false} />
+            <PostComponent authorImg={Avatar} 
+                           authorName="Juan dela Cruz XI" 
+                           postTimeStamp="10 hours ago" 
+                           postContentP="meowdrama" 
+                           postContentImg={MeowDrama} 
+                           likeCount="123" 
+                           commentCount="321"
+                           likeStatus={true} />              
         </div>
     );
   };
