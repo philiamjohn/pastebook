@@ -4,11 +4,6 @@
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
-h5 {
-    margin-block-start: 0;
-    margin-block-end: 0;
-}
-
 div.comment-card {
     height: 100%;
     display: flex;
@@ -31,6 +26,12 @@ div.comment-card-content-author {
     height: 15%;
     padding: 2.5px 0 2.5px 0;
 }
+
+div.comment-card-content-author h5 {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
 
 div.comment-card-content-text {
     height: 85%;
