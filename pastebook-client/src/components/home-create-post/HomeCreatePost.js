@@ -5,11 +5,26 @@ import './HomeCreatePost.css';
 const HomeCreatePost = () => {
     const [imageSource, setImageSource] = useState(null)
 
-    const onImageChange = (event) => {
+    const convertImageToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
+    const onImageChange = async (event) => {
         if (event.target.files && event.target.files[0]) {
             document.getElementById("home-post-picture-preview").style.display = "block";
             document.getElementById("home-add-picture-button-text").innerText = "Replace";
-            setImageSource(URL.createObjectURL(event.target.files[0]));
+            const file = event.target.files[0];
+            const base64 = await convertImageToBase64(file);
+            setImageSource(await base64);
         }
     }
 
