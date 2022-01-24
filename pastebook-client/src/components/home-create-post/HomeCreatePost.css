@@ -22,7 +22,7 @@
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
+}
   
 #remove-picture:hover, #remover-picture:focus {
     color: #000;
@@ -36,7 +36,9 @@
 }
 
 #home-post-text {
-    width: calc(50vw - 20px);
+    padding-left: 7px;
+    padding-right: 7px;
+    width: calc(50vw - 30px);
     min-height: 30vh;
     resize: vertical;
 }
