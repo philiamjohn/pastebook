@@ -21,7 +21,6 @@ const Settings = () => {
                     <ul className='nav'>
                         <li className={activeTab === "tab1" ? "active" : ""} onClick={handleTab1}>General</li>
                         <li className={activeTab === "tab2" ? "active" : ""} onClick={handleTab2}>Security and Login</li>
-
                     </ul>
                 </div>
                 <div className='out'>
