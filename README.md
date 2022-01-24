@@ -10,4 +10,4 @@ The following features are completed:
 The following features are still ongoing:
 1. Displaying of Comments List and managing its 'View more' functionality
 2. Only showing the add-comment input box upon clicking the comment button with the exclusion of the comments list
-2. Showing a modal with a list of users who liked the post upon hovering on Likes count
+3. Showing a modal with a list of users who liked the post upon hovering on Likes count
