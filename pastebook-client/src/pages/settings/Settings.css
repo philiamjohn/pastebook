@@ -1,12 +1,12 @@
 .settings ul li{
     cursor: pointer;
     list-style: none;
-    border: solid 1px black;
+    /* border: solid 1px black; */
     width: 300px;
     margin-top: 5px;
     padding: 10px;
     margin-left: -20px;
-    border-radius: 6px;
+    border-radius: 6px 0px 0px 6px;
 
 }
 .settings{
@@ -41,3 +41,13 @@
     width: 400px;
 }
 
+.out{
+    padding: 10px;
+    background-color: #8b9dc3;
+    width: 900px;
+    border-radius: 6px;
+}
+.settings .nav-list .nav li.active{
+    background-color: #8b9dc3;
+
+}

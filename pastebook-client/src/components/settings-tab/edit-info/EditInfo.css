@@ -24,11 +24,12 @@ label{
     border: none;
     /* padding: 5px; */
     font-size: 15px;
+    background-color: #8b9dc3;
 }
 .edit-info button{
     padding: 5px;
     border: none;
-    background: white;
+    background: #8b9dc3;
     font-size: 15px;
     text-decoration: underline;
 

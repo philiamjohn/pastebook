@@ -3,6 +3,7 @@
     margin: 10px;
     width: 250px;
     border: none;
+    background-color: #8b9dc3;
 }
 .edit-email-settings button{
     text-decoration: underline;
@@ -10,7 +11,7 @@
     width: 50px;
     border: none;
     border-radius: 6px;
-    background: white;
+    background: #8b9dc3;
 
 }
 .edit-email-settings button:hover{
