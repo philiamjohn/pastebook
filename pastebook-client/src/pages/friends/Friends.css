@@ -1,1 +1,39 @@
-    
+.friends-comp-container .friends .nav-friends ul li {
+    list-style: none;
+    cursor: pointer;
+    border: solid 1px black;
+    padding: 10px;
+    width: 150px;   
+    text-align: center;
+    margin:5px;
+    border-radius: 18px 18px 0px 0px;
+    border-bottom: none;
+}
+.friends-comp-container .friends .nav-friends ul {
+    display: flex;
+    /* justify-content: flex-start; */
+}
+.friends-comp-container{
+    display: flex;
+    justify-content: center;
+    border: solid 1px;
+    height: 100vh;
+    overflow: auto;
+}
+.friends-comp-container .friends{
+    border: solid 1px;
+    width: 900px;
+}
+.friends-showtab{
+    border: 1px solid black;
+    margin-top: -22px;
+    margin-left: 45px;
+    margin-right: 45px;
+    height: 100vh;
+}
+li.active{
+    background-color: #8b9dc3;
+}
+li.active2{
+    background-color:#3b5998;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FriendsListTab from '../../components/friends-tab/friends-list-tab/FriendsListTab';
 import FriendsReqTab from '../../components/friends-tab/friends-req-tab/FriendsReqTab';
+import '../friends/Friends.css';
 
 const Friends = () => {
     const [friendsTab, setFriendsTab] = useState("friends");
@@ -20,7 +21,7 @@ const Friends = () => {
                 <div className='nav-friends'>
                     <ul className='nav-friends-list'>
                         <li className={friendsTab === "friends" ? "active" : ""} onClick={handleFriendsListTab}>Friends List</li>
-                        <li className={friendsTab === "request" ? "active" : ""} onClick={handleFriendsReqTab}>Friends Request</li>
+                        <li className={friendsTab === "request" ? "active2" : ""} onClick={handleFriendsReqTab}>Friends Request</li>
                     </ul>
                 </div>
                 <div className='friends-showtab'>
