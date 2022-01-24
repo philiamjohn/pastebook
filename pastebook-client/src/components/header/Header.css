@@ -1,0 +1,58 @@
+#header {
+    background-color:#3b5998;
+    height: 60px;
+    display: flex;
+}
+
+#pastebook-logo {
+    width: 40px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+#search-bar {
+    margin-top: 15px;
+    margin-left: 10px;
+    height: 28px;
+    width: 300px;
+    border: none;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px; 
+    padding-left: 15px; 
+}
+
+#search-bar:focus {
+    outline: none;
+}
+
+#search-button {
+    margin-top: 15px;
+    padding-top: 4px;
+    padding-right: 2px;
+    padding-left: 5px;
+    width: 35px;
+    height: 30px;
+    background-color: white;
+    border: none;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;  
+}
+
+#search-button:active {
+    background-color: gainsboro;
+}
+
+#header-right {
+    margin-top: 17px;
+    margin-left: 650px;
+}
+
+#home-anchor, #notifications-button, #menu-button {
+    margin-left: 15px;
+}
+
+#notifications-button, #menu-button {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
