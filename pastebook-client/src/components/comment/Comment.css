@@ -1,34 +1,39 @@
 div.post-interactions-comments {
     width: 100%;
-    background: #dfe3ee;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
 }
 
 div.post-interactions-comments-expand {
-    height: 10%;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
+    height: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 div.post-interactions-comments-list {
-    height: 65%;
+    display: flex;
+    flex-direction: column;
+}
+
+div.post-interactions-comments-list-item {
+    padding: 5px 15px 5px 15px;
 }
 
 div.post-interactions-comments-create {
-    height: 25%;
+    height: 40px;
     display: flex;
     align-items: center;
     padding-top: 5px;
     padding-bottom: 5px;
-    padding-left: 1.5%;
-    padding-right: 1.5%;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 div.post-interactions-comments-create  img{
-    max-height: 100%;
-    max-width: 20%;
+    max-height: auto;
+    max-width: 7%;
     border-radius: 50%;
     margin-right: 5px;
 }
@@ -38,8 +43,9 @@ div.post-interactions-comments-create  img:hover {
 }
 
 div.post-interactions-comments-create  input{
+    background: #f7f7f7;
     height: 100%;
-    width: 110%;
+    width: 100%;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 32px;
