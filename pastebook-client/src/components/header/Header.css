@@ -44,7 +44,7 @@
 
 #header-right {
     margin-top: 17px;
-    margin-left: 650px;
+    margin-left: calc(100vw - 600px);
 }
 
 #home-anchor, #notifications-button, #menu-button {

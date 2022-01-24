@@ -3,7 +3,7 @@
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     padding-top: 65px; /* Location of the box */
-    padding-left: 490px;
+    padding-left: calc(100vw - 240px);
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -15,7 +15,6 @@
   
 .menu-modal-content {
     background-color: white;
-    margin: auto;
     border: 1px solid #888;
     width: 15%;
     border-radius: 6px;
