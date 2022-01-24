@@ -1,0 +1,28 @@
+#home-content {
+    display: flex;
+}
+
+#home-empty-div-1 {
+    border: 3px solid #dfe3ee;
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 20vw;
+    height: 35vh;
+}
+
+#home-empty-div-2 {
+    border: 3px solid #dfe3ee;
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 23.5vw;
+    height: calc(100vh - 111px);
+}
+
+#home-content-newsfeed {
+    border: 3px solid #dfe3ee;
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 50vw;
+    min-height: calc(100vh - 111px);
+    height: auto;
+}

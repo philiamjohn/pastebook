@@ -1,0 +1,106 @@
+.reg-page {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(236, 234, 234);
+}
+.register{
+    width: 500px;
+    padding: 10px;
+    box-shadow:  -5px 10px 20px #888888;
+    border-radius: 6px;
+    padding: 15px;
+}
+.register .reg-title p{
+    font-size: 25px;
+    margin-left: 12px;
+}
+.register input {
+    border-radius: 6px;
+    border: solid 1px gray;
+}
+.register .reg-credentials .fullname input {
+    padding: 14px 16px;
+    margin-left: 10px;
+    width: 200px;
+}
+.register .reg-credentials .credentials {
+    display: flex;
+    flex-direction: column;
+}
+.register .reg-credentials .credentials input {
+    padding: 14px 16px;
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 444px;
+}
+.register .reg-credentials .date {
+    display: flex;
+    flex-direction: column;
+}
+.register .reg-credentials .date input {
+    padding: 14px 16px;
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 444px;
+}
+.register .reg-credentials .date label {
+    margin-left: 12px;
+    margin-top: 5px;
+}
+.register .reg-credentials .gender {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    width: 97%;
+}
+.register .reg-credentials .gender label {
+    margin-left: 12px;
+    margin-top: 10px;
+}
+.register .reg-credentials .gender-div {
+    border: solid 1px gray;
+    border-radius: 6px;
+    padding: 10px;
+    width: 90px;
+}
+.register .reg-page-buttons {
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 10px;
+}
+.register .reg-page-buttons div {
+    margin-left: 12px;
+    border: none;
+    border-bottom: solid 1px #dadde1;
+    width: 470px;
+}
+.register .reg-page-buttons button {
+    justify-self: center;
+    margin: 15px;
+}
+.register .reg-page-buttons #login-button-regpage {
+    padding: 0px 16px;
+    width: 250px;
+    border-radius: 6px;
+    border: none;
+    background-color: #1877f2;
+    line-height: 48px;
+    font-size: 20px;
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 12px;
+}
+.register .reg-page-buttons #reg-button-regpage {
+    padding: 14px 16px;
+    width: 440px;
+    font-size: 20px;
+    border-radius: 6px;
+    border: none;
+    background-color: #42b72a;
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
