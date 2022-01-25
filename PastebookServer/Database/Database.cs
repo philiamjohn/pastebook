@@ -53,7 +53,6 @@ public class Database
         }
     }
 
-
     public static void AddSession(SessionModel session)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -129,27 +128,48 @@ public class Database
         }
     }
 
-    // public static HomeDataModel? GetHomeData(SessionModel session)
-    // {
-    //     using (var db = new SqlConnection(DB_CONNECTION_STRING))
-    //     {
-    //         db.Open();
-    //         using (var command = db.CreateCommand())
-    //         {
-    //             command.CommandText = "SELECT * FROM Sessions WHERE Session_ID = @Id;";
-    //             command.Parameters.AddWithValue("@Id", Id);
+    public static HomeDataModel? GetHomeData(SessionModel session)
+    {
+        HomeDataModel homeData = new HomeDataModel();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT * FROM Users WHERE Email = @Email OR Phone = @Phone;";
+                command.Parameters.AddWithValue("@Email", session.Email);
+                command.Parameters.AddWithValue("@Phone", session.Phone);
 
-    //             var reader = command.ExecuteReader();
-    //             while (reader.Read())
-    //             {
-    //                 session.SessionId = reader.GetString(0);
-    //                 session.Email = reader.GetString(1);
-    //                 session.Phone = reader.GetString(2);
-    //                 break;
-    //             }
-    //         }
-    //         return found ? session : null;
-    //     }
-    // }
-
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    homeData.User_ID = reader.GetInt32(0);
+                    homeData.FirstName = reader.GetString(1);
+                    homeData.LastName = reader.GetString(2);
+                    homeData.Password = reader.GetString(4);
+                    homeData.Birthday = reader.GetString(5);
+                    homeData.Gender = reader.GetString(6);
+                    homeData.UserName = reader.GetString(10);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Email")))
+                    {
+                        homeData.Email = reader.GetString(3);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("Phone")))
+                    {
+                        homeData.Phone = reader.GetString(7);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        homeData.ProfilePicture = reader.GetString(8);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfileDesc")))
+                    {
+                        homeData.ProfileDesc = reader.GetString(9);
+                    }
+                    break;
+                }
+            }
+            return homeData;
+        }
+    }
 }

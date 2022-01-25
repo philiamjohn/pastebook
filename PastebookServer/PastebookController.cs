@@ -11,7 +11,7 @@ public class PastebookController : Controller
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
         if (session != null)
         {
-            return Ok(Json(session));
+            return Ok(Json(Database.GetHomeData(session)));
         }
         return Unauthorized();
     }
