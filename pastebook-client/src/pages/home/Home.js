@@ -14,64 +14,74 @@ const Home = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
+  const [currentSessionId, setCurrentSessionId] = useState("");
 
   useEffect(async () => {
-    const searchCookie = "pastebookSessionId=";
+    const getHomePageData = async () => {
+      const searchCookie = "pastebookSessionId=";
 
-    if (document.cookie.length > 0) {
-      // Search for a cookie.
-      let offset = document.cookie.indexOf(searchCookie)
+      if (document.cookie.length > 0) {
+        // Search for pastebookSessionId cookie.
+        let offset = document.cookie.indexOf(searchCookie)
 
-      if (offset != -1) {
-        offset += searchCookie.length
-        // Set index of beginning of value 
-        let end = document.cookie.indexOf(";", offset)
+        if (offset != -1) {
+          offset += searchCookie.length
+          // Set index of beginning of value 
+          let end = document.cookie.indexOf(";", offset)
 
-        if (end == -1) {
-          end = document.cookie.length
-        }
+          if (end == -1) {
+            end = document.cookie.length
+          }
 
-        const pastebookSessionId = document.cookie.substring(offset, end);
-        console.log(`pastebookSessionId: ${pastebookSessionId}`);
+          const pastebookSessionId = document.cookie.substring(offset, end);
+          console.log(`pastebookSessionId: ${pastebookSessionId}`);
 
-        if (pastebookSessionId == null) {
-          navigate("/login", { replace: true });
-        }
-        else {
-          //Check if session id exists in the DB
-          const response = await fetch(`${baseUrl}/home`, {
-            method: 'GET',
-            headers: {
-              'X-SessionID': pastebookSessionId
-            },
-          });
-
-          // If it doesnt exist redirect to login
-          if (response.status == 500 || response.status == 401) {
+          if (pastebookSessionId == null) {
             navigate("/login", { replace: true });
           }
-          // If it exists populate homepage data
-          else if (response.status == 200) {
-            const homepageData = JSON.parse(await response.text()).Value;
-            console.table(await homepageData);
-            alert(`currentUserEmail: ${homepageData.Email}; currentUserPhone: ${homepageData.Phone}`);
-            setHomeData(homepageData);
-          }
-          // In case other response status is received
           else {
-            alert(response.status)
-            navigate("/login", { replace: true });
+            //Check if session id exists in the DB
+            const response = await fetch(`${baseUrl}/home`, {
+              method: 'GET',
+              headers: {
+                'X-SessionID': pastebookSessionId
+              },
+            });
+
+            // If it doesnt exist redirect to login
+            if (response.status == 500 || response.status == 401) {
+              navigate("/login", { replace: true });
+            }
+            // If it exists populate homepage data
+            else if (response.status == 200) {
+              const homepageData = JSON.parse(await response.text()).Value;
+              console.table(await homepageData);
+              setHomeData(homepageData);
+              setCurrentSessionId(pastebookSessionId);
+            }
+            // In case other response status is received
+            else {
+              alert(response.status)
+              navigate("/login", { replace: true });
+            }
           }
         }
       }
-    }
-    // If no cookie stored, redirect immediately to login
-    else {
-      navigate("/login", { replace: true });
+      // If no cookie stored, redirect immediately to login
+      else {
+        navigate("/login", { replace: true });
+      }
     }
 
-    return () => {
-    };
+    await getHomePageData();
+
+    // refresh page content after 1 minute
+    const refreshPage = setInterval(async () => {
+      console.log("Hiiiiiiiiiii");
+      await getHomePageData();
+    }, 60000);
+
+    return () => clearInterval(refreshPage);
   }, []);
 
 
