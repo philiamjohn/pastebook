@@ -1,0 +1,30 @@
+div.FriendCard {
+    width:49%;
+    display: flex;
+    align-items: center;
+    border: 1px solid #f7f7f7;
+    border-radius: 5px;
+    box-shadow: 1px 1px #f7f7f7;
+    overflow: hidden;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+div.friendCard-img {
+    height: 85px;
+    width: 85px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.friendCard-img  img{
+    max-height: 85px;
+    max-width: 85px;
+}
+
+div.friendCard-name {
+    max-width: 170px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
