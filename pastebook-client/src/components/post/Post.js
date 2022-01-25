@@ -47,10 +47,10 @@ const Post = (props) => {
         <div className='post'>
             <div className='post-author'>
                 <div className='post-author-img'>
-                    <a href="#"><img src={authorImg ? authorImg  : GrayStock } alt="author-img"/></a>
+                    <img src={authorImg ? authorImg  : GrayStock } alt="author-img"/>
                 </div>
                 <div className='post-author-details'>
-                    <div className='post-author-details-name'><a href="#"><h4>{authorName}</h4></a></div>
+                    <div className='post-author-details-name'><h4>{authorName}</h4></div>
                     <div className='post-timestamp'>{postTimeStamp}</div>
                 </div>
             </div>
@@ -60,8 +60,12 @@ const Post = (props) => {
             </div>
             <div className='post-interactions'>
                 <div className='post-interactions-counts'>
-                    <div className='post-interactions-counts-like'><a href='#'>{likeCount} Likes</a></div>
-                    <div className='post-interactions-counts-comment'></div><a href="#" onClick={toggleComment}>{commentCount} Comments</a>
+                    <div className='post-interactions-counts-like'>
+                        <a href='#'>{likeCount} Likes</a>
+                    </div>
+                    <div className='post-interactions-counts-comment'>
+                        <a href="#" onClick={toggleComment}>{commentCount} Comments</a>
+                    </div>
                 </div>
                 <div className='post-interactions-btns'>
                     <div className='post-interactions-btns-like' onClick={toggleLike}>

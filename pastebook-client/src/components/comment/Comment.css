@@ -8,11 +8,6 @@ div.post-interactions-comments {
     border-bottom-left-radius: 10px;
 }
 
-div.post-interactions-comments-expand {
-    height: 25px;
-    padding: 5px 15px;
-}
-
 div.post-interactions-comments-list {
     display: flex;
     flex-direction: column;
@@ -22,6 +17,18 @@ div.post-interactions-comments-list-item {
     padding: 5px 15px 5px 15px;
 }
 
+div.post-interactions-comments-expand {
+    height: 25px;
+    padding: 5px 15px;
+}
+
+div.post-interactions-comments-expand p{
+    cursor: pointer;
+}
+
+div.post-interactions-comments-expand p:hover {
+    text-decoration: underline;
+}
 div.post-interactions-comments-create {
     height: 40px;
     display: flex;
