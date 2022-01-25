@@ -34,6 +34,10 @@ div.post-author-details-name , div.post-timestamp{
     align-items: center;
 }
 
+div.post-author-details-name h4:hover {
+    text-decoration: underline;
+}
+
 div.post-timestamp {
     color: #65676b;
     cursor: pointer;
@@ -111,6 +115,10 @@ div.post-interactions-counts-comment p, div.post-interactions-counts-like p {
     cursor: pointer;
 }
 
+div.post-interactions-counts-comment p:hover, div.post-interactions-counts-like p:hover {
+    text-decoration: underline;
+}
+
 div.modal {
     display: none;
     position: fixed; /* Stay in place */
@@ -164,10 +172,6 @@ div.modal-content-list-item {
   color: #000;
   text-decoration: none;
   cursor: pointer;
-}
-
-div.post-interactions-counts-comment p:hover {
-    text-decoration: underline;
 }
 
 div.post-interactions-btns {
