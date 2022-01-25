@@ -1,5 +1,5 @@
 div.friends-page {
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     background: #f7f7f7;
     display: flex;

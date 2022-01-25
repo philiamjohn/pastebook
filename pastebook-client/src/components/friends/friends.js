@@ -5,6 +5,7 @@ import RequestsTab from './RequestsTab';
 
 const Friends = () => {
 
+
     const [tab, setTab] = useState("list");
 
     // On page load
@@ -67,7 +68,11 @@ const Friends = () => {
                <div className='friends-nav-list-outer' id='friends-list-outer'><div className='friends-nav-list' id='friends-list' onClick={switchToList}><p>Lists</p></div></div>
                <div className='friends-nav-requests-outer' id='friend-requests-outer'><div className='friends-nav-requests' id='friend-requests' onClick={switchToRequests}><p>Requests</p></div></div>
            </div>
-           <div className='friends-content'>{tab === "list" ? <ListTab /> : <RequestsTab />}</div>
+           <div className='friends-content'>
+               {tab === "list" ? <ListTab/> 
+                                : <RequestsTab />
+                }
+            </div>
        </div>   
      );
 };
