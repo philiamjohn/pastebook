@@ -1,12 +1,3 @@
-p, h4 {
-    margin-block-start: 0px;
-    margin-block-end: 0px;
-}
-
-a {
-    text-decoration: none;
-}
-
 /* POST */
 div.post {
     width: 40%;
@@ -14,6 +5,15 @@ div.post {
     flex-direction: column;
     padding-bottom: 5px;
     border-radius: 10px;
+}
+
+div.post p, div.post h4 {
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+div.post a {
+    text-decoration: none;
 }
 
 /* POST-AUTHOR */
