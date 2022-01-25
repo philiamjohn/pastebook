@@ -1,5 +1,5 @@
 import '../friends/Friends.css';
-import FriendsComponent from '../../components/friends/friends';
+import FriendsComponent from '../../components/friends/Friends';
 
 const Friends = () => {
 
@@ -10,4 +10,5 @@ const Friends = () => {
     );
         
 }
+
 export default Friends;

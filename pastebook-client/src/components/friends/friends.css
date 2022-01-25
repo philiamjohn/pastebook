@@ -30,10 +30,25 @@ div.friends-nav-list, div.friends-nav-requests {
     border-radius: 5px;
 }
 
+div.friends-nav-list-active, div.friends-nav-requests-active {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+div.friends-nav-list-outer-active, div.friends-nav-requests-outer-active {
+    border-bottom: solid 2px #1876f2;
+}
+
+div.friends-nav p {
+    color: #65676b;
+}
+
+div.friends-nav-list-active p, div.friends-nav-requests-active p{
+    color: #1876f2;
+}
+
 div.friends-nav-list:hover, div.friends-nav-requests:hover {
     background: #f7f7f7;
 }
 
-div.friends-nav p {
- color: #65676b;
-}
+
