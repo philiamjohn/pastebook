@@ -129,7 +129,7 @@ div.modal-content {
     margin: auto;
     border: 1px solid #888;
     border-radius: 10px;
-    width: 40%;
+    width: 30%;
     max-height: 50%;
     overflow: scroll;
 }
@@ -149,6 +149,7 @@ div.modal-content-list {
 
 div.modal-content-list-item {
     height: 60px;
+    width: 50%;
 }
 
 .close {

@@ -96,7 +96,7 @@ const Post = (props) => {
                         <p id='likesCount'>{likeCount} Likes</p>
                     </div>
                     {/* likes Modal */}
-                    <div id="likesModal" class="modal">
+                    <div id="likesModal" className="modal">
                       <div className="modal-content">
                         <div className='modal-content-title'>
                             <h4>Likes</h4>
@@ -117,12 +117,12 @@ const Post = (props) => {
                            </div>
                            <div className='modal-content-list-item'>
                                 <LikerCard userPhoto={GrayStock} userName="Liker Five" />
-                                <div className='modal-content-list-item'>
+                           </div>     
+                           <div className='modal-content-list-item'>
                                 <LikerCard userPhoto={GrayStock} userName="Liker Six" />
                            </div>
                            <div className='modal-content-list-item'>
                                 <LikerCard userPhoto={GrayStock} userName="Liker Seven" />
-                           </div>
                            </div>
                        </div> 
                       </div>
