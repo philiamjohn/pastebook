@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
 import HomeAlbums from '../../components/home-albums/HomeAlbums';
@@ -13,6 +13,7 @@ import './Home.css'
 const Home = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
+  const [homeData, setHomeData] = useState({});
 
   useEffect(async () => {
     const searchCookie = "pastebookSessionId=";
@@ -52,7 +53,9 @@ const Home = () => {
           // If it exists populate homepage data
           else if (response.status == 200) {
             const homepageData = JSON.parse(await response.text()).Value;
-
+            console.table(await homepageData);
+            alert(`currentUserEmail: ${homepageData.Email}; currentUserPhone: ${homepageData.Phone}`);
+            setHomeData(homepageData);
           }
           // In case other response status is received
           else {
@@ -63,9 +66,9 @@ const Home = () => {
       }
     }
     // If no cookie stored, redirect immediately to login
-    // else {
-    //   navigate("/login", { replace: true });
-    // }
+    else {
+      navigate("/login", { replace: true });
+    }
 
     return () => {
     };
@@ -77,7 +80,7 @@ const Home = () => {
       <Header />
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile currentUser={"Peter Parker"} />
+          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} />
           <HomeFriends />
           <HomeAlbums />
         </div>
