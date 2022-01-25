@@ -4,12 +4,13 @@ div.post-interactions-comments {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 div.post-interactions-comments-expand {
     height: 25px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 5px 15px;
 }
 
 div.post-interactions-comments-list {

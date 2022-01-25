@@ -14,6 +14,7 @@ div.post p, div.post h4 {
 
 div.post a {
     text-decoration: none;
+    color: #6d7277;
 }
 
 /* POST-AUTHOR */
@@ -22,7 +23,7 @@ div.post-author {
     height: 50px;
     background: #ffffff;
     display: flex;
-    padding: 15px 10px 7.5px 15px;
+    padding: 15px 10px 5px 15px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
@@ -35,6 +36,10 @@ div.post-author-details-name , div.post-timestamp{
     height: 50%;
     display: flex;
     align-items: center;
+}
+
+div.post-timestamp {
+    color: #65676b;
 }
 
 div.post-author-details-name h4{
@@ -52,8 +57,8 @@ div.post-author-img  img{
 div.post-content {
     height: 400px;
     background: #ffffff;
-    padding-top: 7.5px;
-    padding-bottom: 7.5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 div.post-content-p {
@@ -80,8 +85,7 @@ div.post-interactions {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    padding-top: 7.5px;
-    padding-bottom: 5px;
+    padding-top: 5px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
@@ -93,7 +97,7 @@ div.post-interactions-counts {
     justify-content: space-between;
     padding-right: 15px;
     padding-left: 15px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 div.post-interactions-btns {
@@ -101,8 +105,8 @@ div.post-interactions-btns {
     width: 96%;
     display: flex;
     justify-content: space-around;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
+    border-top: 1px solid #e8e9eb;
+    border-bottom: 1px solid #e8e9eb;
     padding-top: 5px;
     padding-bottom: 5px;
 }
@@ -112,6 +116,7 @@ div.post-interactions-btns-like, div.post-interactions-btns-comment {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #65676b;
 }
 
 div.post-interactions-btns-like:hover {
