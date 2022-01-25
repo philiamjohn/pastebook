@@ -9,11 +9,30 @@ const ListTab = () => {
 
     return (
       <div className='friends-content-list'>
-          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
-          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
-          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
-          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
-          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
+          <div className='friends-content-list-item'>
+            <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          </div>
       </div>
     );
 };
