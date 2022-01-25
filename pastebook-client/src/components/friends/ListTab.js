@@ -1,6 +1,6 @@
 import React from 'react';
 import './ListTab.css';
-import FriendCard from './FriendCard';
+import FriendCard from '../name-pic-card/NamePicCard';
 import FriendPhotoMock from '../../images/logo.svg';
 
 const ListTab = () => {
@@ -9,11 +9,11 @@ const ListTab = () => {
 
     return (
       <div className='friends-content-list'>
-          <FriendCard friendPhoto={FriendPhotoMock} friendName={friendName1} />
-          <FriendCard friendPhoto={FriendPhotoMock} friendName={friendName1} />
-          <FriendCard friendPhoto={FriendPhotoMock} friendName={friendName1} />
-          <FriendCard friendPhoto={FriendPhotoMock} friendName={friendName1} />
-          <FriendCard friendPhoto={FriendPhotoMock} friendName={friendName1} />
+          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
+          <FriendCard userPhoto={FriendPhotoMock} userName={friendName1} />
       </div>
     );
 };
