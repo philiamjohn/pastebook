@@ -43,6 +43,9 @@ div.post-timestamp {
     color: #65676b;
     cursor: pointer;
 }
+div.post-timestamp:hover {
+    text-decoration: underline;
+}
 
 div.post-author-details-name h4{
     color: black;
