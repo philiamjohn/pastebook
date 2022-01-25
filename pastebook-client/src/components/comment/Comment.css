@@ -1,0 +1,53 @@
+div.post-interactions-comments {
+    width: 100%;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+div.post-interactions-comments-expand {
+    height: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+div.post-interactions-comments-list {
+    display: flex;
+    flex-direction: column;
+}
+
+div.post-interactions-comments-list-item {
+    padding: 5px 15px 5px 15px;
+}
+
+div.post-interactions-comments-create {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+div.post-interactions-comments-create  img{
+    max-height: auto;
+    max-width: 7%;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+div.post-interactions-comments-create  img:hover {
+    cursor: pointer;
+}
+
+div.post-interactions-comments-create  input{
+    background: #f7f7f7;
+    height: 100%;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 32px;
+    border: none;
+}

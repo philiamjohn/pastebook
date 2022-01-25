@@ -1,0 +1,30 @@
+#home-albums {
+    border: 3px solid #dfe3ee;
+    margin-top: 15px;
+    margin-left: 15px;
+    width: 22vw;
+}
+
+#home-albums h4{
+    padding-left: 10px;
+}
+
+#home-albums-icon {
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+#albums-anchor {
+    display: flex;
+    color: black;
+    padding-bottom: 10px;
+    text-decoration: none;
+}
+
+#albums-anchor:hover {
+    text-decoration: underline;
+}
+
+#albums-anchor:active {
+    color: #3b5998;
+}

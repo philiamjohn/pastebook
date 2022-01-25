@@ -1,0 +1,39 @@
+/* input{
+    width: 250px;
+    padding: 5px;
+   
+    margin: 10px;
+}
+div{
+    padding: 5px;
+}
+label{
+    width: 200px;
+    border: solid 1px red;
+    margin: 10px;
+    padding: 10px;
+} */
+ .edit-info{
+     margin-top: 50px;
+    display: grid;
+    grid-template-columns: 100px 300px;
+    grid-row-gap: 10px;
+    margin-top: 5px;
+}
+.edit-info input{
+    border: none;
+    /* padding: 5px; */
+    font-size: 15px;
+    background-color: #8b9dc3;
+}
+.edit-info button{
+    padding: 5px;
+    border: none;
+    background: #8b9dc3;
+    font-size: 15px;
+    text-decoration: underline;
+
+}
+.edit-info button:hover{
+    color: #3b5998;
+}
