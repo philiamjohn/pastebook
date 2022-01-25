@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './Post.css';
 import Comment from '../comment/Comment';
+import LikerCard from '../name-pic-card/NamePicCard';
 import LikeIcon from '../../images/like.png';
 import LikedIcon from '../../images/liked.png';
 import CommentIcon from '../../images/comment.png';
@@ -36,12 +37,43 @@ const Post = (props) => {
         setComment(v => !v);
     }
 
+    // user wants to add a comment
     const addComment = () => {
         setComment(v => !v);
         setTimeout(function(){
             document.getElementById('comment-box').focus();
         });  
     }
+
+    // likes modal
+    useEffect(() => {
+        var modal = document.getElementById("likesModal");
+        var btn = document.getElementById("likesCount");
+        var closeModal = document.getElementsByClassName("close")[0];
+    
+        //show modal
+        btn.onclick = function() {
+            modal.style.display = "flex";
+        }
+        
+        //close modal on close-button click
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+    
+        //close modal on clicking outside the modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+        }
+      return () => {
+      };
+    }, []);
+    
+
+    
+    
     
     return (
         <div className='post'>
@@ -61,10 +93,43 @@ const Post = (props) => {
             <div className='post-interactions'>
                 <div className='post-interactions-counts'>
                     <div className='post-interactions-counts-like'>
-                        <a href='#'>{likeCount} Likes</a>
+                        <p id='likesCount'>{likeCount} Likes</p>
                     </div>
+                    {/* likes Modal */}
+                    <div id="likesModal" class="modal">
+                      <div className="modal-content">
+                        <div className='modal-content-title'>
+                            <h4>Likes</h4>
+                            <p className="close">&times;</p>
+                        </div>
+                       <div className='modal-content-list'>
+                           <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker One" />
+                           </div>
+                           <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker Two" />
+                           </div>
+                           <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker Three" />
+                           </div>
+                           <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker Four" />
+                           </div>
+                           <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker Five" />
+                                <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker Six" />
+                           </div>
+                           <div className='modal-content-list-item'>
+                                <LikerCard userPhoto={GrayStock} userName="Liker Seven" />
+                           </div>
+                           </div>
+                       </div> 
+                      </div>
+                    </div>
+                    {/* likes Modal */}
                     <div className='post-interactions-counts-comment'>
-                        <a href="#" onClick={toggleComment}>{commentCount} Comments</a>
+                        <p onClick={toggleComment}>{commentCount} Comments</p>
                     </div>
                 </div>
                 <div className='post-interactions-btns'>
