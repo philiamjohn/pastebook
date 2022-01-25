@@ -29,7 +29,7 @@
     display: flex;
     flex-direction: column;
 }
-.register .reg-credentials .credentials input {
+.register .reg-credentials .credentials input,select {
     padding: 14px 16px;
     margin-top: 5px;
     margin-left: 10px;
