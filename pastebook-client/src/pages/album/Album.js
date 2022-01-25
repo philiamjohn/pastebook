@@ -5,12 +5,14 @@ import { BsPlusLg } from 'react-icons/bs';
 import { MdModeEditOutline, MdDeleteForever } from 'react-icons/md';
 
 import albumphoto from '../../images/default-album.png';
+import ProfileHeader from '../../components/profile-header/ProfileHeader';
 
 
 const Album = () => {
 
     return (
         <div className='body'>
+            <ProfileHeader />
             <div className='s2-album .block-border-shadow'>
                 <div className='s2-album-title block-title-1'>Albums</div>
                 <div className='s2-album-content'>
@@ -21,8 +23,8 @@ const Album = () => {
                     <div>
                         <img src={albumphoto} alt='Album Cover'></img>
                         <p className='text'>New Album</p>
-                        <button className='s2-album-btn'>< MdModeEditOutline size={15} /></button>
-                        <button className='s2-album-btn'>< MdDeleteForever size={15} /></button>                      
+                        <button className='s2-album-btn' title='Rename Album'>< MdModeEditOutline size={15} /></button>
+                        <button className='s2-album-btn' title='Delete Album'>< MdDeleteForever size={15} /></button>                      
                     </div>
                 </div>            
             </div>
