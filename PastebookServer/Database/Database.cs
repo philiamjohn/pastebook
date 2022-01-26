@@ -1,4 +1,9 @@
 using System.Data.SqlClient;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
+
 public class Database
 {
     private static string? DB_CONNECTION_STRING;
@@ -22,19 +27,18 @@ public class Database
             {
                 cmd.CommandText =
                     @"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' and xtype='U')
-                CREATE TABLE Users ( Id INT NOT NULL IDENTITY,
-                                          Username VARCHAR(255),
-                                          Password VARCHAR(255),
-                                          LoginType VARCHAR(255),
-                                          FullName VARCHAR(255),
-                                          PRIMARY KEY (Id)  );";
-                cmd.ExecuteNonQuery();
-                cmd.CommandText =
-                    @"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='CmsSessionId' and xtype='U')
-                CREATE TABLE CmsSessionId (Id VARCHAR(255) NOT NULL,
-                                          Username VARCHAR(255),
-                                           LoginType VARCHAR(255),
-                                          PRIMARY KEY (Id)  );";
+               CREATE TABLE Users ( User_ID INT IDENTITY (1,1) NOT NULL,
+                                      FirstName VARCHAR(255) NOT NULL,
+                                      LastName VARCHAR(255) NOT NULL,
+                                      Email VARCHAR(255) ,
+                                      Password VARCHAR(255) NOT NULL,
+                                      Birthday VARCHAR(255) NOT NULL,
+                                      Gender VARCHAR(255),
+                                      Phone VARCHAR(255) ,
+                                      UserName VARCHAR(255) NOT NULL,
+                                      ProfilePicture VARCHAR(MAX) ,
+                                      ProfileDesc VARCHAR(2000),
+                                      PRIMARY KEY (User_ID) );";
                 cmd.ExecuteNonQuery();
             }
         }
@@ -53,6 +57,27 @@ public class Database
         }
     }
 
+    //add the users details to the database
+    public static void NewRegister(RegisterModel regmodel)
+    {
+        var hashPass = BCrypt.Net.BCrypt.HashPassword(regmodel.Password);
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText =
+                    @"INSERT INTO Users (FirstName, LastName,Email,Password,Birthday,Gender,Phone) VALUES (@fn,@ln,@e,@p,@b,@g,@pn);";
+                cmd.Parameters.AddWithValue("@fn", regmodel.FirstName);
+                cmd.Parameters.AddWithValue("@ln", regmodel.LastName);
+                cmd.Parameters.AddWithValue("@p", hashPass);
+                cmd.Parameters.AddWithValue("@b", regmodel.Birthday);
+                cmd.Parameters.AddWithValue("@g", regmodel.Gender);
+                cmd.Parameters.AddWithValue("@e", regmodel.Email);
+                cmd.Parameters.AddWithValue("@pn", regmodel.Phone);
+                //the phone is empty or null if the user does not provide phone number
+                cmd.ExecuteNonQuery();
+              
     public static void AddSession(SessionModel session)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -72,6 +97,59 @@ public class Database
             }
         }
     }
+
+    public static void SendConfirmationEmail(string email, string lastname)
+    {
+        string to = email;
+        string from = "capstoneproj202202@gmail.com";
+        MailMessage message = new MailMessage(from, to);
+        string mailContents =
+            $@"Dear  {lastname},<br>
+            Thank you for signing in with us<br>
+            We are pleased to inform you that your registration has been successfully completed.<br>Now you can start using Pastebook and connect with others.<br><br><br>Regards,<br>Team Pastebook";
+        message.Subject = "Welcome to Pastebook";
+        message.Body = mailContents;
+        message.BodyEncoding = Encoding.UTF8;
+        message.IsBodyHtml = true;
+        SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+        System.Net.NetworkCredential credentials = new System.Net.NetworkCredential(
+            "capstoneproj202202",
+            "Dotnetbc2022"
+        );
+        client.EnableSsl = true;
+        client.UseDefaultCredentials = false;
+        client.DeliveryMethod = SmtpDeliveryMethod.Network;
+        client.Credentials = credentials;
+        client.Send(message);
+    }
+
+    // function used for adding username (CheckAddUserName,AddUserName, CreateUniqueUsername)
+    //check if the username already exist or not
+    public static void CheckAddUserName(RegisterModel rmodel)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                System.Console.WriteLine(rmodel);
+                cmd.CommandText = @"SELECT * FROM Users WHERE UserName=@un";
+                cmd.Parameters.AddWithValue("@un", rmodel.Username);
+                // cmd.Parameters.AddWithValue("@ln", rmodel.LastName);
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    var checkValue = reader.GetString(10);
+                    if (rmodel.Username == checkValue)
+                    {
+                        //if the username exist generate the new username with disambiguator
+                        var returnValues = CreateUniqueUsername(rmodel.FirstName, rmodel.LastName);
+                        // SendConfirmationEmail(rmodel.Email, rmodel.LastName);
+                        AddUsername(rmodel.FirstName, rmodel.LastName, returnValues);
+                    }
+                }
+                //if the username does not exist generate the username from adding firstname and last name lower case
+                AddUsername(rmodel.FirstName, rmodel.LastName, rmodel.Username);
 
     public static SessionModel AddSessionForUser(UserCredentialsModel userCredentials)
     {
@@ -98,9 +176,71 @@ public class Database
                 var passwordInDb = command.ExecuteScalar();
                 var result = BCrypt.Net.BCrypt.Verify(userCredentials.Password, passwordInDb.ToString());
                 return result ? AddSessionForUser(userCredentials) : null;
+
             }
         }
     }
+
+    public static string CreateUniqueUsername(string fname, string lname)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                //checking if the username is null with the firstname and last name condition
+                cmd.CommandText =
+                    @"SELECT * FROM Users WHERE FirstName=@fn AND LastName=@ln AND UserName IS NULL";
+                cmd.Parameters.AddWithValue("@fn", fname);
+                cmd.Parameters.AddWithValue("@ln", lname);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    //get the user id and add it to the firstname + lastname to generate username with disambiguator
+                    var userId = reader.GetInt32(0);
+                    var fullname = fname + lname + userId.ToString();
+                    //return a fullname to lower case
+                    return (fullname.ToLower());
+                }
+                return ("");
+            }
+        }
+    }
+
+    //this will add the username if the username does not exist in the table
+    public static void AddUsername(string fname, string lname, string fullname)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText =
+                    $"UPDATE Users SET UserName=@un WHERE FirstName='{fname}' AND LastName='{lname}' AND UserName IS NULL";
+                cmd.Parameters.AddWithValue("@un", fullname);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static bool CheckEmailIfUnique(string email)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT * FROM Users WHERE Email='{email}'";
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+}
 
     public static SessionModel? GetSessionById(string Id)
     {
