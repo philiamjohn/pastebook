@@ -31,7 +31,6 @@ public class PastebookController : Controller
         }
         return Ok();
     }
-}
 
     [HttpGet]
     [Route("/home")]
@@ -40,12 +39,13 @@ public class PastebookController : Controller
     )
     {
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
-        if (session != null)
+        if (session == null)
         {
-            return Ok(Json(Database.GetHomeData(session)));
+            return Unauthorized();
         }
-        return Unauthorized();
+        return Ok(Json(Database.GetHomeData(session)));
     }
+
     [HttpPost]
     [Route("/login")]
     public IActionResult loginAddSessionForUser(
@@ -53,10 +53,11 @@ public class PastebookController : Controller
     )
     {
         SessionModel session = Database.AddSessionWithCredentials(userCredentials)!;
-        if (session != null)
+        if (session == null)
         {
-            return Ok(Json(session));
+            return Unauthorized();
         }
-        return Unauthorized();
+        return Ok(Json(session));
     }
 }
+

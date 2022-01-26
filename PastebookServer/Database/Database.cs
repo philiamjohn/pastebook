@@ -77,6 +77,10 @@ public class Database
                 cmd.Parameters.AddWithValue("@pn", regmodel.Phone);
                 //the phone is empty or null if the user does not provide phone number
                 cmd.ExecuteNonQuery();
+
+            }
+        }
+    }
               
     public static void AddSession(SessionModel session)
     {
@@ -150,6 +154,9 @@ public class Database
                 }
                 //if the username does not exist generate the username from adding firstname and last name lower case
                 AddUsername(rmodel.FirstName, rmodel.LastName, rmodel.Username);
+            }
+        }
+    }
 
     public static SessionModel AddSessionForUser(UserCredentialsModel userCredentials)
     {
@@ -240,7 +247,7 @@ public class Database
             }
         }
     }
-}
+
 
     public static SessionModel? GetSessionById(string Id)
     {
