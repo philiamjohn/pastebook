@@ -40,10 +40,10 @@ const Login = () => {
       },
       body: JSON.stringify(await userCredentials)
     });
-    if (response.status == 500 || response.status == 401) {
+    if (response.status === 500 || response.status === 401) {
       alert("Invalid username/password");
     }
-    else if (response.status == 200) {
+    else if (response.status === 200) {
       const pastebookSessionId = JSON.parse(await response.text()).Value.SessionId;
       // session id cookie expires in 3 days
       var expirationDate = new Date;
