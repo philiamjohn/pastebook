@@ -99,26 +99,26 @@ const Home = () => {
 
     }
 
-    const getHomePosts = async () => {
-      const pastebookSessionId = getSessionIdFromCookie();
-      const response = await fetch(`${baseUrl}/homeposts`, {
-        method: 'GET',
-        headers: {
-          'X-SessionID': pastebookSessionId
-        },
-      });
+    // const getHomePosts = async () => {
+    //   const pastebookSessionId = getSessionIdFromCookie();
+    //   const response = await fetch(`${baseUrl}/homeposts`, {
+    //     method: 'GET',
+    //     headers: {
+    //       'X-SessionID': pastebookSessionId
+    //     },
+    //   });
 
-      if (response.status === 200) {
-        const homepagePosts = JSON.parse(await response.text()).Value;
-        console.table(await homepagePosts);
-        setHomePosts(homepagePosts);
-      }
-      else {
-        console.log(response.status);
-      }
-    }
+    //   if (response.status === 200) {
+    //     const homepagePosts = JSON.parse(await response.text()).Value;
+    //     console.table(await homepagePosts);
+    //     setHomePosts(homepagePosts);
+    //   }
+    //   else {
+    //     console.log(response.status);
+    //   }
+    // }
     await getHomePageData();
-    await getHomePosts();
+    // await getHomePosts();
 
     // refresh page content after 1 minute
     const refreshPage = setInterval(async () => {

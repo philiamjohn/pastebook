@@ -20,8 +20,8 @@ const MenuModal = () => {
     }, []);
 
     return (
-        <div id="menu-modal" class="menu-modal">
-            <div class="menu-modal-content">
+        <div id="menu-modal" className="menu-modal">
+            <div className="menu-modal-content">
                 <a href="#">
                     <p>
                         <FaUserAlt

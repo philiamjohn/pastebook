@@ -18,8 +18,8 @@ const SearchResultsModal = () => {
     }, []);
 
     return (
-        <div id="search-results-modal" class="search-results-modal">
-            <div class="search-results-modal-content">
+        <div id="search-results-modal" className="search-results-modal">
+            <div className="search-results-modal-content">
                 <SearchResult name="Ben Santos" friends/>
                 <SearchResult name="John Doe" friends/>
                 <SearchResult name="Anna Marie" friends/>

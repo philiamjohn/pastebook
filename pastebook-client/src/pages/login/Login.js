@@ -9,36 +9,25 @@ const Login = () => {
   const baseUrl = `http://localhost:5000`;
 
   const validateInputsAndLogin = async () => {
-    const emailOrPhone = document.getElementById("email").value;
+    const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    if (!emailOrPhone || !password) {
+    if (!email || !password) {
       alert("Kindly fill up the fields");
       return;
     }
 
-    let userCredentials = {};
-    //determine if email or phone
-    if (emailOrPhone.includes("@")) {
-      userCredentials = {
-        Email: emailOrPhone,
-        Phone: "",
-        Password: password
-      }
+    const userCredentials = {
+      Email: email,
+      Password: password
     }
-    else {
-      userCredentials = {
-        Email: "",
-        Phone: emailOrPhone,
-        Password: password
-      }
-    }
+
     const response = await fetch(`${baseUrl}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(await userCredentials)
+      body: JSON.stringify(userCredentials)
     });
     if (response.status === 500 || response.status === 401) {
       alert("Invalid username/password");
