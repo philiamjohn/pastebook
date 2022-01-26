@@ -9,17 +9,36 @@ import GrayStock from '../../images/gray.jpg';
 
 const Post = (props) => {
     
-    const {authorImg,
-           authorName,
-           postTimeStamp,
-           postContentP,
+    const {//FROM POSTS TABLE
+           postID,   // This is the ID of the post
+                     // It will be used in ID-ing each post
+                     // Will also be used for determining the likes and comment list 
+           authorID, // This is the ID of the post author
+                     // It will be used for determining the name of the author
+           postTimeStamp,     
+           postContentText, 
            postContentImg,
-           likeCount,
-           commentCount,
-           likeStatus} = props
+           // From the cookies or local storage.
+           userID   // This is the ID of the currently signed-in user
+                     // This will be used for determining the liked status of the post
+                     // Can be retrieved 
+                     // Siguro i-save nalang agad to pagka authenticate sa login para madali i-access
+                     // And syempre i-clear upon logging-out     
+          } = props;
     
-    const [like, setLike] = useState(likeStatus);
-    const [comment, setComment] = useState(true); 
+    /* 
+          List of variables to be fetched:
+          -likeStatus: retrieve from Likes Table using userID and postID
+          -authorImg, authorName: retrieve from Users Table using authorID
+          -likes[] : retrieve from Likes Table using postID
+          -comments[] : retrieve from Comments Table using postID
+          - : retrieve from Posts Table using postID
+    */
+   
+    const baseUrl = `http://localhost:5000`;
+
+    const [like, setLike] = useState(/* likeStatus */true);
+    const [comment, setComment] = useState(true); // the comments portion is shown by default
 
     // like/unlike  toggle
     const toggleLike = () => {
@@ -41,56 +60,56 @@ const Post = (props) => {
     const addComment = () => {
         setComment(v => !v);
         setTimeout(function(){
-            document.getElementById('comment-box').focus();
+            document.getElementById(`comment-box${postID}`).focus();
         });  
     }
 
-    // likes modal
-    useEffect(() => {
-        var modal = document.getElementById("likesModal");
-        var btn = document.getElementById("likesCount");
-        var closeModal = document.getElementsByClassName("close")[0];
-    
-        //show modal
-        btn.onclick = function() {
-            modal.style.display = "flex";
-        }
-        
-        //close modal on close-button click
-        closeModal.onclick = function() {
-            modal.style.display = "none";
-        }
-    
-        //close modal on clicking outside the modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-              modal.style.display = "none";
-            }
-        }
-      return () => {
-      };
-    }, []);
-    
+    //show Likes modal 
+    const showLikesModal = () => {
+        document.getElementById("likesModal").style.display = "flex";
+    }
 
-    
-    
+    //close Likes modal on close-button click
+    const closeLikesModal = () => {
+        document.getElementById("likesModal").style.display = "none";
+    }
+
+    //close modal on clicking outside the modal
+    window.onclick = function(event) {
+        var modal = document.getElementById("likesModal");
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+    }
+
+    useEffect(() => {
+        
+        const response = fetch(`${baseUrl}/home`, {
+            method: 'GET',
+            headers: {
+              'AuthorID': authorID
+            },
+        });
+        
+        return () => {};
+    }, []);   
     
     return (
         <div className='post'>
             <div className='post-author'>
                 <div className='post-author-img'>
-                    <img src={authorImg ? authorImg  : GrayStock } alt="author-img"/>
+                    <img src={/*authorImg*/false ? /* authorImg */GrayStock  : GrayStock } alt="author-img"/>
                 </div>
                 <div className='post-author-details'>
-                    <div className='post-author-details-name'><h4>{authorName}</h4></div>
+                    <div className='post-author-details-name'><h4>{/*authorName*/}Juan dela Cruz</h4></div>
                     <div className='post-timestamp'>{postTimeStamp}</div>
                 </div>
             </div>
             <div className='post-content'>
-                <div className='post-content-p'>{postContentP}</div>
-                {postContentImg?
+                <div className='post-content-p'>{postContentText}</div>
+                {postContentImg ?
                                 <div className='post-content-img'>
-                                    <img src={postContentImg} alt="content-img"/>
+                                    <img src={ postContentImg} alt="content-img"/>
                                 </div>
                                :
                                 null
@@ -99,43 +118,10 @@ const Post = (props) => {
             <div className='post-interactions'>
                 <div className='post-interactions-counts'>
                     <div className='post-interactions-counts-like'>
-                        <p id='likesCount'>{likeCount} Likes</p>
+                        <p id='likesCount' onClick={showLikesModal}>{/* likes.Length */}123 Likes</p>
                     </div>
-                    {/* likes Modal */}
-                    <div id="likesModal" className="modal">
-                      <div className="modal-content">
-                        <div className='modal-content-title'>
-                            <h4>Likes</h4>
-                            <p className="close">&times;</p>
-                        </div>
-                       <div className='modal-content-list'>
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker One" />
-                           </div>
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker Two" />
-                           </div>
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker Three" />
-                           </div>
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker Four" />
-                           </div>
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker Five" />
-                           </div>     
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker Six" />
-                           </div>
-                           <div className='modal-content-list-item'>
-                                <LikerCard userPhoto={GrayStock} userName="Liker Seven" />
-                           </div>
-                       </div> 
-                      </div>
-                    </div>
-                    {/* likes Modal */}
                     <div className='post-interactions-counts-comment'>
-                        <p onClick={toggleComment}>{commentCount} Comments</p>
+                        <p onClick={toggleComment}>{/* comments.Length */}321 Comments</p>
                     </div>
                 </div>
                 <div className='post-interactions-btns'>
@@ -143,12 +129,45 @@ const Post = (props) => {
                         <img src={like? LikedIcon : LikeIcon} alt='like-icon'/>
                         Like
                     </div>
+                    {/* Likes Modal */}
+                    <div id="likesModal" className="modal">
+                        <div className="modal-content">
+                            <div className='modal-content-title'>
+                                <h4>Likes</h4>
+                                <p className="close" onClick={closeLikesModal}>&times;</p>
+                            </div>
+                            <div className='modal-content-list'>
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker One" />
+                                </div>
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker Two" />
+                                </div>
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker Three" />
+                                </div>
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker Four" />
+                                </div>
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker Five" />
+                                </div>     
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker Six" />
+                                </div>
+                                <div className='modal-content-list-item'>
+                                     <LikerCard userPhoto={GrayStock} userName="Liker Seven" />
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                    {/* Likes Modal */}
                     <div className='post-interactions-btns-comment' onClick={addComment}>
                         <img src={CommentIcon} alt='comment-icon'/>
                         Comment
                     </div>
                 </div>
-                {comment ? <Comment postAuthorImg={authorImg}/> : null }
+                {comment ? <Comment postID={postID} postAuthorImg={/* authorImg */GrayStock}/> : null }
             </div>
             
         </div>
