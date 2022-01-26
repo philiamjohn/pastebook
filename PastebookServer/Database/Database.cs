@@ -77,7 +77,11 @@ public class Database
                 cmd.Parameters.AddWithValue("@pn", regmodel.Phone);
                 //the phone is empty or null if the user does not provide phone number
                 cmd.ExecuteNonQuery();
-              
+
+            }
+        }
+    }
+
     public static void AddSession(SessionModel session)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -86,12 +90,11 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    @"INSERT INTO Sessions (Session_ID, Email, Phone) 
-                VALUES (@Session_ID, @Email, @Phone);";
+                    @"INSERT INTO Sessions (Session_ID, Email) 
+                VALUES (@Session_ID, @Email);";
 
                 command.Parameters.AddWithValue("@Session_ID", session.SessionId);
                 command.Parameters.AddWithValue("@Email", session.Email);
-                command.Parameters.AddWithValue("@Phone", session.Phone);
 
                 command.ExecuteNonQuery();
             }
@@ -150,13 +153,15 @@ public class Database
                 }
                 //if the username does not exist generate the username from adding firstname and last name lower case
                 AddUsername(rmodel.FirstName, rmodel.LastName, rmodel.Username);
+            }
+        }
+    }
 
     public static SessionModel AddSessionForUser(UserCredentialsModel userCredentials)
     {
         SessionModel session = new SessionModel();
         session.SessionId = Guid.NewGuid().ToString();
         session.Email = userCredentials.Email;
-        session.Phone = userCredentials.Phone;
         AddSession(session);
         return session;
     }
@@ -169,14 +174,12 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = "SELECT Password FROM Users WHERE Email = @Email OR Phone = @Phone;";
+                command.CommandText = "SELECT Password FROM Users WHERE Email = @Email";
                 command.Parameters.AddWithValue("@Email", userCredentials.Email);
-                command.Parameters.AddWithValue("@Phone", userCredentials.Phone);
 
                 var passwordInDb = command.ExecuteScalar();
                 var result = BCrypt.Net.BCrypt.Verify(userCredentials.Password, passwordInDb.ToString());
                 return result ? AddSessionForUser(userCredentials) : null;
-
             }
         }
     }
@@ -240,7 +243,7 @@ public class Database
             }
         }
     }
-}
+
 
     public static SessionModel? GetSessionById(string Id)
     {
@@ -259,7 +262,6 @@ public class Database
                 {
                     session.SessionId = reader.GetString(0);
                     session.Email = reader.GetString(1);
-                    session.Phone = reader.GetString(2);
                     found = true;
                     break;
                 }
@@ -276,9 +278,8 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = "SELECT * FROM Users WHERE Email = @Email OR Phone = @Phone;";
+                command.CommandText = "SELECT * FROM Users WHERE Email = @Email";
                 command.Parameters.AddWithValue("@Email", session.Email);
-                command.Parameters.AddWithValue("@Phone", session.Phone);
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())

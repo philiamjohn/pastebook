@@ -22,8 +22,8 @@ const NotificationsModal = () => {
     }, []);
 
     return (
-        <div id="notifications-modal" class="notifications-modal">
-            <div class="notifications-modal-content">
+        <div id="notifications-modal" className="notifications-modal">
+            <div className="notifications-modal-content">
                 <LikeNotification liker={"Jacqueline"} />
                 <FriendRequestAcceptedNotification newFriend={"Philiam"} />
                 <CommentNotification commenter={"Gavin"} />
