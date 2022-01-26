@@ -266,8 +266,8 @@ public class Database
                     break;
                 }
             }
-            return found ? session : null;
         }
+        return found ? session : null;
     }
 
     public static HomeDataModel? GetHomeData(SessionModel session)
@@ -313,4 +313,67 @@ public class Database
             return homeData;
         }
     }
+
+    public static List<PostModel>? GetHomePosts(int? userId)
+    {
+        List<PostModel> homePosts = new List<PostModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
+                command.Parameters.AddWithValue("@User_ID", userId);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    PostModel post = new PostModel();
+                    post.Post_ID = reader.GetInt32(0);
+                    post.DatePosted = reader.GetDateTime(1);
+                    post.User_ID = reader.GetInt32(2);
+                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Image")))
+                    {
+                        post.Image = reader.GetString(4);
+                    }
+                    post.Target_ID = reader.GetInt32(5);
+                    homePosts.Add(post);
+                    // break;
+                }
+            }
+        }
+        return homePosts;
+    }
+
+    public static void AddPost(PostModel postDetails)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                postDetails.DatePosted = DateTime.Now;
+                if (postDetails.Image == null)
+                {
+                    command.CommandText = @"INSERT INTO Posts (User_ID, DatePosted, Content, Target_ID) 
+                    VALUES (@User_ID, @DatePosted, @Content, @Target_ID);";
+                }
+                else
+                {
+                    command.CommandText = @"INSERT INTO Posts (User_ID, DatePosted, Content, Image, Target_ID) 
+                    VALUES (@User_ID, @DatePosted, @Content, @Image, @Target_ID);";
+                    command.Parameters.AddWithValue("@Image", postDetails.Image);
+                }
+
+                command.Parameters.AddWithValue("@User_ID", postDetails.User_ID);
+                command.Parameters.AddWithValue("@DatePosted", postDetails.DatePosted);
+                command.Parameters.AddWithValue("@Content", postDetails.Content);
+                command.Parameters.AddWithValue("@Target_ID", postDetails.Target_ID);
+
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
 }
