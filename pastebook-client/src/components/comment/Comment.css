@@ -4,12 +4,8 @@ div.post-interactions-comments {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-}
-
-div.post-interactions-comments-expand {
-    height: 25px;
-    padding-left: 15px;
-    padding-right: 15px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 div.post-interactions-comments-list {
@@ -18,15 +14,27 @@ div.post-interactions-comments-list {
 }
 
 div.post-interactions-comments-list-item {
-    padding: 5px 15px 5px 15px;
+    padding: 10px 15px 5px 15px;
 }
 
+div.post-interactions-comments-expand {
+    height: 25px;
+    padding: 5px 15px;
+}
+
+div.post-interactions-comments-expand p{
+    cursor: pointer;
+}
+
+div.post-interactions-comments-expand p:hover {
+    text-decoration: underline;
+}
 div.post-interactions-comments-create {
     height: 40px;
     display: flex;
     align-items: center;
     padding-top: 5px;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
     padding-left: 15px;
     padding-right: 15px;
 }
