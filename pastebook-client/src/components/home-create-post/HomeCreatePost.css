@@ -95,7 +95,7 @@ label.label input[type="file"] {
 }
 
 #home-post-button-div {
-    padding-left: 33.7vw;
+    padding-left: calc(50vw - 200px);
     margin-bottom: 5px;
 }
 
