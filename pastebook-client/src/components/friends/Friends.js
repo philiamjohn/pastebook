@@ -65,8 +65,16 @@ const Friends = () => {
                <h3>Friends</h3>
            </div>
            <div className='friends-nav'>
-               <div className='friends-nav-list-outer' id='friends-list-outer'><div className='friends-nav-list' id='friends-list' onClick={switchToList}><p>Lists</p></div></div>
-               <div className='friends-nav-requests-outer' id='friend-requests-outer'><div className='friends-nav-requests' id='friend-requests' onClick={switchToRequests}><p>Requests</p></div></div>
+               <div className='friends-nav-list-outer' id='friends-list-outer'>
+                   <div className='friends-nav-list' id='friends-list' onClick={switchToList}>
+                       <p>All Friends</p>
+                    </div>
+                </div>
+               <div className='friends-nav-requests-outer' id='friend-requests-outer'>
+                   <div className='friends-nav-requests' id='friend-requests' onClick={switchToRequests}>
+                       <p>Friend Requests</p>
+                    </div>
+                </div>
            </div>
            <div className='friends-content'>
                {tab === "list" ? <ListTab/> 
