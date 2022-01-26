@@ -5,7 +5,8 @@ import GrayStock from '../../images/gray.jpg';
 
 const Comment = (props) => {
 
-  const {postAuthorImg} = props;
+  const {postID,
+         postAuthorImg} = props;
 
   const [allCommentsShown, setAllCommentsShown] = useState(false); 
   
@@ -53,7 +54,7 @@ const Comment = (props) => {
         </div>
         <div className='post-interactions-comments-create'>
             <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
-            <input type='text' placeholder="Write a comment" id='comment-box'/>
+            <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
         </div>
     </div>
   );
