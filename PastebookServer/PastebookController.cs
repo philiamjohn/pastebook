@@ -59,5 +59,11 @@ public class PastebookController : Controller
         }
         return Ok(Json(session));
     }
+    [HttpDelete]
+    [Route("/session/{id?}")]
+    public IActionResult deleteSessionBySessionId(string id){
+        Database.DeleteSessionBySessionId(id);
+        return Ok();
+    }
 }
 
