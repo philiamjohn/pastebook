@@ -160,15 +160,37 @@ public class Database
     public static SessionModel AddSessionForUser(UserCredentialsModel userCredentials)
     {
         SessionModel session = new SessionModel();
-        session.SessionId = Guid.NewGuid().ToString();
-        session.Email = userCredentials.Email;
-        AddSession(session);
+        session.SessionId = null;
+        //Check if there is an already existing session id for this user
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT Session_ID FROM Sessions WHERE Email = @Email";
+                command.Parameters.AddWithValue("@Email", userCredentials.Email!.ToLower());
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    session.SessionId = reader.GetString(0);
+                }
+                session.Email = userCredentials.Email.ToLower();
+            }
+        }
+        //if there's no sessionId, generate and add to DB; else return the existing
+        if (session.SessionId == null)
+        {
+            session.SessionId = Guid.NewGuid().ToString();
+            AddSession(session);
+        }
         return session;
     }
 
     public static SessionModel? AddSessionWithCredentials(UserCredentialsModel userCredentials)
     {
         SessionModel session = new SessionModel();
+        // Check if user credentials exist
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
