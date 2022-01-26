@@ -14,10 +14,21 @@ public class PastebookController : Controller
         System.Console.WriteLine(regmodel.Gender + "hello");
         System.Console.WriteLine(regmodel.Username + " 123123hello");
         System.Console.WriteLine(regmodel.Phone + " wewewewewe");
-
-
         Database.NewRegister(regmodel);
         Database.CheckAddUserName(regmodel);
+        Database.SendConfirmationEmail(regmodel.Email, regmodel.LastName);
         return Json("ok");
+    }
+
+    [HttpGet]
+    [Route("/register/{email?}")]
+    public IActionResult checkEmailifUnique(string email)
+    {
+        var data = Database.CheckEmailIfUnique(email);
+        if (!data)
+        {
+            return Unauthorized();
+        }
+        return Ok();
     }
 }

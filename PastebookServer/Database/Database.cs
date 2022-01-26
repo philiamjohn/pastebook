@@ -1,4 +1,8 @@
 using System.Data.SqlClient;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 
 public class Database
 {
@@ -53,6 +57,7 @@ public class Database
         }
     }
 
+    //add the users details to the database
     public static void NewRegister(RegisterModel regmodel)
     {
         var hashPass = BCrypt.Net.BCrypt.HashPassword(regmodel.Password);
@@ -70,12 +75,39 @@ public class Database
                 cmd.Parameters.AddWithValue("@g", regmodel.Gender);
                 cmd.Parameters.AddWithValue("@e", regmodel.Email);
                 cmd.Parameters.AddWithValue("@pn", regmodel.Phone);
-
+                //the phone is empty or null if the user does not provide phone number
                 cmd.ExecuteNonQuery();
             }
         }
     }
 
+    public static void SendConfirmationEmail(string email, string lastname)
+    {
+        string to = email;
+        string from = "capstoneproj202202@gmail.com";
+        MailMessage message = new MailMessage(from, to);
+        string mailContents =
+            $@"Dear  {lastname},<br>
+            Thank you for signing in with us<br>
+            We are pleased to inform you that your registration has been successfully completed.<br>Now you can start using Pastebook and connect with others.<br><br><br>Regards,<br>Team Pastebook";
+        message.Subject = "Welcome to Pastebook";
+        message.Body = mailContents;
+        message.BodyEncoding = Encoding.UTF8;
+        message.IsBodyHtml = true;
+        SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+        System.Net.NetworkCredential credentials = new System.Net.NetworkCredential(
+            "capstoneproj202202",
+            "Dotnetbc2022"
+        );
+        client.EnableSsl = true;
+        client.UseDefaultCredentials = false;
+        client.DeliveryMethod = SmtpDeliveryMethod.Network;
+        client.Credentials = credentials;
+        client.Send(message);
+    }
+
+    // function used for adding username (CheckAddUserName,AddUserName, CreateUniqueUsername)
+    //check if the username already exist or not
     public static void CheckAddUserName(RegisterModel rmodel)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -93,12 +125,13 @@ public class Database
                     var checkValue = reader.GetString(10);
                     if (rmodel.Username == checkValue)
                     {
+                        //if the username exist generate the new username with disambiguator
                         var returnValues = CreateUniqueUsername(rmodel.FirstName, rmodel.LastName);
-                        // System.Console.WriteLine("yes it is");
-                        // System.Console.WriteLine(g + "yes it is");
+                        // SendConfirmationEmail(rmodel.Email, rmodel.LastName);
                         AddUsername(rmodel.FirstName, rmodel.LastName, returnValues);
                     }
                 }
+                //if the username does not exist generate the username from adding firstname and last name lower case
                 AddUsername(rmodel.FirstName, rmodel.LastName, rmodel.Username);
             }
         }
@@ -111,18 +144,18 @@ public class Database
             db.Open();
             using (var cmd = db.CreateCommand())
             {
+                //checking if the username is null with the firstname and last name condition
                 cmd.CommandText =
                     @"SELECT * FROM Users WHERE FirstName=@fn AND LastName=@ln AND UserName IS NULL";
                 cmd.Parameters.AddWithValue("@fn", fname);
                 cmd.Parameters.AddWithValue("@ln", lname);
-                // System.Console.WriteLine(fname + "fname");
-                // System.Console.WriteLine(lname + "fname");
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    // System.Console.WriteLine(reader.GetInt32(0) + "im almost there");
+                    //get the user id and add it to the firstname + lastname to generate username with disambiguator
                     var userId = reader.GetInt32(0);
                     var fullname = fname + lname + userId.ToString();
+                    //return a fullname to lower case
                     return (fullname.ToLower());
                 }
                 return ("");
@@ -130,6 +163,7 @@ public class Database
         }
     }
 
+    //this will add the username if the username does not exist in the table
     public static void AddUsername(string fname, string lname, string fullname)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -141,6 +175,24 @@ public class Database
                     $"UPDATE Users SET UserName=@un WHERE FirstName='{fname}' AND LastName='{lname}' AND UserName IS NULL";
                 cmd.Parameters.AddWithValue("@un", fullname);
                 cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static bool CheckEmailIfUnique(string email)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT * FROM Users WHERE Email='{email}'";
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    return true;
+                }
+                return false;
             }
         }
     }
