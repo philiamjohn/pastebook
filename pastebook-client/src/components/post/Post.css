@@ -61,10 +61,11 @@ div.post-author-img  img{
 /* POST-CONTENT */
 
 div.post-content {
-    height: 400px;
+    max-height: 400px;
     background: #ffffff;
     padding-top: 5px;
     padding-bottom: 5px;
+    overflow: hidden;
 }
 
 div.post-content-p {
@@ -99,12 +100,18 @@ div.post-interactions {
 
 div.post-interactions-counts {
     height: 20px;
-    width: 96%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    padding-right: 15px;
-    padding-left: 15px;
     margin-bottom: 10px;
+}
+
+div.post-interactions-counts-like {
+    margin-left: 15px;
+}
+
+div.post-interactions-counts-comment {
+    margin-right: 15px;
 }
 
 div.post-interactions-counts p {
@@ -176,7 +183,7 @@ div.modal-content-list-item {
 
 div.post-interactions-btns {
     height: 30px;
-    width: 96%;
+    width: 100%;
     display: flex;
     justify-content: space-around;
     border-top: 1px solid #e8e9eb;
@@ -191,6 +198,14 @@ div.post-interactions-btns-like, div.post-interactions-btns-comment {
     align-items: center;
     justify-content: center;
     color: #65676b;
+}
+
+div.post-interactions-btns-like {
+    margin-left: 15px;
+}
+
+div.post-interactions-btns-comment {
+    margin-right: 15px;
 }
 
 div.post-interactions-btns-like:hover {

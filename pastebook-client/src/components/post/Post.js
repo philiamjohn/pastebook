@@ -88,7 +88,13 @@ const Post = (props) => {
             </div>
             <div className='post-content'>
                 <div className='post-content-p'>{postContentP}</div>
-                <div className='post-content-img'><img src={postContentImg? postContentImg : GrayStock } alt="content-img"/></div>         
+                {postContentImg?
+                                <div className='post-content-img'>
+                                    <img src={postContentImg} alt="content-img"/>
+                                </div>
+                               :
+                                null
+                }                         
             </div>
             <div className='post-interactions'>
                 <div className='post-interactions-counts'>

@@ -10,8 +10,8 @@ const Post = () => {
             <PostComponent authorImg={Avatar} 
                            authorName="Juan dela Cruz XI" 
                            postTimeStamp="10 hours ago" 
-                           postContentP="meowdrama" 
-                           postContentImg={MeowDrama} 
+                           postContentP="SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!" 
+                           postContentImg={null} 
                            likeCount="123" 
                            commentCount="321"
                            likeStatus={false} />
