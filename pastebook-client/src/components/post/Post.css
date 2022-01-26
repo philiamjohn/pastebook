@@ -126,7 +126,7 @@ div.modal {
     left: 0;
     top: 0;
     width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    height: 100vh; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -139,7 +139,6 @@ div.modal-content {
     border-radius: 10px;
     width: 30%;
     max-height: 50%;
-    overflow: scroll;
 }
 
 div.modal-content-title {
@@ -151,6 +150,7 @@ div.modal-content-title {
 }
 
 div.modal-content-list {
+    max-height: 40vh;
     padding: 5px 10px 10px 10px;
     overflow: scroll;
 }
