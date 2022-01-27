@@ -1,15 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Comment.css';
 import CommentCard from '../comment-card/CommentCard';
 import GrayStock from '../../images/gray.jpg';
 
 const Comment = (props) => {
 
-  const {postID,
-         postAuthorImg} = props;
+  const {postAuthorImg,
+         postID,
+         comments} = props;
 
-  const [allCommentsShown, setAllCommentsShown] = useState(false); 
-  
+  const baseUrl = `http://localhost:5000`;
+        
+  const [allCommentsShown, setAllCommentsShown] = useState(false);
+  const [commentsList, setCommentsList] = useState(comments); 
+
+
   const addComment = () => {
     document.getElementById('comment-box').focus();
   }
@@ -18,36 +23,54 @@ const Comment = (props) => {
     setAllCommentsShown(v => !v);
   }
 
+  useEffect(() => {
+    
+    setCommentsList(comments);
+    
+    return () => {};
+    }, [comments]);  
+
   return (
     <div className='post-interactions-comments' id='comments'>
         <div className='post-interactions-comments-list'>
-             <div className='post-interactions-comments-list-item'>
-                <CommentCard commentAuthorImg={GrayStock} 
-                             commentAuthor='Marites Bhie' 
-                             commentText='SABIHAN MO'/>
+            <div className='post-interactions-comments-list-item'>
+               {commentsList.length > 0 ?
+                <CommentCard profilePic={commentsList[0].ProfilePic} 
+                             firstName={commentsList[0].FirstName}
+                             lastName={commentsList[0].LastName}
+                             content={commentsList[0].Content}/>
+                             :
+                null
+               }
              </div>
              {allCommentsShown ?
                                   null
                                 : 
+                                commentsList.length > 1 ?
                                   <div className='post-interactions-comments-expand' onClick={showMoreComments}><p>View more comments</p></div>
+                                :
+                                null  
              }
              
              {allCommentsShown ? 
-                                  <div>
-                                    <div className='post-interactions-comments-list-item'>
-                                      <CommentCard postAuthorImg={GrayStock}
-                                               commentAuthorImg={GrayStock} 
-                                               commentAuthor='Marites Bhie' 
-                                               commentText='SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!'
-                                      />
-                                    </div>
-                                    <div className='post-interactions-comments-list-item'>
-                                      <CommentCard commentAuthorImg={GrayStock} 
-                                                 commentAuthor='Marites Bhie' 
-                                                 commentText='SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!'
-                                      />
-                                    </div>
-                                  </div>   
+
+                                    
+                                      commentsList.map((comment, index) => {
+                                        if(index>0){
+                                        return ( <div className='post-interactions-comments-list-item'>
+                                        <CommentCard key={comment.Id}
+                                                            profilePic={comment.ProfilePic} 
+                                                              firstName={comment.FirstName}
+                                                              lastName={comment.LastName}
+                                                              content={comment.Content}/>
+                                                              </div>
+                                                )
+                                        }
+                                        else {
+                                          return null;
+                                        }        
+                                      })
+
                                 : 
                                   null 
               }

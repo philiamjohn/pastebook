@@ -9,7 +9,7 @@ public class PastebookController : Controller
         if(action == "CreateTablesTwo")
         {
             Database.CreateTablesTwo();
-            return Ok("Table 'LikesInPosts' was successfully created");
+            return Ok("Table 'LikesInPosts', 'CommentsInPosts' was successfully created");
         }
         else if(action == "DropTables") {
             Database.DropTables();
@@ -96,6 +96,23 @@ public class PastebookController : Controller
         else
         {
             return Ok(Json(likers));
+        }
+    }
+
+    [HttpGet]
+    [Route("/postComments")]
+    public IActionResult getPostComments(
+        [FromHeader(Name = "PostID")] string postID
+    )
+    {
+        List<CommentModel> comment = Database.GetCommentsByPostId(postID);
+        if (comment == null)
+        {
+            return Unauthorized("Fetching post comments data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(comment));
         }
     }
 

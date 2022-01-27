@@ -86,6 +86,34 @@ public class Database
             Console.WriteLine("Cant create Dishes table.");
             Console.WriteLine(e.ToString());
         }
+        try{
+        command.CommandText =
+            @"IF (EXISTS (SELECT *
+               FROM INFORMATION_SCHEMA.TABLES
+               WHERE TABLE_SCHEMA = 'dbo'
+               AND TABLE_NAME = 'CommentsInPosts'))
+               BEGIN
+                  PRINT 'Database Table Exists'
+               END;
+            ELSE
+               BEGIN
+                  CREATE TABLE CommentsInPosts ( 
+                    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                    Content VARCHAR(1000) NOT NULL,
+                    User_ID INT NOT NULL, 
+                    Post_ID INT NOT NULL,
+                    Date DATETIME NOT NULL,
+                    FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
+                    FOREIGN KEY (Post_ID) REFERENCES Posts(Post_ID))
+               END;
+            ;";
+        command.ExecuteNonQuery();
+        }
+        catch(System.Exception e)
+        {
+            Console.WriteLine("Cant create CommentsInPosts table.");
+            Console.WriteLine(e.ToString());
+        }
     }
 
 
@@ -429,17 +457,49 @@ public class Database
                         ProfilePicture = null
                     }); 
                 }    
-                /*
-                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
-                {
-                    user.ProfilePicture = reader.GetString(8);
-                }
-                */
             }
             return likers;    
         }
         catch(System.Exception e) {
             Console.WriteLine("Failed to get likers record.");
+            Console.WriteLine(e.ToString());
+        }
+        return null;      
+    }
+    public static List<CommentModel>? GetCommentsByPostId(string id)
+    {
+        var command = OpenDatabase().CreateCommand();
+        var comments = new List<CommentModel>();
+        try{
+            command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
+            command.Parameters.AddWithValue("@id", id);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                {
+                    comments.Add(new CommentModel() {
+                        Id = reader["Id"].ToString(),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Content = reader["Content"].ToString(),
+                        ProfilePicture = reader["ProfilePicture"].ToString()
+                    }); 
+                }
+                else {
+                    comments.Add(new CommentModel() {
+                        Id = reader["Id"].ToString(),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Content = reader["Content"].ToString(),
+                        ProfilePicture = null
+                    }); 
+                }    
+            }
+            return comments;    
+        }
+        catch(System.Exception e) {
+            Console.WriteLine("Failed to get comments record.");
             Console.WriteLine(e.ToString());
         }
         return null;      
