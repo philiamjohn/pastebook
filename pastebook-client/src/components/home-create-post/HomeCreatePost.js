@@ -3,7 +3,7 @@ import { BiImageAdd } from 'react-icons/bi';
 import './HomeCreatePost.css';
 
 const HomeCreatePost = (props) => {
-    const { userId, sessionId } = props;
+    const { userId, sessionId, getHomePosts } = props;
     const [imageSource, setImageSource] = useState(null)
     const baseUrl = `http://localhost:5000`;
 
@@ -68,6 +68,9 @@ const HomeCreatePost = (props) => {
         }
         else if (response.status === 200) {
             alert("Post successfully added.");
+            onRemovePicture();
+            document.getElementById("home-post-text").value = "";
+            getHomePosts();
         }
         else {
             alert(response.status)
