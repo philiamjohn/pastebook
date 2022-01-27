@@ -1,0 +1,76 @@
+.text {
+    font-size: 15px;
+    font-weight: 600;
+}
+.block-border-shadow {
+    border-radius: 6px;
+    box-shadow: 1px 5px 10px -10px #8b9dc3;
+    padding: 20px;
+}
+.block-title-1 {
+    font-size: 18px;
+    font-weight: bold;
+    top: 0;
+    margin-bottom: 20px;
+}
+.create-album-modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10; /* Sit on top */
+    padding-top: 65px; /* Location of the box */
+    /* padding-left: calc(100vw - 240px); */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.255); /* Black w/ opacity */
+}
+.album-details {
+    background-color: white;
+    width: 30vw;
+    height: 50vh;
+    border-radius: 6px;
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    margin: 0 auto;
+    padding: 40px;
+}
+/* back button */
+.create-album-modal-back {
+    box-sizing: border-box;
+    background-color: #edf0fa;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    float: left;
+    font-size: 23px;
+    padding: 3px;
+    margin-bottom: 20px;
+}
+.create-album-modal-back:hover,
+.create-album-modal-back:focus {
+    background-color: #dfe3ee;
+    cursor: pointer;
+
+}
+.create-album-modal-title {
+    clear: both;
+}
+/* form styles */
+#album-name {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
+.create-album-modal-line {
+    margin-bottom: 20px;
+}

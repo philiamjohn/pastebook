@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+// import { Link } from 'react-router-dom';
 import './Photos.css';
 import { BsPlusLg } from 'react-icons/bs';
 import { MdModeEditOutline, MdDeleteForever } from 'react-icons/md';
 
 import photo from '../../images/default-image.png';
 import ProfileHeader from '../../components/profile-header/ProfileHeader';
+import Header from '../../components/header/Header';
 
 
 const Photos = () => {
 
     return (
         <div className='body'>
+            <Header />
             <ProfileHeader />
             <div className='s2-photos .block-border-shadow'>
                 <div className='s2-photos-title block-title-1'>Album Title</div>
