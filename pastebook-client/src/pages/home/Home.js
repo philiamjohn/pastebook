@@ -6,8 +6,6 @@ import HomeCreatePost from '../../components/home-create-post/HomeCreatePost';
 import HomeFriends from '../../components/home-friends/HomeFriends';
 import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
-import Avatar from '../../images/avatar.png';
-import MeowDrama from '../../images/meow-drama.jpg';
 import './Home.css'
 
 const Home = () => {
@@ -160,48 +158,17 @@ const Home = () => {
               homePosts.map((post) => {
                 return (<PostComponent
                   key={post.Post_ID}
-                  authorImg={Avatar}
-                  authorName="Juan dela Cruz XI"
+                  postID={post.Post_ID}
+                  authorID={post.User_ID}
                   postTimeStamp={post.DatePosted}
-                  postContentP={post.Content}
+                  postContentText={post.Content}
                   postContentImg={post.Image}
-                  likeCount="123"
-                  commentCount="321"
-                  likeStatus={false}
+                  userID={localStorage.getItem('homeUserId')}
                 />)
               })
             }
           </div>
-          :
-          <div id="home-timeline-posts">
-            <PostComponent
-              authorImg={Avatar}
-              authorName="Juan dela Cruz XI"
-              postTimeStamp="10 hours ago"
-              postContentP="meowdrama"
-              postContentImg={MeowDrama}
-              likeCount="123"
-              commentCount="321"
-              likeStatus={false} />
-            <PostComponent
-              authorImg={Avatar}
-              authorName="Juan dela Cruz XI"
-              postTimeStamp="10 hours ago"
-              postContentP="meowdrama"
-              postContentImg={MeowDrama}
-              likeCount="123"
-              commentCount="321"
-              likeStatus={false} />
-            <PostComponent
-              authorImg={Avatar}
-              authorName="Juan dela Cruz XI"
-              postTimeStamp="10 hours ago"
-              postContentP="meowdrama"
-              postContentImg={MeowDrama}
-              likeCount="123"
-              commentCount="321"
-              likeStatus={false} />
-          </div>
+          : <div></div>
       }
 
     </div>
