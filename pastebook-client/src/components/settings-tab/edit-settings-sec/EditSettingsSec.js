@@ -1,7 +1,7 @@
 import React from 'react';
 import '../edit-settings-sec/EditSettingsSec.css'
 
-const EditSettingsSec = ({ handeleCancelEditSecClick }) => {
+const EditSettingsSec = ({ handeleCancelEditSecClick,userData }) => {
     return <div className='set-new-email'>
         <label htmlFor='new-email'>New Email:</label>
         <input type='email' name='new-email' id='new-email' placeholder='New Email' />

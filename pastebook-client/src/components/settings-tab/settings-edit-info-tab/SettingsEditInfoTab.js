@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EditInfo from '../edit-info/EditInfo';
 import EditSettings from '../edit-settings-info/EditSettingsInfo';
 import '../settings-edit-info-tab/SettingsEditInfoTab.css';
-const SettingEditInfoTab = () => {
+const SettingEditInfoTab = ({ userData }) => {
     const [editState, setEditState] = useState("infoTab");
     const handleEditClick = (e) => {
         e.preventDefault();
@@ -23,7 +23,7 @@ const SettingEditInfoTab = () => {
             <input type='text' name='birthday-settings' id='birthday-settings' placeholder='10/32/2022' readOnly='readonly' />
             <label htmlFor='gender-setiings'>Gender:</label>
             <input type='text' name='gender-setiings' id='gender-setiings' placeholder='Male' readOnly='readonly' /> */}
-            {editState === "infoTab" ? <EditInfo handleEditClick={handleEditClick} /> : <EditSettings handleEditCancelClick={handleEditCancelClick} />}
+            {editState === "infoTab" ? <EditInfo handleEditClick={handleEditClick} userData={userData} /> : <EditSettings handleEditCancelClick={handleEditCancelClick} userData={userData} />}
             {/* <button onClick={handleEditClick}>Edit</button> */}
         </div>
     </div>;
