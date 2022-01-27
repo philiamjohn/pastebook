@@ -7,22 +7,18 @@ import MeowDrama from '../../images/meow-drama.jpg';
 const Post = () => {
     return (
         <div className='post-page'>
-            <PostComponent authorImg={Avatar} 
-                           authorName="Juan dela Cruz XI" 
-                           postTimeStamp="10 hours ago" 
-                           postContentP="meowdrama" 
+            <PostComponent postID="6"
+                           authorID="10"
+                           postTimeStamp="2022-01-26 15:07:59.570" 
+                           postContentText="Test again with pic"
+                           postContentImg={null}
+            />
+            <PostComponent postID="7"
+                           authorID="10"
+                           postTimeStamp="2022-01-26 18:03:34.893" 
+                           postContentP="Test" 
                            postContentImg={MeowDrama} 
-                           likeCount="123" 
-                           commentCount="321"
-                           likeStatus={false} />
-            <PostComponent authorImg={Avatar} 
-                           authorName="Juan dela Cruz XI" 
-                           postTimeStamp="10 hours ago" 
-                           postContentP="meowdrama" 
-                           postContentImg={MeowDrama} 
-                           likeCount="123" 
-                           commentCount="321"
-                           likeStatus={true} />              
+            />              
         </div>
     );
   };

@@ -3,16 +3,17 @@ import './NamePicCard.css'
 
 const NamePicCard = (props) => {
 
-    const {userPhoto,
-           userName} = props;
+    const {profilePic,
+           firstName,
+           lastName} = props;
     
     return (
         <div className='NamePicCard'>
             <div className='namePicCard-img'>
-                <img src={userPhoto} alt="user-img"/>
+                <img src={profilePic} alt="user-img"/>
             </div>
             <div className='namePicCard-name'>
-                <h5>{userName}</h5>
+                <h5>{firstName} {lastName}</h5>
             </div>
         </div>
     );

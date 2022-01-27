@@ -46,6 +46,57 @@ public class PastebookController : Controller
         return Ok(Json(Database.GetHomeData(session)));
     }
 
+    [HttpGet]
+    [Route("/users")]
+    public IActionResult getUserData(
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        HomeDataModel user = Database.GetUserById(userID);
+        if (user == null)
+        {
+            return Unauthorized("Fetching user data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(user));
+        }
+    }
+
+    [HttpGet]
+    [Route("/postLikes")]
+    public IActionResult getPostLikes(
+        [FromHeader(Name = "PostID")] string postID
+    )
+    {
+        List<LikerModel> likers = Database.GetLikesByPostId(postID);
+        if (likers == null)
+        {
+            return Unauthorized("Fetching post likes data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(likers));
+        }
+    }
+
+    [HttpGet]
+    [Route("/postComments")]
+    public IActionResult getPostComments(
+        [FromHeader(Name = "PostID")] string postID
+    )
+    {
+        List<CommentModel> comment = Database.GetCommentsByPostId(postID);
+        if (comment == null)
+        {
+            return Unauthorized("Fetching post comments data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(comment));
+        }
+    }
+
     [HttpPost]
     [Route("/login")]
     public IActionResult loginAddSessionForUser(

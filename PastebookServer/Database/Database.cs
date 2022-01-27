@@ -18,6 +18,7 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
+
     public static void CreateTables()
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -43,6 +44,7 @@ public class Database
             }
         }
     }
+
 
     public static void DropTables()
     {
@@ -337,6 +339,48 @@ public class Database
         }
     }
 
+    public static HomeDataModel? GetUserById(string id)
+    {
+        HomeDataModel user = new HomeDataModel();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT * FROM Users WHERE User_ID = @id";
+                command.Parameters.AddWithValue("@id", id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    user.User_ID = reader.GetInt32(0);
+                    user.FirstName = reader.GetString(1);
+                    user.LastName = reader.GetString(2);
+                    user.Password = reader.GetString(4);
+                    user.Birthday = reader.GetString(5);
+                    user.Gender = reader.GetString(6);
+                    user.UserName = reader.GetString(10);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Email")))
+                    {
+                        user.Email = reader.GetString(3);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("Phone")))
+                    {
+                        user.Phone = reader.GetString(7);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        user.ProfilePicture = reader.GetString(8);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfileDesc")))
+                    {
+                        user.ProfileDesc = reader.GetString(9);
+                    }
+                }
+                return user;
+            }        
+        }    
+    }
+  
     public static void DeleteSessionBySessionId(string id)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -351,6 +395,43 @@ public class Database
         }
     }
 
+    public static List<LikerModel>? GetLikesByPostId(string id)
+    {
+        var likers = new List<LikerModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                command.Parameters.AddWithValue("@id", id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        likers.Add(new LikerModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            ProfilePicture = reader["ProfilePicture"].ToString()
+                        }); 
+                    }
+                    else {
+                        likers.Add(new LikerModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            ProfilePicture = null
+                        }); 
+                    }    
+                }
+                return likers;
+            }        
+        }      
+    }
+    
+
     public static List<PostModel>? GetHomePosts(int? userId)
     {
         List<PostModel> homePosts = new List<PostModel>();
@@ -359,6 +440,7 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
+              
                 command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
 
@@ -382,9 +464,48 @@ public class Database
         }
         return homePosts;
     }
+                
+    public static List<CommentModel>? GetCommentsByPostId(string id)
+    {
+        var comments = new List<CommentModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
+                command.Parameters.AddWithValue("@id", id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        comments.Add(new CommentModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Content = reader["Content"].ToString(),
+                            ProfilePicture = reader["ProfilePicture"].ToString()
+                        }); 
+                    }
+                    else {
+                        comments.Add(new CommentModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Content = reader["Content"].ToString(),
+                            ProfilePicture = null
+                        }); 
+                    }    
+                }
+                return comments;
+            }        
+        }    
+    }
 
     public static void AddPost(PostModel postDetails)
     {
+
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();

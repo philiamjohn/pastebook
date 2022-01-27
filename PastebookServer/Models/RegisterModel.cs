@@ -1,4 +1,5 @@
-public class RegisterModel
+public class RegisterModel //parang similar dun sa homedata model? 
+                           //i suggest na pag-isahin nalang sila into UserModel
 {
     public int? User_ID { get; set; }
 

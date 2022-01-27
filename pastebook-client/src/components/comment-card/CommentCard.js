@@ -4,9 +4,10 @@ import GrayStock from '../../images/gray.jpg';
 
 const CommentCard = (props) => {
 
-  const {commentAuthorImg,
-         commentAuthor,
-         commentText} = props;
+  const {profilePic,
+         firstName,
+         lastName,
+         content} = props;
 
   /*
   THIS IS FOR SEE MORE FUNCTIONALITY DI KO MAGAWA T_T
@@ -28,11 +29,11 @@ const CommentCard = (props) => {
 
   return (
     <div className='comment-card'>
-        <div className='comment-card-img'><img src={commentAuthorImg}/></div>
+        <div className='comment-card-img'>{profilePic ? <img src={profilePic}/> : <img src={GrayStock}/>}</div>
         <div className='comment-card-content'>
-            <div className='comment-card-content-author'><h5>{commentAuthor}</h5></div>
+            <div className='comment-card-content-author'><h5>{firstName} {lastName}</h5></div>
             <div className='comment-card-content-text' id='contentText'>
-              <p>{commentText}</p>
+              <p>{content}</p>
             </div>
             {/* THIS IS FOR SEE MORE FUNCTIONALITY <div id='seeMoreComment'><p>See more</p></div> */}        
         </div>
