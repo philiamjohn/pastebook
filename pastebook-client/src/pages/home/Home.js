@@ -61,7 +61,7 @@ const Home = () => {
       }
       // If it exists populate homepage data
       else if (response.status === 200) {
-        const homepageData = JSON.parse(await response.text()).Value;
+        const homepageData = await response.json();
         console.table(await homepageData);
         localStorage.setItem('homeUserId', homepageData.User_ID);
         setHomeData(homepageData);
@@ -86,7 +86,7 @@ const Home = () => {
     });
 
     if (response.status === 200) {
-      const homepagePosts = JSON.parse(await response.text()).Value;
+      const homepagePosts = await response.json();
       console.table(await homepagePosts);
       setHomePosts(homepagePosts);
     }

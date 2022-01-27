@@ -43,7 +43,7 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        return Ok(Json(Database.GetHomeData(session)));
+        return Json(Database.GetHomeData(session));
     }
 
     [HttpGet]
@@ -108,12 +108,13 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        return Ok(Json(session));
+        return Json(session);
     }
 
     [HttpDelete]
     [Route("/session/{id?}")]
-    public IActionResult deleteSessionBySessionId(string id){
+    public IActionResult deleteSessionBySessionId(string id)
+    {
         Database.DeleteSessionBySessionId(id);
         return Ok();
     }
@@ -138,7 +139,7 @@ public class PastebookController : Controller
     )
     {
         List<PostModel> homePosts = Database.GetHomePosts(userId)!;
-        return Ok(Json(homePosts));
+        return Json(homePosts);
     }
 
 }
