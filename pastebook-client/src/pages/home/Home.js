@@ -65,6 +65,7 @@ const Home = () => {
       else if (response.status === 200) {
         const homepageData = JSON.parse(await response.text()).Value;
         console.table(await homepageData);
+        localStorage.setItem('homeUserId', homepageData.User_ID);
         setHomeData(homepageData);
         setCurrentSessionId(pastebookSessionId);
       }
@@ -78,11 +79,11 @@ const Home = () => {
   }
 
   const getHomePosts = async () => {
-    const pastebookSessionId = getSessionIdFromCookie();
+    const homeUserId = localStorage.getItem('homeUserId');
     const response = await fetch(`${baseUrl}/homeposts`, {
       method: 'GET',
       headers: {
-        'X-SessionID': pastebookSessionId
+        'X-UserId': homeUserId
       },
     });
 
@@ -94,6 +95,11 @@ const Home = () => {
     else {
       console.log(response.status);
     }
+  }
+
+  const getHome = async (getHomePostsCallback) => {
+    await getHomePageData();
+    await getHomePostsCallback();
   }
 
   useEffect(async () => {
@@ -118,17 +124,14 @@ const Home = () => {
       }
     }
 
-    await getHomePageData();
-    await getHomePosts();
+    await getHome(getHomePosts);
 
     // refresh page content after 1 minute
     const refreshPage = setInterval(async () => {
       console.log("Hiiiiiiiiiii");
-      await getHomePageData();
-      await getHomePosts();
+      await getHome(getHomePosts);
 
     }, 60000);
-
 
     return () => clearInterval(refreshPage);
   }, []);
