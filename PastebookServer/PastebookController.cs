@@ -3,6 +3,25 @@ using Microsoft.AspNetCore.Mvc;
 public class PastebookController : Controller
 {
     [HttpPost]
+    [Route("/configure")]
+    public IActionResult Configure([FromBody] ConfigureActionModel param)   {
+        var action = param.Action;
+        if(action == "CreateTablesTwo")
+        {
+            Database.CreateTablesTwo();
+            return Ok("Table 'LikesInPosts' was successfully created");
+        }
+        else if(action == "DropTables") {
+            Database.DropTables();
+            return Ok("Tables successfully dropped");
+        }
+        else
+        {
+            return Unauthorized("No such action");
+        }
+    }
+
+    [HttpPost]
     [Route("/register")]
     public IActionResult newRegister([FromBody] RegisterModel regmodel)
     {
@@ -44,6 +63,40 @@ public class PastebookController : Controller
             return Unauthorized();
         }
         return Ok(Json(Database.GetHomeData(session)));
+    }
+
+    [HttpGet]
+    [Route("/users")]
+    public IActionResult getUserData(
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        HomeDataModel user = Database.GetUserById(userID);
+        if (user == null)
+        {
+            return Unauthorized("Fetching user data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(user));
+        }
+    }
+
+    [HttpGet]
+    [Route("/postLikes")]
+    public IActionResult getPostLikes(
+        [FromHeader(Name = "PostID")] string postID
+    )
+    {
+        List<LikerModel> likers = Database.GetLikesByPostId(postID);
+        if (likers == null)
+        {
+            return Unauthorized("Fetching post likes data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(likers));
+        }
     }
 
     [HttpPost]

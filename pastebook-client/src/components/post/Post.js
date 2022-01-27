@@ -39,7 +39,10 @@ const Post = (props) => {
 
     const [like, setLike] = useState(/* likeStatus */true);
     const [comment, setComment] = useState(true); // the comments portion is shown by default
-
+    const [authorData, setAuthorData] = useState({});
+    const [likes, setLikes] = useState({});
+    const [modalId, setModalId] = useState();
+    console.log(modalId+`outside`);
     // like/unlike  toggle
     const toggleLike = () => {
         if(like){
@@ -65,31 +68,46 @@ const Post = (props) => {
     }
 
     //show Likes modal 
-    const showLikesModal = () => {
-        document.getElementById("likesModal").style.display = "flex";
+    const showLikesModal = (id) => {
+        document.getElementById(`likesModal${id}`).style.display = "flex";
+        setModalId(`likesModal${id}`);
     }
 
     //close Likes modal on close-button click
-    const closeLikesModal = () => {
-        document.getElementById("likesModal").style.display = "none";
+    const closeLikesModal = (id) => {
+        document.getElementById(`likesModal${id}`).style.display = "none";
     }
 
     //close modal on clicking outside the modal
     window.onclick = function(event) {
-        var modal = document.getElementById("likesModal");
+        var modal = document.getElementById(modalId);
         if (event.target == modal) {
           modal.style.display = "none";
         }
     }
 
     useEffect(() => {
-        
-        const response = fetch(`${baseUrl}/home`, {
+        console.log(modalId+`useEffect`)
+        //fetch author info
+        fetch(`${baseUrl}/users`, {
             method: 'GET',
             headers: {
-              'AuthorID': authorID
-            },
-        });
+              'UserID': authorID
+            }
+        })
+        .then(response => response.json())
+        .then(data => setAuthorData(data.Value));
+
+        //fetch likes info
+        fetch(`${baseUrl}/postLikes`, {
+            method: 'GET',
+            headers: {
+              'PostID': postID
+            }
+        })
+        .then(response => response.json())
+        .then(data => setLikes(data.Value));
+
         
         return () => {};
     }, []);   
@@ -98,10 +116,10 @@ const Post = (props) => {
         <div className='post'>
             <div className='post-author'>
                 <div className='post-author-img'>
-                    <img src={/*authorImg*/false ? /* authorImg */GrayStock  : GrayStock } alt="author-img"/>
+                    <img src={authorData.ProfilePicture ? authorData.ProfilePicture  : GrayStock } alt="author-img"/>
                 </div>
                 <div className='post-author-details'>
-                    <div className='post-author-details-name'><h4>{/*authorName*/}Juan dela Cruz</h4></div>
+                    <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
                     <div className='post-timestamp'>{postTimeStamp}</div>
                 </div>
             </div>
@@ -118,7 +136,16 @@ const Post = (props) => {
             <div className='post-interactions'>
                 <div className='post-interactions-counts'>
                     <div className='post-interactions-counts-like'>
-                        <p id='likesCount' onClick={showLikesModal}>{/* likes.Length */}123 Likes</p>
+                        {likes.length > 1 ? 
+                                            <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Likes</p>
+                                         : 
+                                            null
+                        }
+                        {likes.length == 1 ? 
+                                            <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Like</p>
+                                         : 
+                                            null
+                        }                     
                     </div>
                     <div className='post-interactions-counts-comment'>
                         <p onClick={toggleComment}>{/* comments.Length */}321 Comments</p>
@@ -130,34 +157,23 @@ const Post = (props) => {
                         Like
                     </div>
                     {/* Likes Modal */}
-                    <div id="likesModal" className="modal">
+                    <div id={"likesModal"+postID} className="modal">
                         <div className="modal-content">
                             <div className='modal-content-title'>
                                 <h4>Likes</h4>
-                                <p className="close" onClick={closeLikesModal}>&times;</p>
+                                <p className="close" onClick={() => { closeLikesModal(postID) }}>&times;</p>
                             </div>
                             <div className='modal-content-list'>
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker One" />
-                                </div>
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker Two" />
-                                </div>
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker Three" />
-                                </div>
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker Four" />
-                                </div>
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker Five" />
-                                </div>     
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker Six" />
-                                </div>
-                                <div className='modal-content-list-item'>
-                                     <LikerCard userPhoto={GrayStock} userName="Liker Seven" />
-                                </div>
+                             { 
+                              likes.map((liker) => {
+                                return (<LikerCard
+                                  key={liker.Id}
+                                  profilePic={liker.ProfilePicture}
+                                  firstName={liker.FirstName}
+                                  lastName={liker.LastName}
+                                />)
+                              })
+                            } 
                             </div> 
                         </div>
                     </div>

@@ -18,6 +18,20 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
+    public static SqlConnection OpenDatabase() {
+        try{
+            var db = new SqlConnection(DB_CONNECTION_STRING);
+            db.Open();
+            return(db);
+        }
+        catch(System.Exception e)
+        {
+            Console.WriteLine("There was an error in opening the database");
+            Console.WriteLine(e.ToString());
+        }
+        return (null);
+    }
+
     public static void CreateTables()
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -43,6 +57,37 @@ public class Database
             }
         }
     }
+
+    public static void CreateTablesTwo() {
+        var command = OpenDatabase().CreateCommand();
+        try{
+        command.CommandText =
+            @"IF (EXISTS (SELECT *
+               FROM INFORMATION_SCHEMA.TABLES
+               WHERE TABLE_SCHEMA = 'dbo'
+               AND TABLE_NAME = 'LikesInPosts'))
+               BEGIN
+                  PRINT 'Database Table Exists'
+               END;
+            ELSE
+               BEGIN
+                  CREATE TABLE LikesInPosts ( 
+                    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                    User_ID INT NOT NULL,
+                    Post_ID INT NOT NULL, 
+                    FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
+                    FOREIGN KEY (Post_ID) REFERENCES Posts(Post_ID))
+               END;
+            ;";
+        command.ExecuteNonQuery();
+        }
+        catch(System.Exception e)
+        {
+            Console.WriteLine("Cant create Dishes table.");
+            Console.WriteLine(e.ToString());
+        }
+    }
+
 
     public static void DropTables()
     {
@@ -312,5 +357,91 @@ public class Database
             }
             return homeData;
         }
+    }
+
+    public static HomeDataModel? GetUserById(string id)
+    {
+        var command = OpenDatabase().CreateCommand();
+        HomeDataModel user = new HomeDataModel();
+        try{
+            command.CommandText = "SELECT * FROM Users WHERE User_ID = @id";
+            command.Parameters.AddWithValue("@id", id);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                user.User_ID = reader.GetInt32(0);
+                user.FirstName = reader.GetString(1);
+                user.LastName = reader.GetString(2);
+                user.Password = reader.GetString(4);
+                user.Birthday = reader.GetString(5);
+                user.Gender = reader.GetString(6);
+                user.UserName = reader.GetString(10);
+                if (!reader.IsDBNull(reader.GetOrdinal("Email")))
+                {
+                    user.Email = reader.GetString(3);
+                }
+                if (!reader.IsDBNull(reader.GetOrdinal("Phone")))
+                {
+                    user.Phone = reader.GetString(7);
+                }
+                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                {
+                    user.ProfilePicture = reader.GetString(8);
+                }
+                if (!reader.IsDBNull(reader.GetOrdinal("ProfileDesc")))
+                {
+                    user.ProfileDesc = reader.GetString(9);
+                }
+            }
+            return user;    
+        }
+        catch(System.Exception e) {
+            Console.WriteLine("Failed to get User record.");
+            Console.WriteLine(e.ToString());
+        }
+        return null;      
+    }
+
+    public static List<LikerModel>? GetLikesByPostId(string id)
+    {
+        var command = OpenDatabase().CreateCommand();
+        var likers = new List<LikerModel>();
+        try{
+            command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+            command.Parameters.AddWithValue("@id", id);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                {
+                    likers.Add(new LikerModel() {
+                        Id = reader["Id"].ToString(),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        ProfilePicture = reader["ProfilePicture"].ToString()
+                    }); 
+                }
+                else {
+                    likers.Add(new LikerModel() {
+                        Id = reader["Id"].ToString(),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        ProfilePicture = null
+                    }); 
+                }    
+                /*
+                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                {
+                    user.ProfilePicture = reader.GetString(8);
+                }
+                */
+            }
+            return likers;    
+        }
+        catch(System.Exception e) {
+            Console.WriteLine("Failed to get likers record.");
+            Console.WriteLine(e.ToString());
+        }
+        return null;      
     }
 }

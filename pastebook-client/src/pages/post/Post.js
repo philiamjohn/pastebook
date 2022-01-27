@@ -7,16 +7,16 @@ import MeowDrama from '../../images/meow-drama.jpg';
 const Post = () => {
     return (
         <div className='post-page'>
-            <PostComponent postID="12"
-                           authorID="5"
-                           postTimeStamp="10 hours ago" 
-                           postContentText="SABIHAN MO YUNG KABET MO WAG NIYA KAMING IDAMAY-DAMAY KUNG ANU-ANONG GINAGAWA NIYANG MGA ISTORYA PARA SA AMING PAMILYA DAHIL HINDI KAMI NAKIKIALAM SA BUHAY NIYONG MAG ASAWA KAHIT KAPATID MO KAHIT KAPATID KO YUNG ASAWA MO HINDI AKO KAMI NAKIKIALAM!" 
-                           postContentImg={null} 
+            <PostComponent postID="6"
+                           authorID="10"
+                           postTimeStamp="2022-01-26 15:07:59.570" 
+                           postContentText="Test again with pic"
+                           postContentImg={null}
             />
-            <PostComponent postID="13"
-                           authorID="2"
-                           postTimeStamp="10 hours ago" 
-                           postContentP="meowdrama" 
+            <PostComponent postID="7"
+                           authorID="10"
+                           postTimeStamp="2022-01-26 18:03:34.893" 
+                           postContentP="Test" 
                            postContentImg={MeowDrama} 
             />              
         </div>
