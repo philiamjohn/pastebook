@@ -77,7 +77,6 @@ public class Database
                 cmd.Parameters.AddWithValue("@pn", regmodel.Phone);
                 //the phone is empty or null if the user does not provide phone number
                 cmd.ExecuteNonQuery();
-
             }
         }
     }
@@ -200,7 +199,10 @@ public class Database
                 command.Parameters.AddWithValue("@Email", userCredentials.Email);
 
                 var passwordInDb = command.ExecuteScalar();
-                var result = BCrypt.Net.BCrypt.Verify(userCredentials.Password, passwordInDb.ToString());
+                var result = BCrypt.Net.BCrypt.Verify(
+                    userCredentials.Password,
+                    passwordInDb.ToString()
+                );
                 return result ? AddSessionForUser(userCredentials) : null;
             }
         }
@@ -265,7 +267,6 @@ public class Database
             }
         }
     }
-
 
     public static SessionModel? GetSessionById(string Id)
     {
@@ -333,6 +334,20 @@ public class Database
                 }
             }
             return homeData;
+        }
+    }
+
+    public static void DeleteSessionBySessionId(string id)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM Sessions WHERE Session_ID=@sid";
+                cmd.Parameters.AddWithValue("@sid", id);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 

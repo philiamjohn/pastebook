@@ -60,6 +60,13 @@ public class PastebookController : Controller
         return Ok(Json(session));
     }
 
+    [HttpDelete]
+    [Route("/session/{id?}")]
+    public IActionResult deleteSessionBySessionId(string id){
+        Database.DeleteSessionBySessionId(id);
+        return Ok();
+    }
+
     [HttpPost]
     [Route("/addpost")]
     public IActionResult addPostToDatabase([FromHeader(Name = "X-SessionID")] string pastebookSessionId, [FromBody] PostModel postDetails)
@@ -88,7 +95,6 @@ public class PastebookController : Controller
         List<PostModel> homePosts = Database.GetHomePosts(homeData.User_ID)!;
         return Ok(Json(homePosts));
     }
-
 
 }
 

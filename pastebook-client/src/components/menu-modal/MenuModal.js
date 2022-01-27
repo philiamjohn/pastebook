@@ -3,8 +3,10 @@ import { IoMdSettings } from 'react-icons/io';
 import { FaUserAlt } from 'react-icons/fa';
 import { BiLogOut } from 'react-icons/bi';
 import './MenuModal.css';
+import { useNavigate } from 'react-router-dom';
 
 const MenuModal = () => {
+    let navigate = useNavigate();
     //Triggers after first render
     useEffect(() => {
         // Get the modal
@@ -18,7 +20,36 @@ const MenuModal = () => {
             menuModal.style.display = "block";
         }
     }, []);
+    const baseUrl = `http://localhost:5000`;
 
+    const logoutFunction = async () => {
+        const searchCookie = "pastebookSessionId=";
+        var coockieValue = "";
+        if (document.cookie.length > 0) {
+            console.log("hello");
+            let getCookieValueTest = document.cookie.indexOf(searchCookie);
+            console.log(getCookieValueTest + "hello2");
+            if (getCookieValueTest != -1) {
+                console.log("hello3");
+                getCookieValueTest += searchCookie.length;
+                console.log(getCookieValueTest + " hello4");
+                let end = document.cookie.indexOf(";", getCookieValueTest)
+                console.log(end + " hello5");
+
+                if (end == -1) {
+                    end = document.cookie.length;
+                    console.log(end + " hello6");
+                }
+                coockieValue = document.cookie.substring(getCookieValueTest, end);
+                console.log(coockieValue + " hello7");
+            }
+        }
+        const response = await fetch(`${baseUrl}/session/` + coockieValue, { method: 'DELETE' });
+        if (response.status === 200) {
+            document.cookie = `${searchCookie}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+            navigate("/login", { replace: true });
+        }
+    }
     return (
         <div id="menu-modal" className="menu-modal">
             <div className="menu-modal-content">
@@ -40,7 +71,7 @@ const MenuModal = () => {
                         Settings
                     </p>
                 </a>
-                <a href="#">
+                <a href="#" onClick={() => logoutFunction()}>
                     <p>
                         <BiLogOut
                             id="logout-icon"
