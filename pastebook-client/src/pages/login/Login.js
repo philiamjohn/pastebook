@@ -8,11 +8,6 @@ const Login = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
 
-  //clear all setIntervals
-  for (let id = 0; id <= 1000; id++) {
-    window.clearInterval(id);
-  }
-
   const validateInputsAndLogin = async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -51,6 +46,14 @@ const Login = () => {
       alert(response.status)
     }
   }
+
+  useEffect(() => {
+    //clear all setIntervals
+    for (let id = 0; id <= 1000; id++) {
+      window.clearInterval(id);
+    }
+  }, []);
+
 
   return <div className='loginPage'>
     <div className='imageLogo'>
