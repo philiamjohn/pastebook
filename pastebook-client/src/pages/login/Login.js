@@ -33,7 +33,9 @@ const Login = () => {
       alert("Invalid username/password");
     }
     else if (response.status === 200) {
-      const pastebookSessionId = JSON.parse(await response.text()).Value.SessionId;
+      const dataResponse = await response.json();
+      const pastebookSessionId = await dataResponse.SessionId;
+
       // session id cookie expires in 3 days
       var expirationDate = new Date;
       expirationDate.setDate(expirationDate.getDate() + 3);
