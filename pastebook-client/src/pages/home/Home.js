@@ -97,6 +97,11 @@ const Home = () => {
     }
   }
 
+  const getHome = async (getHomePostsCallback) => {
+    await getHomePageData();
+    await getHomePostsCallback();
+  }
+
   useEffect(async () => {
     // Get the modal
     var menuModal = document.getElementById("menu-modal");
@@ -119,17 +124,14 @@ const Home = () => {
       }
     }
 
-    await getHomePageData();
-    await getHomePosts();
+    await getHome(getHomePosts);
 
     // refresh page content after 1 minute
     const refreshPage = setInterval(async () => {
       console.log("Hiiiiiiiiiii");
-      await getHomePageData();
-      await getHomePosts();
+      await getHome(getHomePosts);
 
     }, 60000);
-
 
     return () => clearInterval(refreshPage);
   }, []);
