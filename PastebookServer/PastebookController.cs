@@ -142,5 +142,13 @@ public class PastebookController : Controller
         return Json(homePosts);
     }
 
+    [HttpGet]
+    [Route("/profile/{username?}")]
+    public IActionResult getProfileData(
+        [FromHeader(Name = "X-UserId")] int userId,
+        string username)
+    {
+        return Json(Database.GetProfileData(username, userId));
+    }
 }
 

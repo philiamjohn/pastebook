@@ -9,7 +9,8 @@ import './Header.css';
 import NotificationsModal from '../notifications/notifications-modal/NotificationsModal';
 import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 
-const Header = () => {
+const Header = (props) => {
+  const { username } = props;
   //Triggers after first render
   useEffect(() => {
     // Get the modal
@@ -72,7 +73,7 @@ const Header = () => {
 
       <SearchResultsModal />
       <NotificationsModal />
-      <MenuModal />
+      <MenuModal username={username}/>
     </div>);
 };
 

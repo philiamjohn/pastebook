@@ -1,7 +1,7 @@
 .search-results-modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 10; /* Sit on top */
     padding-top: 65px; /* Location of the box */
     padding-left: 60px;
     left: 0;

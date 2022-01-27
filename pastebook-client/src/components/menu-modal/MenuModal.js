@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import { IoMdSettings } from 'react-icons/io';
 import { FaUserAlt } from 'react-icons/fa';
 import { BiLogOut } from 'react-icons/bi';
 import './MenuModal.css';
 import { useNavigate } from 'react-router-dom';
 
-const MenuModal = () => {
+const MenuModal = (props) => {
+    const { username } = props;
     let navigate = useNavigate();
     //Triggers after first render
     useEffect(() => {
@@ -53,7 +55,7 @@ const MenuModal = () => {
     return (
         <div id="menu-modal" className="menu-modal">
             <div className="menu-modal-content">
-                <a href="#">
+                <Link id="profile-link" to={`/profile/${username}`}>
                     <p>
                         <FaUserAlt
                             id="profile-icon"
@@ -61,7 +63,7 @@ const MenuModal = () => {
                             color='black' />
                         Profile
                     </p>
-                </a>
+                </Link>
                 <a href="/settings">
                     <p>
                         <IoMdSettings
