@@ -1,0 +1,9 @@
+div.friends-page {
+    min-height: 100vh;
+    width: 100%;
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}

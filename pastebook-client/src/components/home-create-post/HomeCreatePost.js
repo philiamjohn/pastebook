@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { BiImageAdd } from 'react-icons/bi';
 import './HomeCreatePost.css';
 
-const HomeCreatePost = () => {
+const HomeCreatePost = (props) => {
+    const { userId, sessionId, getHomePosts } = props;
     const [imageSource, setImageSource] = useState(null)
+    const baseUrl = `http://localhost:5000`;
 
     const convertImageToBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -37,6 +39,44 @@ const HomeCreatePost = () => {
 
     console.log(imageSource);
 
+    const sendPostToServer = async () => {
+        const postContent = document.getElementById("home-post-text").value;
+        if (!postContent && !imageSource) {
+            alert("Please write something on the textbox or add a picture.");
+            return;
+        }
+
+        const postDetails = {
+            User_ID: userId,
+            Content: postContent,
+            Image: imageSource,
+            Target_ID: userId
+        }
+
+        console.table(postDetails);
+
+        const response = await fetch(`${baseUrl}/addpost`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-SessionID': sessionId
+            },
+            body: JSON.stringify(postDetails)
+        });
+        if (response.status === 500 || response.status === 401) {
+            alert("Post not added.");
+        }
+        else if (response.status === 200) {
+            alert("Post successfully added.");
+            onRemovePicture();
+            document.getElementById("home-post-text").value = "";
+            getHomePosts();
+        }
+        else {
+            alert(response.status)
+        }
+    }
+
     return (
         <div id="home-create-post">
             <div id="home-post-picture-preview">
@@ -59,7 +99,7 @@ const HomeCreatePost = () => {
                         <div id="home-add-picture-button-text">Add Photo</div>
                     </span>
                 </label>
-                <div id="home-post-button-div"><button id="home-post-button">Post</button></div>
+                <div id="home-post-button-div"><button id="home-post-button" onClick={sendPostToServer}>Post</button></div>
             </div>
         </div>
     );

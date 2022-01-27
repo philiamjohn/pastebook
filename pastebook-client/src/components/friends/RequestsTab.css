@@ -1,0 +1,16 @@
+div.friends-content-requests-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+div.friends-content-requests-list-item {
+    width: 100%;
+    height: 85px;
+    border: 1px solid #f7f7f7;
+    border-radius: 5px;
+    box-shadow: 1px 1px #f7f7f7;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

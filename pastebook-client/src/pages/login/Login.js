@@ -6,6 +6,46 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   let navigate = useNavigate();
+  const baseUrl = `http://localhost:5000`;
+
+  const validateInputsAndLogin = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      alert("Kindly fill up the fields");
+      return;
+    }
+
+    const userCredentials = {
+      Email: email,
+      Password: password
+    }
+
+    const response = await fetch(`${baseUrl}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userCredentials)
+    });
+    if (response.status === 500 || response.status === 401) {
+      alert("Invalid username/password");
+    }
+    else if (response.status === 200) {
+      const pastebookSessionId = JSON.parse(await response.text()).Value.SessionId;
+      // session id cookie expires in 3 days
+      var expirationDate = new Date;
+      expirationDate.setDate(expirationDate.getDate() + 3);
+
+      document.cookie = `pastebookSessionId=${pastebookSessionId}; expires= ${expirationDate.toGMTString()}; path=/;`;
+      alert("Successfully logged in!");
+      navigate('/', { replace: true });
+    }
+    else {
+      alert(response.status)
+    }
+  }
 
   return <div className='loginPage'>
     <div className='imageLogo'>
@@ -17,11 +57,12 @@ const Login = () => {
 
     <div className='login'>
       <div className='loginCredentials'>
-        <input type='text' name='email' id='email' placeholder='Email or Phone' />
+        {/* pattern for email and phone number */}
+        <input type='text' name='email' id='email' placeholder='Email or Phone' pattern="^([0-9]{11})|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$" />
         <input type='password' name='password' id='password' placeholder='Password' />
       </div>
       <div className='loginPageButtonsLoginPage'>
-        <button id='loginButtonLoginPage'>Login</button>
+        <button id='loginButtonLoginPage' onClick={validateInputsAndLogin}>Login</button>
         <div className='dashline'></div>
         <button id='registerButtonLoginPage' onClick={() => { navigate("/register", { replace: true }) }}>Register</button>
       </div>
