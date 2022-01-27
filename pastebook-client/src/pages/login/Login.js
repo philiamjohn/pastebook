@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../login/Login.css';
 import logo from '../../images/pb.png'
 import { useNavigate } from 'react-router-dom';
@@ -7,11 +7,6 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
-
-  //clear all setIntervals
-  for (let id = 0; id <= 1000; id++) {
-    window.clearInterval(id);
-  }
 
   const validateInputsAndLogin = async () => {
     const email = document.getElementById("email").value;
@@ -51,6 +46,14 @@ const Login = () => {
       alert(response.status)
     }
   }
+
+  useEffect(() => {
+    //clear all setIntervals
+    for (let id = 0; id <= 1000; id++) {
+      window.clearInterval(id);
+    }
+  }, []);
+
 
   return <div className='loginPage'>
     <div className='imageLogo'>
