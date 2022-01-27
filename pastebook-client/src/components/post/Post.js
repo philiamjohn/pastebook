@@ -29,15 +29,11 @@ const Post = (props) => {
     /* 
           List of variables to be fetched:
           -likeStatus: retrieve from Likes Table using userID and postID
-          -authorImg, authorName: retrieve from Users Table using authorID
-          -likes[] : retrieve from Likes Table using postID
-          -comments[] : retrieve from Comments Table using postID
-          - : retrieve from Posts Table using postID
     */
    
     const baseUrl = `http://localhost:5000`;
 
-    const [like, setLike] = useState(/* likeStatus */true);
+    const [likeStatus, setLike] = useState(/* likeStatus */true);
     const [isCommentShown, setIsCommentShown] = useState(true); // the comments portion is shown by default
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
@@ -46,7 +42,7 @@ const Post = (props) => {
     
     // like/unlike  toggle
     const toggleLike = () => {
-        if(like){
+        if(likeStatus){
             window.alert("Like has been undone!");
         }
         else{
@@ -172,7 +168,7 @@ const Post = (props) => {
                 </div>
                 <div className='post-interactions-btns'>
                     <div className='post-interactions-btns-like' onClick={toggleLike}>
-                        <img src={like? LikedIcon : LikeIcon} alt='like-icon'/>
+                        <img src={likeStatus? LikedIcon : LikeIcon} alt='like-icon'/>
                         Like
                     </div>
                     {/* Likes Modal */}

@@ -47,29 +47,31 @@ const Comment = (props) => {
                                   null
                                 : 
                                 commentsList.length > 1 ?
-                                  <div className='post-interactions-comments-expand' onClick={showMoreComments}><p>View more comments</p></div>
+                                  <div className='post-interactions-comments-expand' onClick={showMoreComments}>
+                                    {commentsList.length > 2 ? <p>View {commentsList.length-1} more comments</p> 
+                                                             : <p>View {commentsList.length-1} more comment</p>
+                                    }
+                                  </div>
                                 :
                                 null  
              }
              
              {allCommentsShown ? 
-
-                                    
-                                      commentsList.map((comment, index) => {
-                                        if(index>0){
-                                        return ( <div className='post-interactions-comments-list-item'>
-                                        <CommentCard key={comment.Id}
-                                                            profilePic={comment.ProfilePic} 
-                                                              firstName={comment.FirstName}
-                                                              lastName={comment.LastName}
-                                                              content={comment.Content}/>
-                                                              </div>
-                                                )
-                                        }
-                                        else {
-                                          return null;
-                                        }        
-                                      })
+                                commentsList.map((comment, index) => {
+                                  if(index>0){
+                                  return ( <div className='post-interactions-comments-list-item'>
+                                  <CommentCard key={comment.Id}
+                                               profilePic={comment.ProfilePic} 
+                                               firstName={comment.FirstName}
+                                               lastName={comment.LastName}
+                                               content={comment.Content}/>
+                                               </div>
+                                          )
+                                  }
+                                  else {
+                                    return null;
+                                  }        
+                                })
 
                                 : 
                                   null 
