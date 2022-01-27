@@ -110,5 +110,36 @@ public class PastebookController : Controller
         }
         return Ok(Json(session));
     }
+
+    [HttpDelete]
+    [Route("/session/{id?}")]
+    public IActionResult deleteSessionBySessionId(string id){
+        Database.DeleteSessionBySessionId(id);
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("/addpost")]
+    public IActionResult addPostToDatabase([FromHeader(Name = "X-SessionID")] string pastebookSessionId, [FromBody] PostModel postDetails)
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        Database.AddPost(postDetails);
+        return Ok("Post Added successfully");
+    }
+
+    [HttpGet]
+    [Route("/homeposts")]
+    public IActionResult getHomePosts(
+        [FromHeader(Name = "X-UserId")] int userId
+    )
+    {
+        List<PostModel> homePosts = Database.GetHomePosts(userId)!;
+        return Ok(Json(homePosts));
+    }
+
 }
 
