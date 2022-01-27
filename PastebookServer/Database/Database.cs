@@ -18,19 +18,6 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
-    public static SqlConnection OpenDatabase() {
-        try{
-            var db = new SqlConnection(DB_CONNECTION_STRING);
-            db.Open();
-            return(db);
-        }
-        catch(System.Exception e)
-        {
-            Console.WriteLine("There was an error in opening the database");
-            Console.WriteLine(e.ToString());
-        }
-        return (null);
-    }
 
     public static void CreateTables()
     {
@@ -55,64 +42,6 @@ public class Database
                                       PRIMARY KEY (User_ID) );";
                 cmd.ExecuteNonQuery();
             }
-        }
-    }
-
-    public static void CreateTablesTwo() {
-        var command = OpenDatabase().CreateCommand();
-        try{
-        command.CommandText =
-            @"IF (EXISTS (SELECT *
-               FROM INFORMATION_SCHEMA.TABLES
-               WHERE TABLE_SCHEMA = 'dbo'
-               AND TABLE_NAME = 'LikesInPosts'))
-               BEGIN
-                  PRINT 'Database Table Exists'
-               END;
-            ELSE
-               BEGIN
-                  CREATE TABLE LikesInPosts ( 
-                    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                    User_ID INT NOT NULL,
-                    Post_ID INT NOT NULL, 
-                    FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
-                    FOREIGN KEY (Post_ID) REFERENCES Posts(Post_ID))
-               END;
-            ;";
-        command.ExecuteNonQuery();
-        }
-        catch(System.Exception e)
-        {
-            Console.WriteLine("Cant create Dishes table.");
-            Console.WriteLine(e.ToString());
-        }
-        try{
-        command.CommandText =
-            @"IF (EXISTS (SELECT *
-               FROM INFORMATION_SCHEMA.TABLES
-               WHERE TABLE_SCHEMA = 'dbo'
-               AND TABLE_NAME = 'CommentsInPosts'))
-               BEGIN
-                  PRINT 'Database Table Exists'
-               END;
-            ELSE
-               BEGIN
-                  CREATE TABLE CommentsInPosts ( 
-                    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                    Content VARCHAR(1000) NOT NULL,
-                    User_ID INT NOT NULL, 
-                    Post_ID INT NOT NULL,
-                    Date DATETIME NOT NULL,
-                    FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
-                    FOREIGN KEY (Post_ID) REFERENCES Posts(Post_ID))
-               END;
-            ;";
-        command.ExecuteNonQuery();
-        }
-        catch(System.Exception e)
-        {
-            Console.WriteLine("Cant create CommentsInPosts table.");
-            Console.WriteLine(e.ToString());
         }
     }
 
@@ -389,119 +318,116 @@ public class Database
 
     public static HomeDataModel? GetUserById(string id)
     {
-        var command = OpenDatabase().CreateCommand();
         HomeDataModel user = new HomeDataModel();
-        try{
-            command.CommandText = "SELECT * FROM Users WHERE User_ID = @id";
-            command.Parameters.AddWithValue("@id", id);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
             {
-                user.User_ID = reader.GetInt32(0);
-                user.FirstName = reader.GetString(1);
-                user.LastName = reader.GetString(2);
-                user.Password = reader.GetString(4);
-                user.Birthday = reader.GetString(5);
-                user.Gender = reader.GetString(6);
-                user.UserName = reader.GetString(10);
-                if (!reader.IsDBNull(reader.GetOrdinal("Email")))
+                command.CommandText = "SELECT * FROM Users WHERE User_ID = @id";
+                command.Parameters.AddWithValue("@id", id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    user.Email = reader.GetString(3);
+                    user.User_ID = reader.GetInt32(0);
+                    user.FirstName = reader.GetString(1);
+                    user.LastName = reader.GetString(2);
+                    user.Password = reader.GetString(4);
+                    user.Birthday = reader.GetString(5);
+                    user.Gender = reader.GetString(6);
+                    user.UserName = reader.GetString(10);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Email")))
+                    {
+                        user.Email = reader.GetString(3);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("Phone")))
+                    {
+                        user.Phone = reader.GetString(7);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        user.ProfilePicture = reader.GetString(8);
+                    }
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfileDesc")))
+                    {
+                        user.ProfileDesc = reader.GetString(9);
+                    }
                 }
-                if (!reader.IsDBNull(reader.GetOrdinal("Phone")))
-                {
-                    user.Phone = reader.GetString(7);
-                }
-                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
-                {
-                    user.ProfilePicture = reader.GetString(8);
-                }
-                if (!reader.IsDBNull(reader.GetOrdinal("ProfileDesc")))
-                {
-                    user.ProfileDesc = reader.GetString(9);
-                }
-            }
-            return user;    
-        }
-        catch(System.Exception e) {
-            Console.WriteLine("Failed to get User record.");
-            Console.WriteLine(e.ToString());
-        }
-        return null;      
+                return user;
+            }        
+        }    
     }
 
     public static List<LikerModel>? GetLikesByPostId(string id)
     {
-        var command = OpenDatabase().CreateCommand();
         var likers = new List<LikerModel>();
-        try{
-            command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
-            command.Parameters.AddWithValue("@id", id);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
             {
-                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                command.Parameters.AddWithValue("@id", id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    likers.Add(new LikerModel() {
-                        Id = reader["Id"].ToString(),
-                        FirstName = reader["FirstName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        ProfilePicture = reader["ProfilePicture"].ToString()
-                    }); 
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        likers.Add(new LikerModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            ProfilePicture = reader["ProfilePicture"].ToString()
+                        }); 
+                    }
+                    else {
+                        likers.Add(new LikerModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            ProfilePicture = null
+                        }); 
+                    }    
                 }
-                else {
-                    likers.Add(new LikerModel() {
-                        Id = reader["Id"].ToString(),
-                        FirstName = reader["FirstName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        ProfilePicture = null
-                    }); 
-                }    
-            }
-            return likers;    
-        }
-        catch(System.Exception e) {
-            Console.WriteLine("Failed to get likers record.");
-            Console.WriteLine(e.ToString());
-        }
-        return null;      
+                return likers;
+            }        
+        }      
     }
     public static List<CommentModel>? GetCommentsByPostId(string id)
     {
-        var command = OpenDatabase().CreateCommand();
         var comments = new List<CommentModel>();
-        try{
-            command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
-            command.Parameters.AddWithValue("@id", id);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
             {
-                if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
+                command.Parameters.AddWithValue("@id", id);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    comments.Add(new CommentModel() {
-                        Id = reader["Id"].ToString(),
-                        FirstName = reader["FirstName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        Content = reader["Content"].ToString(),
-                        ProfilePicture = reader["ProfilePicture"].ToString()
-                    }); 
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        comments.Add(new CommentModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Content = reader["Content"].ToString(),
+                            ProfilePicture = reader["ProfilePicture"].ToString()
+                        }); 
+                    }
+                    else {
+                        comments.Add(new CommentModel() {
+                            Id = reader["Id"].ToString(),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Content = reader["Content"].ToString(),
+                            ProfilePicture = null
+                        }); 
+                    }    
                 }
-                else {
-                    comments.Add(new CommentModel() {
-                        Id = reader["Id"].ToString(),
-                        FirstName = reader["FirstName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        Content = reader["Content"].ToString(),
-                        ProfilePicture = null
-                    }); 
-                }    
-            }
-            return comments;    
-        }
-        catch(System.Exception e) {
-            Console.WriteLine("Failed to get comments record.");
-            Console.WriteLine(e.ToString());
-        }
-        return null;      
+                return comments;
+            }        
+        }    
     }
 }

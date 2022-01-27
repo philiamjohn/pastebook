@@ -3,25 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 public class PastebookController : Controller
 {
     [HttpPost]
-    [Route("/configure")]
-    public IActionResult Configure([FromBody] ConfigureActionModel param)   {
-        var action = param.Action;
-        if(action == "CreateTablesTwo")
-        {
-            Database.CreateTablesTwo();
-            return Ok("Table 'LikesInPosts', 'CommentsInPosts' was successfully created");
-        }
-        else if(action == "DropTables") {
-            Database.DropTables();
-            return Ok("Tables successfully dropped");
-        }
-        else
-        {
-            return Unauthorized("No such action");
-        }
-    }
-
-    [HttpPost]
     [Route("/register")]
     public IActionResult newRegister([FromBody] RegisterModel regmodel)
     {
