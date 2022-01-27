@@ -65,6 +65,7 @@ const Home = () => {
       else if (response.status === 200) {
         const homepageData = JSON.parse(await response.text()).Value;
         console.table(await homepageData);
+        localStorage.setItem('homeUserId', homepageData.User_ID);
         setHomeData(homepageData);
         setCurrentSessionId(pastebookSessionId);
       }
@@ -78,11 +79,11 @@ const Home = () => {
   }
 
   const getHomePosts = async () => {
-    const pastebookSessionId = getSessionIdFromCookie();
+    const homeUserId = localStorage.getItem('homeUserId');
     const response = await fetch(`${baseUrl}/homeposts`, {
       method: 'GET',
       headers: {
-        'X-SessionID': pastebookSessionId
+        'X-UserId': homeUserId
       },
     });
 

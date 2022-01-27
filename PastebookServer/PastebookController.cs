@@ -83,16 +83,10 @@ public class PastebookController : Controller
     [HttpGet]
     [Route("/homeposts")]
     public IActionResult getHomePosts(
-        [FromHeader(Name = "X-SessionID")] string pastebookSessionId
+        [FromHeader(Name = "X-UserId")] int userId
     )
     {
-        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
-        if (session == null)
-        {
-            return Unauthorized();
-        }
-        HomeDataModel homeData = Database.GetHomeData(session)!;
-        List<PostModel> homePosts = Database.GetHomePosts(homeData.User_ID)!;
+        List<PostModel> homePosts = Database.GetHomePosts(userId)!;
         return Ok(Json(homePosts));
     }
 
