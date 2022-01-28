@@ -95,6 +95,38 @@ public class PastebookController : Controller
         List<PostModel> homePosts = Database.GetHomePosts(homeData.User_ID)!;
         return Ok(Json(homePosts));
     }
+    
+    // Save created album in database and retrieve album_id
+    [HttpPost]
+    [Route("/albums/create")]
+    public IActionResult addAlbumToDatabase(
+        [FromBody] AlbumModel albumDetails
+    ) 
+    {
+        Database.AddAlbum(albumDetails);
+        return Ok("Album created successfully.");
+    }
 
-}
+    [HttpGet]
+    [Route("/username/albums")]
+    public IActionResult getAlbumFromDatabase(
+        [FromHeader(Name = "User_ID")] int userId
+    ) 
+    {
+        var albumDetails = Database.GetAlbum(userId);
+        return Json(albumDetails);
+    }
+    // [HttpPost]
+    // [Route("/albums/photos/add")]
+    // public IActionResult addPhotosToAlbumDatabase(
+    //     [FromBody] AlbumModel albumDetails
+    // )
+    // {
+
+    // }
+
+
+
+}   
+
 

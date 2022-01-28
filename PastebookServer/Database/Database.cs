@@ -413,4 +413,88 @@ public class Database
         }
     }
 
+    public static void AddAlbum(AlbumModel albumDetails)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                albumDetails.AlbumDate = DateTime.Now;
+                command.CommandText = 
+                    @"INSERT INTO Albums (AlbumName, DateCreated) 
+                    VALUES (@AlbumName, @DateCreated);";
+
+                command.Parameters.AddWithValue("@AlbumName", albumDetails.AlbumName);
+                command.Parameters.AddWithValue("@DateCreated", albumDetails.AlbumDate);
+                
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            using (var command = db.CreateCommand())
+            {
+
+                command.CommandText = 
+                    @"SELECT MAX(Album_ID) 
+                    FROM Albums;
+                    ";
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    albumDetails.Album_ID = reader.GetInt32(0);
+                }
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = 
+                    @"INSERT INTO AlbumPerUser (User_ID, Album_ID) 
+                    VALUES (@User_ID, @Album_ID);";
+
+                command.Parameters.AddWithValue("@User_ID", albumDetails.User_ID);
+                command.Parameters.AddWithValue("@Album_ID", albumDetails.Album_ID);
+                
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static List<AlbumModel>? GetAlbum(int userId)
+    {
+        List<AlbumModel> albumDetails = new List<AlbumModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = 
+                    @"SELECT Albums.AlbumName, Albums.DateCreated
+                    FROM AlbumPerUser AS AlbUser
+                    LEFT JOIN Users ON AlbUser.User_ID = Users.User_ID
+                    LEFT JOIN Albums ON AlbUser.Album_ID = Albums.Album_ID
+                    WHERE AlbUser.User_ID = @User_ID 
+                    ORDER BY DateCreated DESC;";
+                command.Parameters.AddWithValue("@User_ID", userId);
+                
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    AlbumModel album = new AlbumModel();
+                    album.AlbumName = reader.GetString(0);
+                    album.AlbumDate = reader.GetDateTime(1);
+                    albumDetails.Add(album);
+                }
+            }
+        }
+        return albumDetails;
+    }
+
 }

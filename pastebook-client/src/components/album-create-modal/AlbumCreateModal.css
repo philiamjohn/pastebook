@@ -30,7 +30,7 @@
 .album-details {
     background-color: white;
     width: 30vw;
-    height: 50vh;
+    height: 40vh;
     border-radius: 6px;
     position: absolute;
     top: 20%;
@@ -51,7 +51,9 @@
     margin-bottom: 20px;
 }
 .create-album-modal-back:hover,
-.create-album-modal-back:focus {
+.create-album-modal-back:focus,
+.create-album-modal-submit:hover,
+.create-album-modal-submit:focus {
     background-color: #dfe3ee;
     cursor: pointer;
 
@@ -60,6 +62,10 @@
     clear: both;
 }
 /* form styles */
+.create-album-modal-label {
+    margin-bottom: 7px;
+    color: rgb(116, 115, 115);
+}
 #album-name {
     width: 100%;
     padding: 12px;
@@ -72,5 +78,16 @@
     font-weight: 400;
 }
 .create-album-modal-line {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+}
+.create-album-modal-submit {
+    float: right;
+    border: none;
+    border-radius: 6px;
+    background-color: #edf0fa;
+    width: auto;
+    height: min-content;
+    padding: 10px;
+    display: block;
+    font-weight: lighter;
 }
