@@ -34,9 +34,7 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/home")]
-    public IActionResult getHomeData(
-        [FromHeader(Name = "X-SessionID")] string pastebookSessionId
-    )
+    public IActionResult getHomeData([FromHeader(Name = "X-SessionID")] string pastebookSessionId)
     {
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
         if (session == null)
@@ -48,9 +46,7 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/users")]
-    public IActionResult getUserData(
-        [FromHeader(Name = "UserID")] string userID
-    )
+    public IActionResult getUserData([FromHeader(Name = "UserID")] string userID)
     {
         HomeDataModel user = Database.GetUserById(userID);
         if (user == null)
@@ -65,9 +61,7 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/postLikes")]
-    public IActionResult getPostLikes(
-        [FromHeader(Name = "PostID")] string postID
-    )
+    public IActionResult getPostLikes([FromHeader(Name = "PostID")] string postID)
     {
         List<LikerModel> likers = Database.GetLikesByPostId(postID);
         if (likers == null)
@@ -82,9 +76,7 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/postComments")]
-    public IActionResult getPostComments(
-        [FromHeader(Name = "PostID")] string postID
-    )
+    public IActionResult getPostComments([FromHeader(Name = "PostID")] string postID)
     {
         List<CommentModel> comment = Database.GetCommentsByPostId(postID);
         if (comment == null)
@@ -99,9 +91,7 @@ public class PastebookController : Controller
 
     [HttpPost]
     [Route("/login")]
-    public IActionResult loginAddSessionForUser(
-        [FromBody] UserCredentialsModel userCredentials
-    )
+    public IActionResult loginAddSessionForUser([FromBody] UserCredentialsModel userCredentials)
     {
         SessionModel session = Database.AddSessionWithCredentials(userCredentials)!;
         if (session == null)
@@ -121,7 +111,10 @@ public class PastebookController : Controller
 
     [HttpPost]
     [Route("/addpost")]
-    public IActionResult addPostToDatabase([FromHeader(Name = "X-SessionID")] string pastebookSessionId, [FromBody] PostModel postDetails)
+    public IActionResult addPostToDatabase(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromBody] PostModel postDetails
+    )
     {
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
         if (session == null)
@@ -134,12 +127,31 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/homeposts")]
-    public IActionResult getHomePosts(
-        [FromHeader(Name = "X-UserId")] int userId
-    )
+    public IActionResult getHomePosts([FromHeader(Name = "X-UserId")] int userId)
     {
         List<PostModel> homePosts = Database.GetHomePosts(userId)!;
         return Json(homePosts);
+    }
+
+    [HttpPut]
+    [Route("/userUpdate")]
+    public IActionResult userCredentialUpdate([FromBody] HomeDataModel model)
+    {
+        System.Console.WriteLine(model.FirstName + "hello");
+        System.Console.WriteLine(model.LastName + "hello");
+        System.Console.WriteLine(model.Birthday + "hello");
+        System.Console.WriteLine(model.Gender + "hello");
+        System.Console.WriteLine(model.Phone + " wewewewewe");
+        Database.UserCredentialUpdate(model);
+        return Ok();
+    }
+
+    [HttpPut]
+    [Route("/updateEmail")]
+    public IActionResult updateUserEmail([FromBody] HomeDataModel model)
+    {
+        Database.UpdateUserEmail(model);
+        return Ok();
     }
 
     [HttpGet]
@@ -150,5 +162,42 @@ public class PastebookController : Controller
     {
         return Json(Database.GetProfileData(username, userId));
     }
-}
 
+    [HttpGet]
+    [Route("/profileposts/{username?}")]
+    public IActionResult getProfilePosts(
+        [FromHeader(Name = "X-UserId")] int userId,
+        string username)
+    {
+        return Json(Database.GetProfilePosts(username, userId));
+    }
+
+    [HttpPost]
+    [Route("/editprofilepicture")]
+    public IActionResult editProfilePicture(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromBody] ProfileDataModel profileData 
+        )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        Database.EditProfilePicture(userId, profileData.ProfilePicture!);
+        return Ok("Post Added successfully");
+    }
+
+    [HttpPost]
+    [Route("/userUpdate")]
+    public IActionResult editEmailCheckPassword([FromBody] HomeDataModel model)
+    {
+        var data = Database.EditEmailCheckPassword(model)!;
+        if (!data)
+        {
+            return Unauthorized();
+        }
+        return Ok();
+    }
+}

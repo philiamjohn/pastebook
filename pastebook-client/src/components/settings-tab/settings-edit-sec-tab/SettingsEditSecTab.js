@@ -3,7 +3,7 @@ import EditSec from '../edit-sec/EditSec';
 import EditSettingsSec from '../edit-settings-sec/EditSettingsSec';
 import '../settings-edit-sec-tab/SettingsEditSecTab.css'
 
-const SettingEditSecTab = () => {
+const SettingEditSecTab = ({userData}) => {
     const [editSecState, setEditSecState] = useState("secTab");
     const handeleEditSecClick = (e) => {
         e.preventDefault();
@@ -17,7 +17,7 @@ const SettingEditSecTab = () => {
     return <div className='edit-pass'>
         <h2>Change Email</h2>
         <div className='edit-email-with-pass'>
-            {editSecState === "secTab" ? <EditSec handeleEditSecClick={handeleEditSecClick} /> : <EditSettingsSec handeleCancelEditSecClick={handeleCancelEditSecClick}  />}
+            {editSecState === "secTab" ? <EditSec handeleEditSecClick={handeleEditSecClick} userData={userData} /> : <EditSettingsSec handeleCancelEditSecClick={handeleCancelEditSecClick} userData={userData}  />}
         </div>
         <div className='borderline'>
         </div>

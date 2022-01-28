@@ -12,7 +12,7 @@ const Home = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
-  const [homePosts, setHomePosts] = useState([{},{},{}]);
+  const [homePosts, setHomePosts] = useState([{},{},{},{},{}]);
   const [currentSessionId, setCurrentSessionId] = useState("");
 
   const getSessionIdFromCookie = () => {
@@ -102,11 +102,14 @@ const Home = () => {
   }
 
   useEffect(async () => {
+    //clear all setIntervals
+    for (let id = 0; id <= 1000; id++) {
+      window.clearInterval(id);
+    }
     // Get the modal
     var menuModal = document.getElementById("menu-modal");
     var notificationsModal = document.getElementById("notifications-modal");
     var searchResultsModal = document.getElementById("search-results-modal");
-    var likesModal = document.getElementById("likesModal");
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = (event) => {
       if (event.target == menuModal) {
@@ -117,9 +120,6 @@ const Home = () => {
       }
       else if (event.target == searchResultsModal) {
         searchResultsModal.style.display = "none";
-      }
-      else if (event.target == likesModal) {
-        likesModal.style.display = "none";
       }
     }
 
@@ -137,11 +137,11 @@ const Home = () => {
 
 
   return (
-    <div>
-      <Header username={homeData.UserName}/>
+    <div id="home-body">
+      <Header username={homeData.UserName} />
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} username={homeData.UserName}/>
+          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} username={homeData.UserName} />
           <HomeFriends />
           <HomeAlbums />
         </div>
@@ -151,26 +151,27 @@ const Home = () => {
         </div>
       </div>
 
-      {
+      {/* {
         homePosts
-          ?
-          <div id="home-timeline-posts">
-            {
-              homePosts.map((post) => {
-                return (<PostComponent
-                  key={post.Post_ID}
-                  postID={post.Post_ID}
-                  authorID={post.User_ID}
-                  postTimeStamp={post.DatePosted}
-                  postContentText={post.Content}
-                  postContentImg={post.Image}
-                  userID={localStorage.getItem('homeUserId')}
-                />)
-              })
-            }
-          </div>
-          : <div></div>
-      }
+          ? */}
+      <div id="home-timeline-posts">
+        {
+          homePosts.map((post) => {
+            return (
+              <PostComponent
+                key={post.Post_ID}
+                postID={post.Post_ID}
+                authorID={post.User_ID}
+                postTimeStamp={post.DatePosted}
+                postContentText={post.Content}
+                postContentImg={post.Image}
+                userID={localStorage.getItem('homeUserId')}
+              />)
+          })
+        }
+      </div>
+      {/* : <div></div>
+      } */}
 
     </div>
   );
