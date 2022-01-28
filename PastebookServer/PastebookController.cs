@@ -43,7 +43,58 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        return Ok(Json(Database.GetHomeData(session)));
+        return Json(Database.GetHomeData(session));
+    }
+
+    [HttpGet]
+    [Route("/users")]
+    public IActionResult getUserData(
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        HomeDataModel user = Database.GetUserById(userID);
+        if (user == null)
+        {
+            return Unauthorized("Fetching user data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(user));
+        }
+    }
+
+    [HttpGet]
+    [Route("/postLikes")]
+    public IActionResult getPostLikes(
+        [FromHeader(Name = "PostID")] string postID
+    )
+    {
+        List<LikerModel> likers = Database.GetLikesByPostId(postID);
+        if (likers == null)
+        {
+            return Unauthorized("Fetching post likes data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(likers));
+        }
+    }
+
+    [HttpGet]
+    [Route("/postComments")]
+    public IActionResult getPostComments(
+        [FromHeader(Name = "PostID")] string postID
+    )
+    {
+        List<CommentModel> comment = Database.GetCommentsByPostId(postID);
+        if (comment == null)
+        {
+            return Unauthorized("Fetching post comments data is unsuccessful");
+        }
+        else
+        {
+            return Ok(Json(comment));
+        }
     }
 
     [HttpPost]
@@ -57,12 +108,13 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        return Ok(Json(session));
+        return Json(session);
     }
 
     [HttpDelete]
     [Route("/session/{id?}")]
-    public IActionResult deleteSessionBySessionId(string id){
+    public IActionResult deleteSessionBySessionId(string id)
+    {
         Database.DeleteSessionBySessionId(id);
         return Ok();
     }
@@ -83,17 +135,11 @@ public class PastebookController : Controller
     [HttpGet]
     [Route("/homeposts")]
     public IActionResult getHomePosts(
-        [FromHeader(Name = "X-SessionID")] string pastebookSessionId
+        [FromHeader(Name = "X-UserId")] int userId
     )
     {
-        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
-        if (session == null)
-        {
-            return Unauthorized();
-        }
-        HomeDataModel homeData = Database.GetHomeData(session)!;
-        List<PostModel> homePosts = Database.GetHomePosts(homeData.User_ID)!;
-        return Ok(Json(homePosts));
+        List<PostModel> homePosts = Database.GetHomePosts(userId)!;
+        return Json(homePosts);
     }
     
     // Save created album in database and retrieve album_id
@@ -129,4 +175,16 @@ public class PastebookController : Controller
 
 }   
 
+<<<<<<< HEAD
+=======
+    [HttpGet]
+    [Route("/profile/{username?}")]
+    public IActionResult getProfileData(
+        [FromHeader(Name = "X-UserId")] int userId,
+        string username)
+    {
+        return Json(Database.GetProfileData(username, userId));
+    }
+}
+>>>>>>> d0c71eb9d936655d8fb513e0b1f153f946bac095
 

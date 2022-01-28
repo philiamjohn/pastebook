@@ -1,7 +1,7 @@
 .menu-modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 10; /* Sit on top */
     padding-top: 65px; /* Location of the box */
     padding-left: calc(100vw - 240px);
     left: 0;
@@ -29,18 +29,18 @@
     width: 100px;
 }
 
-.menu-modal-content a {
+#profile-link, .menu-modal-content a {
     display: flex;
     color: black;
     text-decoration: none;
 }
 
-.menu-modal-content a:hover {
+#profile-link:hover, .menu-modal-content a:hover{
     text-decoration: underline;
     background-color: rgba(0,0,0,0.1);
 }
 
-.menu-modal-content a:active {
+#profile-link:active, .menu-modal-content a:active{
     color: #3b5998;
 }
 

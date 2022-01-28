@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../login/Login.css';
 import logo from '../../images/pb.png'
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,9 @@ const Login = () => {
       alert("Invalid username/password");
     }
     else if (response.status === 200) {
-      const pastebookSessionId = JSON.parse(await response.text()).Value.SessionId;
+      const dataResponse = await response.json();
+      const pastebookSessionId = await dataResponse.SessionId;
+
       // session id cookie expires in 3 days
       var expirationDate = new Date;
       expirationDate.setDate(expirationDate.getDate() + 3);
@@ -46,6 +48,14 @@ const Login = () => {
       alert(response.status)
     }
   }
+
+  useEffect(() => {
+    //clear all setIntervals
+    for (let id = 0; id <= 1000; id++) {
+      window.clearInterval(id);
+    }
+  }, []);
+
 
   return <div className='loginPage'>
     <div className='imageLogo'>

@@ -6,8 +6,6 @@ import HomeCreatePost from '../../components/home-create-post/HomeCreatePost';
 import HomeFriends from '../../components/home-friends/HomeFriends';
 import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
-import Avatar from '../../images/avatar.png';
-import MeowDrama from '../../images/meow-drama.jpg';
 import './Home.css'
 
 const Home = () => {
@@ -63,8 +61,10 @@ const Home = () => {
       }
       // If it exists populate homepage data
       else if (response.status === 200) {
-        const homepageData = JSON.parse(await response.text()).Value;
+        const homepageData = await response.json();
         console.table(await homepageData);
+        localStorage.setItem('homeUserId', homepageData.User_ID);
+        localStorage.setItem('profileUsername', homepageData.UserName);
         setHomeData(homepageData);
         setCurrentSessionId(pastebookSessionId);
       }
@@ -78,22 +78,27 @@ const Home = () => {
   }
 
   const getHomePosts = async () => {
-    const pastebookSessionId = getSessionIdFromCookie();
+    const homeUserId = localStorage.getItem('homeUserId');
     const response = await fetch(`${baseUrl}/homeposts`, {
       method: 'GET',
       headers: {
-        'X-SessionID': pastebookSessionId
+        'X-UserId': homeUserId
       },
     });
 
     if (response.status === 200) {
-      const homepagePosts = JSON.parse(await response.text()).Value;
+      const homepagePosts = await response.json();
       console.table(await homepagePosts);
       setHomePosts(homepagePosts);
     }
     else {
       console.log(response.status);
     }
+  }
+
+  const getHome = async (getHomePostsCallback) => {
+    await getHomePageData();
+    await getHomePostsCallback();
   }
 
   useEffect(async () => {
@@ -118,17 +123,14 @@ const Home = () => {
       }
     }
 
-    await getHomePageData();
-    await getHomePosts();
+    await getHome(getHomePosts);
 
     // refresh page content after 1 minute
     const refreshPage = setInterval(async () => {
       console.log("Hiiiiiiiiiii");
-      await getHomePageData();
-      await getHomePosts();
+      await getHome(getHomePosts);
 
     }, 60000);
-
 
     return () => clearInterval(refreshPage);
   }, []);
@@ -136,10 +138,10 @@ const Home = () => {
 
   return (
     <div>
-      <Header />
+      <Header username={homeData.UserName}/>
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} />
+          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} username={homeData.UserName}/>
           <HomeFriends />
           <HomeAlbums />
         </div>
@@ -157,48 +159,17 @@ const Home = () => {
               homePosts.map((post) => {
                 return (<PostComponent
                   key={post.Post_ID}
-                  authorImg={Avatar}
-                  authorName="Juan dela Cruz XI"
+                  postID={post.Post_ID}
+                  authorID={post.User_ID}
                   postTimeStamp={post.DatePosted}
-                  postContentP={post.Content}
+                  postContentText={post.Content}
                   postContentImg={post.Image}
-                  likeCount="123"
-                  commentCount="321"
-                  likeStatus={false}
+                  userID={localStorage.getItem('homeUserId')}
                 />)
               })
             }
           </div>
-          :
-          <div id="home-timeline-posts">
-            <PostComponent
-              authorImg={Avatar}
-              authorName="Juan dela Cruz XI"
-              postTimeStamp="10 hours ago"
-              postContentP="meowdrama"
-              postContentImg={MeowDrama}
-              likeCount="123"
-              commentCount="321"
-              likeStatus={false} />
-            <PostComponent
-              authorImg={Avatar}
-              authorName="Juan dela Cruz XI"
-              postTimeStamp="10 hours ago"
-              postContentP="meowdrama"
-              postContentImg={MeowDrama}
-              likeCount="123"
-              commentCount="321"
-              likeStatus={false} />
-            <PostComponent
-              authorImg={Avatar}
-              authorName="Juan dela Cruz XI"
-              postTimeStamp="10 hours ago"
-              postContentP="meowdrama"
-              postContentImg={MeowDrama}
-              likeCount="123"
-              commentCount="321"
-              likeStatus={false} />
-          </div>
+          : <div></div>
       }
 
     </div>
