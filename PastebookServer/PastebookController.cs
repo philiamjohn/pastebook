@@ -150,5 +150,31 @@ public class PastebookController : Controller
     {
         return Json(Database.GetProfileData(username, userId));
     }
+
+    [HttpGet]
+    [Route("/profileposts/{username?}")]
+    public IActionResult getProfilePosts(
+        [FromHeader(Name = "X-UserId")] int userId,
+        string username)
+    {
+        return Json(Database.GetProfilePosts(username, userId));
+    }
+
+    [HttpPost]
+    [Route("/editprofilepicture")]
+    public IActionResult editProfilePicture(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromBody] ProfileDataModel profileData 
+        )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        Database.EditProfilePicture(userId, profileData.ProfilePicture!);
+        return Ok("Post Added successfully");
+    }
 }
 
