@@ -154,6 +154,15 @@ public class PastebookController : Controller
         return Ok();
     }
 
+    [HttpGet]
+    [Route("/profile/{username?}")]
+    public IActionResult getProfileData(
+        [FromHeader(Name = "X-UserId")] int userId,
+        string username)
+    {
+        return Json(Database.GetProfileData(username, userId));
+    }
+
     [HttpPost]
     [Route("/userUpdate")]
     public IActionResult editEmailCheckPassword([FromBody] HomeDataModel model)

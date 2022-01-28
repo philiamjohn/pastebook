@@ -64,6 +64,7 @@ const Home = () => {
         const homepageData = await response.json();
         console.table(await homepageData);
         localStorage.setItem('homeUserId', homepageData.User_ID);
+        localStorage.setItem('profileUsername', homepageData.UserName);
         setHomeData(homepageData);
         setCurrentSessionId(pastebookSessionId);
       }
@@ -137,10 +138,10 @@ const Home = () => {
 
   return (
     <div>
-      <Header />
+      <Header username={homeData.UserName}/>
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} />
+          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} username={homeData.UserName}/>
           <HomeFriends />
           <HomeAlbums />
         </div>

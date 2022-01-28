@@ -17,7 +17,7 @@ const App = () => {
       <Route path='/friends' element={<Friends />} />
       <Route path='/username/photos' element={<Album />} />
       <Route path='/post' element={<Post />} />
-      <Route path='/username' element={<Profile />} /> 
+      <Route path='/profile/:username' element={<Profile />} /> 
         {/* endpoint to be changed into userName = firstName+lastname+disambiguiator */}
       <Route path='/settings' element={<Settings/>} />
       <Route path='/register' element={<Register/>} />
