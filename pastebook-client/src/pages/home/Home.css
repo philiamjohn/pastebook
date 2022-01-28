@@ -1,9 +1,12 @@
+#home-body {
+    background-color: #dfe3ee;
+}
 #home-content {
     display: flex;
 }
 
 #home-content-create-post {
-    border: 3px solid #dfe3ee;
+    border: 3px solid #8b9dc3;
     margin-top: 15px;
     margin-left: 15px;
     width: 50vw;

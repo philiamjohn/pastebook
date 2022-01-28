@@ -75,14 +75,6 @@ const Post = (props) => {
         document.getElementById(`likesModal${id}`).style.display = "none";
     }
 
-    //close modal on clicking outside the modal
-    window.onclick = function(event) {
-        var modal = document.getElementById(modalId);
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-    }
-
     useEffect(() => {
 
         //fetch author info

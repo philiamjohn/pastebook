@@ -4,7 +4,7 @@
     margin-left: 15px;
     width: 275px;
 } */
-.edit-settings {
+.edit-settings form {
     margin-top: 10px;
     display: grid;
     grid-template-columns: 100px 300px;
@@ -17,6 +17,9 @@
 }
 .edit-settings .button-change-info {
     width: 300px;
+}
+.edit-settings .button-change-info #save:active{
+    color: blue;
 }
 .edit-settings .button-change-info button {
     width: 100px;

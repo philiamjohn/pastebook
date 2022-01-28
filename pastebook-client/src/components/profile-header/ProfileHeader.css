@@ -139,3 +139,48 @@ body {
     background-color: white;
     border-bottom: #3b5998 3px;
 }
+label.profile-label input[type="file"] {
+    position: absolute;
+    top: -1000px;
+  }
+
+.profile-label {
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+}
+
+#profile-add-picture-label {
+    padding-left: 3px;
+    text-align: left;
+}
+
+#profile-add-picture-button {
+    display: flex;
+    border: none;
+    background-color: black;
+    color: white;
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    margin-bottom: 5px;
+}
+
+#profile-add-picture-button:hover {
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+}
+
+#profile-add-picture-button:active {
+    color: white;
+    background-color: #8b9dc3;
+    border: none;
+}
+
+#profile-add-picture-icon {
+    padding-left: 2px;
+}

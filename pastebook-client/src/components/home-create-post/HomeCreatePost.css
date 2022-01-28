@@ -41,6 +41,7 @@
     width: calc(50vw - 30px);
     min-height: 30vh;
     resize: vertical;
+    background-color: #f7f7f7;
 }
 
 #home-create-post-buttons {
