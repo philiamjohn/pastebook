@@ -18,7 +18,6 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
-
     public static void CreateTables()
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -44,7 +43,6 @@ public class Database
             }
         }
     }
-
 
     public static void DropTables()
     {
@@ -350,6 +348,7 @@ public class Database
                 command.CommandText = "SELECT * FROM Users WHERE User_ID = @User_ID AND UserName = @UserName";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.Parameters.AddWithValue("@UserName", username);
+                command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -384,6 +383,61 @@ public class Database
         return profileData;
     }
 
+    public static List<PostModel>? GetProfilePosts(string username, int? userId)
+    {
+        List<PostModel> profilePosts = new List<PostModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+
+                command.CommandText = "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    PostModel post = new PostModel();
+                    post.Post_ID = reader.GetInt32(0);
+                    post.DatePosted = reader.GetDateTime(1);
+                    post.User_ID = reader.GetInt32(2);
+                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Image")))
+                    {
+                        post.Image = reader.GetString(4);
+                    }
+                    post.Target_ID = reader.GetInt32(5);
+                    profilePosts.Add(post);
+                    // break;
+                }
+            }
+        }
+        return profilePosts;
+    }
+
+    public static void EditProfilePicture(int userId, string profilePicture)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"UPDATE Users
+                 SET ProfilePicture=@ProfilePicture
+                 WHERE User_ID=@User_ID;";
+
+                command.Parameters.AddWithValue("@User_ID", userId);
+                command.Parameters.AddWithValue("@ProfilePicture", profilePicture);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+    }
+
     public static HomeDataModel? GetUserById(string id)
     {
         HomeDataModel user = new HomeDataModel();
@@ -394,6 +448,8 @@ public class Database
             {
                 command.CommandText = "SELECT * FROM Users WHERE User_ID = @id";
                 command.Parameters.AddWithValue("@id", id);
+                command.CommandTimeout = 120;
+
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -448,37 +504,41 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                command.CommandText =
+                    "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
                     {
-                        likers.Add(new LikerModel()
-                        {
-                            Id = reader["Id"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            ProfilePicture = reader["ProfilePicture"].ToString()
-                        });
+                        likers.Add(
+                            new LikerModel()
+                            {
+                                Id = reader["Id"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                ProfilePicture = reader["ProfilePicture"].ToString()
+                            }
+                        );
                     }
                     else
                     {
-                        likers.Add(new LikerModel()
-                        {
-                            Id = reader["Id"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            ProfilePicture = null
-                        });
+                        likers.Add(
+                            new LikerModel()
+                            {
+                                Id = reader["Id"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                ProfilePicture = null
+                            }
+                        );
                     }
                 }
                 return likers;
             }
         }
     }
-
 
     public static List<PostModel>? GetHomePosts(int? userId)
     {
@@ -488,7 +548,6 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-
                 command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.CommandTimeout = 120;
@@ -521,32 +580,37 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
+                command.CommandText =
+                    "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
                     {
-                        comments.Add(new CommentModel()
-                        {
-                            Id = reader["Id"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            Content = reader["Content"].ToString(),
-                            ProfilePicture = reader["ProfilePicture"].ToString()
-                        });
+                        comments.Add(
+                            new CommentModel()
+                            {
+                                Id = reader["Id"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Content = reader["Content"].ToString(),
+                                ProfilePicture = reader["ProfilePicture"].ToString()
+                            }
+                        );
                     }
                     else
                     {
-                        comments.Add(new CommentModel()
-                        {
-                            Id = reader["Id"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            Content = reader["Content"].ToString(),
-                            ProfilePicture = null
-                        });
+                        comments.Add(
+                            new CommentModel()
+                            {
+                                Id = reader["Id"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Content = reader["Content"].ToString(),
+                                ProfilePicture = null
+                            }
+                        );
                     }
                 }
                 return comments;
@@ -556,7 +620,6 @@ public class Database
 
     public static void AddPost(PostModel postDetails)
     {
-
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
@@ -565,12 +628,14 @@ public class Database
                 postDetails.DatePosted = DateTime.Now;
                 if (postDetails.Image == null)
                 {
-                    command.CommandText = @"INSERT INTO Posts (User_ID, DatePosted, Content, Target_ID) 
+                    command.CommandText =
+                        @"INSERT INTO Posts (User_ID, DatePosted, Content, Target_ID) 
                     VALUES (@User_ID, @DatePosted, @Content, @Target_ID);";
                 }
                 else
                 {
-                    command.CommandText = @"INSERT INTO Posts (User_ID, DatePosted, Content, Image, Target_ID) 
+                    command.CommandText =
+                        @"INSERT INTO Posts (User_ID, DatePosted, Content, Image, Target_ID) 
                     VALUES (@User_ID, @DatePosted, @Content, @Image, @Target_ID);";
                     command.Parameters.AddWithValue("@Image", postDetails.Image);
                 }
@@ -585,4 +650,56 @@ public class Database
         }
     }
 
+    public static void UserCredentialUpdate(HomeDataModel model)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText =
+                    @"UPDATE Users SET FirstName=@fn,LastName=@ln,Birthday=@b,Gender=@g,Phone=@p WHERE User_ID=@id";
+                cmd.Parameters.AddWithValue("@fn", model.FirstName);
+                cmd.Parameters.AddWithValue("@ln", model.LastName);
+                cmd.Parameters.AddWithValue("@b", model.Birthday);
+                cmd.Parameters.AddWithValue("@g", model.Gender);
+                cmd.Parameters.AddWithValue("@p", model.Phone);
+                cmd.Parameters.AddWithValue("@id", model.User_ID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+    public static void UpdateUserEmail(HomeDataModel model){
+        using (var db= new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = @"UPDATE Users SET Email=@email WHERE User_ID=@id";
+                cmd.Parameters.AddWithValue("@email",model.Email);
+                cmd.Parameters.AddWithValue("@id",model.User_ID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static bool EditEmailCheckPassword(HomeDataModel model)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Password FROM Users WHERE User_ID=@id";
+                cmd.Parameters.AddWithValue("@id", model.User_ID);
+
+                var passwordInDb = cmd.ExecuteScalar();
+                var result = BCrypt.Net.BCrypt.Verify(
+                    model.Password,
+                    passwordInDb.ToString()
+                );
+                return result ? true : false;
+            }
+        }
+    }
 }
