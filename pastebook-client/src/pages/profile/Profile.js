@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import './Profile.css';
 import Header from '../../components/header/Header';
 import ProfileHeader from '../../components/profile-header/ProfileHeader';
@@ -8,8 +9,8 @@ import photo from '../../images/default-image.png';
 
 
 const Profile = () => {
+    const { username } = useParams();
     const baseUrl = `http://localhost:5000`;
-    const username = localStorage.getItem('profileUsername');
     const homeUserId = localStorage.getItem('homeUserId');
     const [profileData, setProfileData] = useState({});
     const [profilePosts, setProfilePosts] = useState([{}, {}, {}, {}, {}]);
@@ -68,7 +69,7 @@ const Profile = () => {
     return (
         <div className='body'>
             <Header username={username} />
-            <ProfileHeader firstName={profileData.FirstName} lastName={profileData.LastName} profilePicture={profileData.ProfilePicture} getProfilePosts={getProfilePosts} />
+            <ProfileHeader profileData={profileData} />
             <div className='s2-content'>
                 <div className='s2-c1'>
                     <div className='s2-c1-r1-intro block-border-shadow'>

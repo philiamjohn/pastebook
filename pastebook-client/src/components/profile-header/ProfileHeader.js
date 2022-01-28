@@ -7,18 +7,18 @@ import { MdModeEditOutline } from 'react-icons/md';
 import { BsPlusCircle } from 'react-icons/bs';
 
 import userphoto from '../../images/default-dp.jpg';
+import EditProfileModal from '../edit-profile-modal/EditProfileModal';
 
 
 const ProfileHeader = (props) => {
-    const { firstName, lastName, profilePicture, getProfilePosts } = props;
+    const { profileData } = props;
     const baseUrl = `http://localhost:5000`;
     const homeUserId = localStorage.getItem('homeUserId');
     const [profilePictureSource, setProfilePictureSource] = useState(null);
     const [onEditProfilePicture, setOnEditProfilePicture] = useState(false);
-    const [doneEditingProfilePicture, setDoneEditingProfilePicture] = useState(false);
 
     useEffect(() => {
-        setProfilePictureSource(profilePicture);
+        setProfilePictureSource(profileData.ProfilePicture);
     }, [props]);
 
     const getSessionIdFromCookie = () => {
@@ -78,7 +78,6 @@ const ProfileHeader = (props) => {
         }
         else if (response.status === 200) {
             setOnEditProfilePicture(false);
-            setDoneEditingProfilePicture(true);
             alert("Profile Picture successfully changed.");
             window.location.reload();
         }
@@ -93,7 +92,7 @@ const ProfileHeader = (props) => {
             const confirmAction = window.confirm("You sure you want to change your profile picture?");
             if (!confirmAction) {
                 document.getElementById("profile-open-file-system").value = "";
-                setProfilePictureSource(profilePicture);
+                setProfilePictureSource(profileData.ProfilePicture);
                 setOnEditProfilePicture(false);
                 return;
             }
@@ -111,26 +110,7 @@ const ProfileHeader = (props) => {
     }
 
     useEffect(() => {
-        // Get the modal
-        var menuModal = document.getElementById("menu-modal");
-        var notificationsModal = document.getElementById("notifications-modal");
-        var searchResultsModal = document.getElementById("search-results-modal");
-        var likesModal = document.getElementById("likesModal");
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = (event) => {
-            if (event.target == menuModal) {
-                menuModal.style.display = "none";
-            }
-            else if (event.target == notificationsModal) {
-                notificationsModal.style.display = "none";
-            }
-            else if (event.target == searchResultsModal) {
-                searchResultsModal.style.display = "none";
-            }
-            else if (event.target == likesModal) {
-                likesModal.style.display = "none";
-            }
-        }
+        
     }, []);
 
     return (
@@ -156,7 +136,7 @@ const ProfileHeader = (props) => {
 
                     </div>
                     <div className='s1-r2-name'>
-                        <p className='s1-r2-user-full-name'>{firstName} {lastName}</p>
+                        <p className='s1-r2-user-full-name'>{profileData.FirstName} {profileData.LastName}</p>
                     </div>
                     <div className='s1-r2-buttons'>
                         <button className='text block-border-shadow' id='edit-profile-btn'>< MdModeEditOutline size={15} />  Edit profile</button>
@@ -169,6 +149,7 @@ const ProfileHeader = (props) => {
                         <button className='text'><Link to='/friends' style={{ textDecoration: 'none', color: 'inherit' }}>Friends</Link></button>
                         <button className='text'><Link to='/photos' style={{ textDecoration: 'none', color: 'inherit' }}>Photos</Link></button>
                     </div>
+                    <EditProfileModal profileData={profileData}/>
                 </div>
             </div>
         </div>
