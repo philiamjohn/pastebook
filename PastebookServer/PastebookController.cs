@@ -127,10 +127,33 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/homeposts")]
-    public IActionResult getHomePosts([FromHeader(Name = "X-UserId")] int userId)
+    public IActionResult getHomePosts(
+        [FromHeader(Name = "X-UserId")] int userId
+    )
     {
         List<PostModel> homePosts = Database.GetHomePosts(userId)!;
         return Json(homePosts);
+    }
+    
+    // Save created album in database and retrieve album_id
+    [HttpPost]
+    [Route("/albums/create")]
+    public IActionResult addAlbumToDatabase(
+        [FromBody] AlbumModel albumDetails
+    ) 
+    {
+        Database.AddAlbum(albumDetails);
+        return Ok("Album created successfully.");
+    }
+
+    [HttpGet]
+    [Route("/username/albums")]
+    public IActionResult getAlbumFromDatabase(
+        [FromHeader(Name = "User_ID")] int userId
+    ) 
+    {
+        var albumDetails = Database.GetAlbum(userId);
+        return Json(albumDetails);
     }
 
     [HttpPut]
@@ -188,6 +211,14 @@ public class PastebookController : Controller
         Database.EditProfilePicture(userId, profileData.ProfilePicture!);
         return Ok("Post Added successfully");
     }
+    // [HttpPost]
+    // [Route("/albums/photos/add")]
+    // public IActionResult addPhotosToAlbumDatabase(
+    //     [FromBody] AlbumModel albumDetails
+    // )
+    // {
+
+    // }
 
     [HttpPost]
     [Route("/userUpdate")]

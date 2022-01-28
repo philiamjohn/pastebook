@@ -18,6 +18,7 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
+
     public static void CreateTables()
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -43,6 +44,7 @@ public class Database
             }
         }
     }
+
 
     public static void DropTables()
     {
@@ -548,6 +550,7 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
+
                 command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.CommandTimeout = 120;
@@ -621,6 +624,7 @@ public class Database
 
     public static void AddPost(PostModel postDetails)
     {
+
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
@@ -651,11 +655,65 @@ public class Database
         }
     }
 
-    public static void UserCredentialUpdate(HomeDataModel model)
+    public static void AddAlbum(AlbumModel albumDetails)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
+            using (var command = db.CreateCommand())
+            {
+                albumDetails.AlbumDate = DateTime.Now;
+                command.CommandText = 
+                    @"INSERT INTO Albums (AlbumName, DateCreated) 
+                    VALUES (@AlbumName, @DateCreated);";
+
+                command.Parameters.AddWithValue("@AlbumName", albumDetails.AlbumName);
+                command.Parameters.AddWithValue("@DateCreated", albumDetails.AlbumDate);
+                
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = 
+                    @"SELECT MAX(Album_ID) 
+                    FROM Albums;
+                    ";
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    albumDetails.Album_ID = reader.GetInt32(0);
+                }
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = 
+                    @"INSERT INTO AlbumPerUser (User_ID, Album_ID) 
+                    VALUES (@User_ID, @Album_ID);";
+
+                command.Parameters.AddWithValue("@User_ID", albumDetails.User_ID);
+                command.Parameters.AddWithValue("@Album_ID", albumDetails.Album_ID);
+                
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void UserCredentialUpdate(HomeDataModel model)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();    
             using (var cmd = db.CreateCommand())
             {
                 cmd.CommandText =
@@ -666,10 +724,13 @@ public class Database
                 cmd.Parameters.AddWithValue("@g", model.Gender);
                 cmd.Parameters.AddWithValue("@p", model.Phone);
                 cmd.Parameters.AddWithValue("@id", model.User_ID);
+                cmd.CommandTimeout = 120;
+
                 cmd.ExecuteNonQuery();
             }
         }
     }
+
     public static void UpdateUserEmail(HomeDataModel model){
         using (var db= new SqlConnection(DB_CONNECTION_STRING))
         {
@@ -679,9 +740,41 @@ public class Database
                 cmd.CommandText = @"UPDATE Users SET Email=@email WHERE User_ID=@id";
                 cmd.Parameters.AddWithValue("@email",model.Email);
                 cmd.Parameters.AddWithValue("@id",model.User_ID);
+                command.CommandTimeout = 120;
                 cmd.ExecuteNonQuery();
             }
         }
+    }
+
+    public static List<AlbumModel>? GetAlbum(int userId)
+    {
+        List<AlbumModel> albumDetails = new List<AlbumModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = 
+                    @"SELECT Albums.AlbumName, Albums.DateCreated
+                    FROM AlbumPerUser AS AlbUser
+                    LEFT JOIN Users ON AlbUser.User_ID = Users.User_ID
+                    LEFT JOIN Albums ON AlbUser.Album_ID = Albums.Album_ID
+                    WHERE AlbUser.User_ID = @User_ID 
+                    ORDER BY DateCreated DESC;";
+                command.Parameters.AddWithValue("@User_ID", userId);
+                
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    AlbumModel album = new AlbumModel();
+                    album.AlbumName = reader.GetString(0);
+                    album.AlbumDate = reader.GetDateTime(1);
+                    albumDetails.Add(album);
+                }
+            }
+        }
+        return albumDetails;
     }
 
     public static bool EditEmailCheckPassword(HomeDataModel model)
@@ -693,6 +786,7 @@ public class Database
             {
                 cmd.CommandText = "SELECT Password FROM Users WHERE User_ID=@id";
                 cmd.Parameters.AddWithValue("@id", model.User_ID);
+                command.CommandTimeout = 120;
 
                 var passwordInDb = cmd.ExecuteScalar();
                 var result = BCrypt.Net.BCrypt.Verify(
