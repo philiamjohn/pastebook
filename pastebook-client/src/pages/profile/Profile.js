@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import './Profile.css';
 import Header from '../../components/header/Header';
 import ProfileHeader from '../../components/profile-header/ProfileHeader';
+import PostComponent from '../../components/post/Post';
 import userphoto from '../../images/default-dp.jpg';
 import photo from '../../images/default-image.png';
 
 
 const Profile = () => {
+    const { username } = useParams();
     const baseUrl = `http://localhost:5000`;
-    const username = localStorage.getItem('profileUsername');
+    const homeUserId = localStorage.getItem('homeUserId');
     const [profileData, setProfileData] = useState({});
+    const [profilePosts, setProfilePosts] = useState([{}, {}, {}, {}, {}]);
 
     const getProfilePageData = async () => {
-        const homeUserId = localStorage.getItem('homeUserId');
         const response = await fetch(`${baseUrl}/profile/${username}`, {
             method: 'GET',
             headers: {
@@ -30,20 +33,43 @@ const Profile = () => {
         }
     }
 
+    const getProfilePosts = async () => {
+        const response = await fetch(`${baseUrl}/profileposts/${username}`, {
+            method: 'GET',
+            headers: {
+                'X-UserId': homeUserId
+            },
+        });
+
+        if (response.status === 200) {
+            const profilePagePosts = await response.json();
+            console.table(await profilePagePosts);
+            setProfilePosts(profilePagePosts);
+        }
+        else {
+            console.log(response.status);
+        }
+    }
+
+    const getProfile = async (getProfilePostsCallback) => {
+        await getProfilePageData();
+        await getProfilePostsCallback();
+    }
+
     useEffect(async () => {
         //clear all setIntervals
         for (let id = 0; id <= 1000; id++) {
             window.clearInterval(id);
         }
 
-        await getProfilePageData();
+        await getProfile(getProfilePosts);
 
     }, []);
 
     return (
         <div className='body'>
             <Header username={username} />
-            <ProfileHeader firstName={profileData.FirstName} lastName={profileData.LastName} />
+            <ProfileHeader profileData={profileData} />
             <div className='s2-content'>
                 <div className='s2-c1'>
                     <div className='s2-c1-r1-intro block-border-shadow'>
@@ -115,11 +141,25 @@ const Profile = () => {
 
                     </div>
                     <div className='s2-c2-r2-posts block-border-shadow'>
-
+                        
                     </div>
                 </div> */}
             </div>
-
+            {
+                profilePosts.map((post) => {
+                    return (
+                        <PostComponent
+                            key={post.Post_ID}
+                            postID={post.Post_ID}
+                            authorID={post.User_ID}
+                            postTimeStamp={post.DatePosted}
+                            postContentText={post.Content}
+                            postContentImg={post.Image}
+                            userID={localStorage.getItem('homeUserId')}
+                        />
+                    )
+                })
+            }
         </div>
     );
 };

@@ -1,0 +1,59 @@
+.edit-profile-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10; /* Sit on top */
+    padding-top: 65px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
+}
+  
+.edit-profile-modal-content {
+    margin: auto;
+    background-color: white;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 6px;
+    text-align: center;
+}
+
+#edit-profile-modal-close {
+    color: black;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+    padding-right: 5px;
+  }
+  
+#edit-profile-modal-close:hover, #edit-profile-modal-close:focus {
+    color: gray;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#profile-first-name {
+    margin-top: 40px;
+}
+
+#profile-last-name {
+    margin-top: 20px;
+}
+
+#profile-blurb-text-div {
+    padding-top: 40px;
+    padding-left: 5px;
+}
+
+#profile-blurb-text {
+    padding-left: 7px;
+    padding-right: 7px;
+    width: 40vw;
+    min-height: 20vh;
+    resize: vertical;
+    background-color: #f7f7f7;
+    border-width: 2px;
+}

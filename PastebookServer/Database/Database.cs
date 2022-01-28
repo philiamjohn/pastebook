@@ -348,6 +348,7 @@ public class Database
                 command.CommandText = "SELECT * FROM Users WHERE User_ID = @User_ID AND UserName = @UserName";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.Parameters.AddWithValue("@UserName", username);
+                command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -382,6 +383,61 @@ public class Database
         return profileData;
     }
 
+    public static List<PostModel>? GetProfilePosts(string username, int? userId)
+    {
+        List<PostModel> profilePosts = new List<PostModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+
+                command.CommandText = "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    PostModel post = new PostModel();
+                    post.Post_ID = reader.GetInt32(0);
+                    post.DatePosted = reader.GetDateTime(1);
+                    post.User_ID = reader.GetInt32(2);
+                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Image")))
+                    {
+                        post.Image = reader.GetString(4);
+                    }
+                    post.Target_ID = reader.GetInt32(5);
+                    profilePosts.Add(post);
+                    // break;
+                }
+            }
+        }
+        return profilePosts;
+    }
+
+    public static void EditProfilePicture(int userId, string profilePicture)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"UPDATE Users
+                 SET ProfilePicture=@ProfilePicture
+                 WHERE User_ID=@User_ID;";
+
+                command.Parameters.AddWithValue("@User_ID", userId);
+                command.Parameters.AddWithValue("@ProfilePicture", profilePicture);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+    }
+
     public static HomeDataModel? GetUserById(string id)
     {
         HomeDataModel user = new HomeDataModel();
@@ -392,6 +448,8 @@ public class Database
             {
                 command.CommandText = "SELECT * FROM Users WHERE User_ID = @id";
                 command.Parameters.AddWithValue("@id", id);
+                command.CommandTimeout = 120;
+
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -492,6 +550,7 @@ public class Database
             {
                 command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
+                command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
