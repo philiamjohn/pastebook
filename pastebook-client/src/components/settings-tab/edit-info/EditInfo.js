@@ -22,8 +22,11 @@ const EditInfo = ({ handleEditClick, userData }) => {
         {/* <p>2/30/1998</p> */}
         <label htmlFor='gender-setiings'>Gender:</label>
         <input type='text' name='gender-setiings' id='gender-setiings' value={userData.Gender} readOnly='readonly' />
+        <label htmlFor='phone'>Phone:</label>
+        <input type='text' name='phone' id='phone' value={userData.Phone === " " ? "Add Number" : userData.Phone} readOnly='readonly' />
+
         {/* <p>Male</p> */}
-        <button onClick={(e) => handleEditClick(e)}>Edit</button>
+        <button onClick={(e) => handleEditClick(e)}>Edit</button>   
         {/* <button onClick={(e) => testF(e)}>TEST</button> */}
     </div>;
 };

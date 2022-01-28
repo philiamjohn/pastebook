@@ -12,7 +12,7 @@
     /* border: solid 1px black; */
     width: 370px;
     padding: 10px;
-    box-shadow:  -5px 10px 20px #888888;
+    box-shadow: -5px 10px 20px #888888;
     border-radius: 6px;
 }
 .login input {
@@ -54,12 +54,18 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
-.dashline{
+.login .loginPageButtonsLoginPage #loginButtonLoginPage:active,
+#registerButtonLoginPage:active {
+    color: black;
+}
+.login .loginPageButtonsLoginPage #registerButtonLoginPage:active {
+    color: black;
+}
+.dashline {
     margin: 5px;
     border: none;
     border-bottom: solid 1px #dadde1;
-   
 }
-.loginPage .imageLogo img{
+.loginPage .imageLogo img {
     width: 600px;
 }
