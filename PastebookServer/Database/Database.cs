@@ -491,7 +491,7 @@ public class Database
 
                 command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
-
+                command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {

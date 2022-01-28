@@ -7,7 +7,8 @@ const Comment = (props) => {
 
   const {postAuthorImg,
          postID,
-         comments} = props;
+         comments,
+         likesCountUpdate} = props;
 
   const baseUrl = `http://localhost:5000`;
         
@@ -26,15 +27,17 @@ const Comment = (props) => {
   useEffect(() => {
     
     setCommentsList(comments);
-    
+    console.log(commentsList.length);
+    likesCountUpdate(commentsList.length);
     return () => {};
     }, [comments]);  
 
   return (
     <div className='post-interactions-comments' id='comments'>
+        {commentsList.length > 1 ?
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
-               {commentsList.length > 0 ?
+              {commentsList.length > 0 ?
                 <CommentCard profilePic={commentsList[0].ProfilePic} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
@@ -77,6 +80,9 @@ const Comment = (props) => {
                                   null 
               }
         </div>
+        :
+        null
+        }
         <div className='post-interactions-comments-create'>
             <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
             <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>

@@ -33,7 +33,7 @@ div.post-interactions-comments-create {
     height: 40px;
     display: flex;
     align-items: center;
-    padding-top: 5px;
+    padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 15px;
     padding-right: 15px;
@@ -50,6 +50,7 @@ div.post-interactions-comments-create  img:hover {
     cursor: pointer;
 }
 
+
 div.post-interactions-comments-create  input{
     background: #f7f7f7;
     height: 100%;
@@ -58,4 +59,8 @@ div.post-interactions-comments-create  input{
     padding-right: 10px;
     border-radius: 32px;
     border: none;
+}
+
+div.post-interactions-comments-create  input:focus {
+    outline: none;
 }
