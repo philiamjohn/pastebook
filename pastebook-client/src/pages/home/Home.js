@@ -13,7 +13,7 @@ const Home = () => {
   const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
   // set empty array of empty objects to achieve loading animation effect
-  const [homePosts, setHomePosts] = useState([{}, {}, {}]);
+  const [homePosts, setHomePosts] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState("");
 
   const getSessionIdFromCookie = () => {
@@ -90,12 +90,7 @@ const Home = () => {
     if (response.status === 200) {
       const homepagePosts = await response.json();
       console.table(await homepagePosts);
-      if (homepagePosts) {
-        setHomePosts(homepagePosts);
-      }
-      else {
-        setHomePosts([{}]);
-      }
+      setHomePosts(homepagePosts);
     }
     else {
       console.log(response.status);
@@ -140,18 +135,6 @@ const Home = () => {
 
     return () => clearInterval(refreshPage);
   }, []);
-
-  useEffect(() => {
-    const timelinePosts = document.getElementById("home-timeline-posts");
-    if (timelinePosts) {
-      if (homePosts === [{}, {}, {}]) {
-        timelinePosts.className = "results-loading";
-      }
-      else {
-        timelinePosts.className = "";
-      }
-    }
-  }, [homePosts]);
   return (
     <div id="home-body">
       <Header username={homeData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
@@ -167,7 +150,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div id="home-timeline-posts" className="results-loading">
+      <div id="home-timeline-posts">
         {
           homePosts.map((post) => {
             return (
