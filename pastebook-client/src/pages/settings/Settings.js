@@ -45,7 +45,7 @@ const Settings = () => {
     const username = localStorage.getItem('profileUsername');
     return <div>
         <div className='header'>
-            <Header username={username} />
+            <Header username={username} getSessionIdFromCookie={getSessionId} />
         </div>
         <div className='settings-container'>
             <div className='settings'>
