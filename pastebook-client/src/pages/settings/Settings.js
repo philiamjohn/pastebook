@@ -56,7 +56,7 @@ const Settings = () => {
                     </ul>
                 </div>
                 <div className='out'>
-                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getUserData={getUserData} />}
+                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getSessionId={getSessionId}  />}
                 </div>
             </div>
         </div>

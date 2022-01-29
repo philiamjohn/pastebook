@@ -271,6 +271,16 @@ public class PastebookController : Controller
         Database.ChangePassBaseOnID(model);
         return Ok();
     }
+   
+    [HttpPut]
+    [Route("/updateEmailSessions")]
+    public IActionResult updateUserEmailSessions([FromBody] SessionModel model)
+    {
+        System.Console.WriteLine(model.SessionId + " sesid");
+        System.Console.WriteLine(model.Email + " EMail");
+        Database.UpdateUserEmailSessions(model);
+        return Ok();
+    }
 
 
 
