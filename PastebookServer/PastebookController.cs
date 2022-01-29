@@ -45,6 +45,25 @@ public class PastebookController : Controller
     }
 
     [HttpGet]
+    [Route("/searchusers")]
+    public IActionResult searchUsers(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromHeader(Name = "X-SearchKeyword")] string searchKeyword
+    )
+    {
+        Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        Console.WriteLine($"SessionID: {pastebookSessionId}");
+        Console.WriteLine($"SearchKeyword: {searchKeyword}");
+        Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        return Json(Database.SearchUsers(searchKeyword));
+    }
+
+    [HttpGet]
     [Route("/users")]
     public IActionResult getUserData([FromHeader(Name = "UserID")] string userID)
     {
@@ -181,11 +200,10 @@ public class PastebookController : Controller
     [HttpGet]
     [Route("/profileposts/{username?}")]
     public IActionResult getProfilePosts(
-        [FromHeader(Name = "X-UserId")] int userId,
         string username
     )
     {
-        return Json(Database.GetProfilePosts(username, userId));
+        return Json(Database.GetProfilePosts(username));
     }
 
     [HttpPatch]
