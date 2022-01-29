@@ -25,6 +25,8 @@ div.post-author {
 }
 
 div.post-author-details {
+    height: 50px;
+    width: calc(100% - 90px);
     margin: 0 5px 0 5px;
 }
 
