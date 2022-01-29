@@ -8,14 +8,16 @@ import Post from './pages/post/Post';
 import Profile from './pages/profile/Profile';
 import Settings from './pages/settings/Settings';
 import Register from './pages/register/Register';
+import Photos from './pages/photos/Photos';
 
 const App = () => {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/username/albums' element={<Album />} />
+      <Route path='/username/albums/photos' element={<Photos />} />
       <Route path='/friends' element={<Friends />} />
-      <Route path='/username/photos' element={<Album />} />
       <Route path='/post' element={<Post />} />
       <Route path='/profile/:username' element={<Profile />} /> 
         {/* endpoint to be changed into userName = firstName+lastname+disambiguiator */}

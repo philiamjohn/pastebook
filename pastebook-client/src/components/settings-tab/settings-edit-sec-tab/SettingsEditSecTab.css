@@ -21,27 +21,25 @@
     border: solid 1px #696a69;
 } */
 /*#def3ee;*/
-.edit-email-with-pass{
+.edit-email-with-pass {
     /* border: solid 1px black; */
     height: 150px;
     margin-bottom: 2px;
     width: 400px;
-
 }
-.edit-pass h2{
-    border-top:1px solid gray;
-    border-bottom:1px solid gray;
+.edit-pass h2 {
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
     padding: 5px;
-
 }
-.edit-pass-new-pass{
+.edit-pass-new-pass {
     margin: 10px;
     /* border: solid 1px black; */
     margin: 0 auto;
     text-align: center;
     width: 400px;
 }
-.edit-pass-new-pass input{
+.edit-pass-new-pass input {
     margin-top: 5px;
     margin-bottom: 5px;
     width: 200px;
@@ -49,9 +47,23 @@
     border-radius: 6px;
     border: solid 1px gray;
 }
-.edit-pass-new-pass button{
+.edit-pass-new-pass button {
     width: 200px;
     margin-bottom: 5px;
     padding: 5px;
     line-height: 20px;
+}
+.edit-pass-new-pass input:focus {
+    outline: none !important;
+    border-color: #719ece;
+    box-shadow: 0 0 10px #719ece;
+}
+.edit-pass-new-pass input.active {
+    border: red 1px solid;
+}
+.edit-pass-new-pass input.test {
+    border: green 1px solid;
+}
+.edit-pass-new-pass input.testing {
+    border: yellow 1px solid;
 }

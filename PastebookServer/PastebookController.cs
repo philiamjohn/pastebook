@@ -133,6 +133,23 @@ public class PastebookController : Controller
         return Json(homePosts);
     }
 
+    // Save created album in database and retrieve album_id
+    [HttpPost]
+    [Route("/albums/create")]
+    public IActionResult addAlbumToDatabase([FromBody] AlbumModel albumDetails)
+    {
+        Database.AddAlbum(albumDetails);
+        return Ok("Album created successfully.");
+    }
+
+    [HttpGet]
+    [Route("/username/albums")]
+    public IActionResult getAlbumFromDatabase([FromHeader(Name = "User_ID")] int userId)
+    {
+        var albumDetails = Database.GetAlbum(userId);
+        return Json(albumDetails);
+    }
+
     [HttpPut]
     [Route("/userUpdate")]
     public IActionResult userCredentialUpdate([FromBody] HomeDataModel model)
@@ -156,9 +173,7 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/profile/{username?}")]
-    public IActionResult getProfileData(
-        [FromHeader(Name = "X-UserId")] int userId,
-        string username)
+    public IActionResult getProfileData([FromHeader(Name = "X-UserId")] int userId, string username)
     {
         return Json(Database.GetProfileData(username, userId));
     }
@@ -167,14 +182,32 @@ public class PastebookController : Controller
     [Route("/profileposts/{username?}")]
     public IActionResult getProfilePosts(
         [FromHeader(Name = "X-UserId")] int userId,
-        string username)
+        string username
+    )
     {
         return Json(Database.GetProfilePosts(username, userId));
     }
 
-    [HttpPost]
+    [HttpPatch]
     [Route("/editprofilepicture")]
     public IActionResult editProfilePicture(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromBody] ProfileDataModel profileData
+    )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        Database.EditProfilePicture(userId, profileData.ProfilePicture!);
+        return Ok("Post Added successfully");
+    }
+
+    [HttpPatch]
+    [Route("/editprofiledescription")]
+    public IActionResult editProfileDescription(
         [FromHeader(Name = "X-UserId")] int userId,
         [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
         [FromBody] ProfileDataModel profileData 
@@ -185,9 +218,17 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        Database.EditProfilePicture(userId, profileData.ProfilePicture!);
+        Database.EditProfileDescription(userId, profileData.ProfileDesc!);
         return Ok("Post Added successfully");
     }
+    // [HttpPost]
+    // [Route("/albums/photos/add")]
+    // public IActionResult addPhotosToAlbumDatabase(
+    //     [FromBody] AlbumModel albumDetails
+    // )
+    // {
+
+    // }
 
     [HttpPost]
     [Route("/userUpdate")]
@@ -200,4 +241,39 @@ public class PastebookController : Controller
         }
         return Ok();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    [HttpPut]
+    [Route("/changepass")]
+    public IActionResult changePassBaseOnID([FromBody] HomeDataModel model)
+    {
+        System.Console.WriteLine(model.Password + " passsss");
+        Database.ChangePassBaseOnID(model);
+        return Ok();
+    }
+
+
+
+
+
 }

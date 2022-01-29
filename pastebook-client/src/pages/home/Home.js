@@ -134,6 +134,13 @@ const Home = () => {
     return () => clearInterval(refreshPage);
   }, []);
 
+  useEffect(() => {
+    if (homePosts[0].Post_ID) {
+      document.getElementById("home-timeline-posts").className = "";
+    }
+  }, [homePosts]);
+  
+
 
   return (
     <div id="home-body">
@@ -153,7 +160,7 @@ const Home = () => {
       {/* {
         homePosts
           ? */}
-      <div id="home-timeline-posts">
+      <div id="home-timeline-posts" className="home-timeline-posts">
         {
           homePosts.map((post) => {
             return (
