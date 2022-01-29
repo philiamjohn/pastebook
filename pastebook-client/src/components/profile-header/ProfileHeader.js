@@ -141,9 +141,17 @@ const ProfileHeader = (props) => {
                         <p className='s1-r2-user-full-name'>{profileData.FirstName} {profileData.LastName}</p>
                     </div>
                     <div className='s1-r2-buttons'>
-                        {profileData.OwnProfile ? <button className='text block-border-shadow' id='edit-profile-btn'>< MdModeEditOutline size={15} />  Edit profile</button> : <div></div>}
-                        <button className='text block-border-shadow' id='add-friend-btn'>< BsPlusCircle size={15} />  Add friend</button>
-                        <button className='text block-border-shadow' id='yes-friend-btn'>< BsFillPersonCheckFill size={15} />  Friends</button>
+                        {profileData.OwnProfile
+                            ? <button className='text block-border-shadow' id='edit-profile-btn'>< MdModeEditOutline size={15} />  Edit profile</button>
+                            :
+                            <div>
+                                {
+                                    profileData.Friends
+                                        ? <button className='text block-border-shadow' id='yes-friend-btn'>< BsFillPersonCheckFill size={15} />  Friends</button>
+                                        : <button className='text block-border-shadow' id='add-friend-btn'>< BsPlusCircle size={15} />  Add friend</button>
+                                }
+                            </div>
+                        }
                     </div>
                     <div className='s1-r3-tabs'>
                         <button className='text'><Link to='/username' style={{ textDecoration: 'none', color: 'inherit' }}>Posts</Link></button>
@@ -151,7 +159,7 @@ const ProfileHeader = (props) => {
                         <button className='text'><Link to='/friends' style={{ textDecoration: 'none', color: 'inherit' }}>Friends</Link></button>
                         <button className='text'><Link to='/photos' style={{ textDecoration: 'none', color: 'inherit' }}>Photos</Link></button>
                     </div>
-                    <EditProfileModal profileData={profileData} getSessionIdFromCookie={getSessionIdFromCookie}/>
+                    <EditProfileModal profileData={profileData} getSessionIdFromCookie={getSessionIdFromCookie} />
                 </div>
             </div>
         </div>
