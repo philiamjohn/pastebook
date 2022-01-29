@@ -429,7 +429,10 @@ public class Database
                     post.Post_ID = reader.GetInt32(0);
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
-                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Content")))
+                    {
+                        post.Content = reader.GetString(3);
+                    }
                     if (!reader.IsDBNull(reader.GetOrdinal("Image")))
                     {
                         post.Image = reader.GetString(4);
@@ -607,7 +610,10 @@ public class Database
                     post.Post_ID = reader.GetInt32(0);
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
-                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Content")))
+                    {
+                        post.Content = reader.GetString(3);
+                    }
                     if (!reader.IsDBNull(reader.GetOrdinal("Image")))
                     {
                         post.Image = reader.GetString(4);

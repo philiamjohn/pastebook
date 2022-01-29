@@ -88,7 +88,7 @@ const Profile = () => {
 
     return (
         <div className='body'>
-            <Header username={username} getSessionIdFromCookie={getSessionIdFromCookie}/>
+            <Header username={username} getSessionIdFromCookie={getSessionIdFromCookie} />
             <ProfileHeader profileData={profileData} />
             <div className='s2-content'>
                 <div className='s2-c1'>

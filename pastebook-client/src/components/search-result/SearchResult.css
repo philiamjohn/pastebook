@@ -22,6 +22,10 @@
     width: 190px;
 }
 
+#search-result-name:hover {
+    text-decoration: underline;
+}
+
 #search-result-relationship {
     padding-left: 10px;
     padding-right: 18px;
