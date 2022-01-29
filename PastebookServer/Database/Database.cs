@@ -838,6 +838,7 @@ public class Database
                 cmd.ExecuteNonQuery();
             }
         }
+    }
 
     public static List<ProfileDataModel> SearchUsers(string filterKeyword)
     {
