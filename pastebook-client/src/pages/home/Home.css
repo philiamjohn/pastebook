@@ -21,3 +21,20 @@
     padding-bottom: 20px;
     background: #f0f2f5;
 }
+
+.home-timeline-posts{
+    -webkit-animation: 2s ease-in-out 0s normal forwards infinite fadein;
+    animation: 2s ease-in-out 0s normal forwards infinite fadein;
+}
+
+@keyframes fadein{
+    0% { opacity:0; }
+    66% { opacity:0; }
+    100% { opacity:1; }
+}
+
+@-webkit-keyframes fadein{
+    0% { opacity:0; }
+    66% { opacity:0; }
+    100% { opacity:1; }
+}
