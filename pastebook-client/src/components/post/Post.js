@@ -39,6 +39,7 @@ const Post = (props) => {
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
     const [modalId, setModalId] = useState();
+    const [likeCountsShown, setLikeCountShown] = useState(false);
     
     // like/unlike  toggle
     const toggleLike = () => {
@@ -122,7 +123,13 @@ const Post = (props) => {
                 </div>
             </div>
             <div className='post-content'>
-                <div className='post-content-p'>{postContentText}</div>
+                {postContentText ?
+                    <div className='post-content-p'>
+                        {postContentText}
+                    </div>    
+                        :
+                        null
+                }  
                 {postContentImg ?
                                 <div className='post-content-img'>
                                     <img src={ postContentImg} alt="content-img"/>
@@ -189,7 +196,7 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID}/> : null }
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} likesCountUpdate={setLikeCountShown}/> : null }
             </div>
             
         </div>
