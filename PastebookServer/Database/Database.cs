@@ -676,7 +676,6 @@ public class Database
                 command.Parameters.AddWithValue("@Target_ID", postDetails.Target_ID);
                 command.CommandTimeout = 120;
 
-
                 command.ExecuteNonQuery();
             }
         }
@@ -869,5 +868,45 @@ public class Database
             }
         }
         return profiles;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void UpdateUserEmailSessions(SessionModel model)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = @"UPDATE Sessions SET Email=@email WHERE Session_ID=@id";
+                cmd.Parameters.AddWithValue("@email", model.Email);
+                cmd.Parameters.AddWithValue("@id", model.SessionId);
+                cmd.CommandTimeout = 120;
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }
