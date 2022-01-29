@@ -5,7 +5,15 @@
 }
 
 #search-result-profile-picture {
-    padding-left: 30px;
+    margin-left: 30px;
+    width: 40px;
+    height: 40px;    
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+#search-result-profile-picture img {
+    width: 180%;
 }
 
 #search-result-name {

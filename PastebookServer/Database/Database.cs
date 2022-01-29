@@ -389,8 +389,28 @@ public class Database
         return profileData;
     }
 
-    public static List<PostModel>? GetProfilePosts(string username, int? userId)
+    public static List<PostModel>? GetProfilePosts(string username)
     {
+        //get the userId of username
+        int targetId = -1;
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    "SELECT User_ID FROM Users WHERE UserName = @Username;";
+                command.Parameters.AddWithValue("@Username", username);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    targetId = reader.GetInt32(0);
+                }
+            }
+        }
+
         List<PostModel> profilePosts = new List<PostModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
@@ -399,7 +419,7 @@ public class Database
             {
                 command.CommandText =
                     "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
-                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.Parameters.AddWithValue("@Target_ID", targetId);
                 command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
@@ -848,21 +868,26 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    @$"SELECT * 
+                    @$"SELECT User_ID, FirstName, LastName, ProfilePicture, UserName 
                   FROM Users
-                  WHERE FirstName LIKE '%{filterKeyword}' 
-                  OR FirstName LIKE '{filterKeyword}%' 
+                  WHERE FirstName LIKE '{filterKeyword}%' 
                   OR FirstName LIKE '%{filterKeyword}%'
-                  OR LastName LIKE '%{filterKeyword}' 
                   OR LastName LIKE '{filterKeyword}%' 
                   OR LastName LIKE '%{filterKeyword}%';";
 
+                command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     ProfileDataModel profile = new ProfileDataModel();
-                    // profile.Id = reader.GetInt32(0);
-                    // profile.Model = reader.GetString(1);
+                    profile.User_ID = reader.GetInt32(0);
+                    profile.FirstName = reader.GetString(1);
+                    profile.LastName = reader.GetString(2);
+                    profile.UserName = reader.GetString(4);
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        profile.ProfilePicture = reader.GetString(3);
+                    }
                     profiles.Add(profile);
                 }
             }

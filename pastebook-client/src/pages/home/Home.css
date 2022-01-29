@@ -22,7 +22,7 @@
     background: #f0f2f5;
 }
 
-.home-timeline-posts{
+.results-loading{
     -webkit-animation: 2s ease-in-out 0s normal forwards infinite fadein;
     animation: 2s ease-in-out 0s normal forwards infinite fadein;
 }
