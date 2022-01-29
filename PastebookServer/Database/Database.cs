@@ -439,6 +439,7 @@ public class Database
 
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.Parameters.AddWithValue("@ProfilePicture", profilePicture);
+                command.CommandTimeout = 120;
 
                 command.ExecuteNonQuery();
             }
@@ -459,6 +460,7 @@ public class Database
 
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.Parameters.AddWithValue("@ProfileDesc", profileDescription);
+                command.CommandTimeout = 120;
 
                 command.ExecuteNonQuery();
             }
@@ -534,6 +536,7 @@ public class Database
                 command.CommandText =
                     "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
+                command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -611,6 +614,7 @@ public class Database
                 command.CommandText =
                     "SELECT Id, FirstName, LastName, ProfilePicture, Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
+                command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -673,6 +677,8 @@ public class Database
                 command.Parameters.AddWithValue("@DatePosted", DateTime.Now);
                 command.Parameters.AddWithValue("@Content", postDetails.Content);
                 command.Parameters.AddWithValue("@Target_ID", postDetails.Target_ID);
+                command.CommandTimeout = 120;
+
 
                 command.ExecuteNonQuery();
             }
@@ -821,5 +827,36 @@ public class Database
                 return result ? true : false;
             }
         }
+    }
+
+    public static List<ProfileDataModel> SearchUsers(string filterKeyword)
+    {
+        List<ProfileDataModel> profiles = new List<ProfileDataModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @$"SELECT * 
+                  FROM Users
+                  WHERE FirstName LIKE '%{filterKeyword}' 
+                  OR FirstName LIKE '{filterKeyword}%' 
+                  OR FirstName LIKE '%{filterKeyword}%'
+                  OR LastName LIKE '%{filterKeyword}' 
+                  OR LastName LIKE '{filterKeyword}%' 
+                  OR LastName LIKE '%{filterKeyword}%';";
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ProfileDataModel profile = new ProfileDataModel();
+                    // profile.Id = reader.GetInt32(0);
+                    // profile.Model = reader.GetString(1);
+                    profiles.Add(profile);
+                }
+            }
+        }
+        return profiles;
     }
 }
