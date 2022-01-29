@@ -24,7 +24,7 @@ const SearchResultsModal = (props) => {
     return (
         <div id="search-results-modal" className="search-results-modal">
             <div className="search-results-modal-content">
-                <div id="search-results" className="results-loading">
+                <div id="search-results">
                     {
                         searchResults.map((userData) => {
                             return <SearchResult userData={userData} key={userData.User_ID}/>

@@ -12,7 +12,7 @@ import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 const Header = (props) => {
   const { username, getSessionIdFromCookie } = props;
   // set empty array of empty objects to achieve loading animation effect
-  const [searchResults, setSearchResults] = useState([{}, {}, {}, {}, {}, {}]);
+  const [searchResults, setSearchResults] = useState([]);
   const baseUrl = `http://localhost:5000`;
 
 
@@ -56,18 +56,6 @@ const Header = (props) => {
       }
     }
   }, []);
-
-  useEffect(() => {
-    const searchResultsContent = document.getElementById("search-results");
-    if (searchResultsContent) {
-      if (searchResults === [{}, {}, {}, {}, {}, {}]) {
-        searchResultsContent.className = "results-loading";
-      }
-      else {
-        searchResultsContent.className = "";
-      }
-    }
-  }, [searchResults]);
   return (
     <div id='header'>
       <div><a href="/"><img id="pastebook-logo" src={pastebookLogo} alt="pastebook-logo"></img></a></div>
