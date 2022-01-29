@@ -59,7 +59,7 @@ const SettingEditSecTab = ({ userData, getSessionId }) => {
         } else {
             console.log("false");
             password.className = 'active';
-            alert("old password incorrect")
+            // alert("old password incorrect")
         }
     }
     const refreshPage = () => {

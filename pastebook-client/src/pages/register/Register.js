@@ -16,18 +16,6 @@ const Register = () => {
     } else if (res.status === 401) {
       hadleRegisterCredentials(e);
     }
-    // var testResult = validateInputIfEmail(emailOrPhone);
-    // console.log(testResult + " email ba to");
-    // var testResultAgain = validateInputIfPhone(emailOrPhone);
-    // console.log(testResultAgain + " phone ata");
-    // if (validateInputIfEmail(emailOrPhone)) {
-    //   emailOrPhone = emailOrPhone;
-    //   phone = "none";
-    // }
-    // else if (validateInputIfPhone(emailOrPhone)) {
-    //   phone = emailOrPhone;
-    //   emailOrPhone = "none";
-    // }
   };
   const hadleRegisterCredentials = async (e) => {
     e.preventDefault();
@@ -41,6 +29,12 @@ const Register = () => {
     let timeStampVal = new Date(timeStamp * 1000).toLocaleDateString('en-US');
     // console.log(timeStampVal);
     var fullname = firstName + lastName;
+    var firstNameUpperFirst = firstName.split(/ /g).map(word =>
+      `${word.substring(0, 1).toUpperCase()}${word.substring(1)}`)
+      .join(" ");
+    var lastNameUpperFirst = lastName.split(/ /g).map(word =>
+      `${word.substring(0, 1).toUpperCase()}${word.substring(1)}`)
+      .join(" ");
     const removeSpace = fullname.replace(/ /g, '');
     var username = removeSpace.toString().toLowerCase();
     // console.log(username);
@@ -52,8 +46,8 @@ const Register = () => {
     // console.log(phone);
     const response = await fetch(`${baseurl}/register`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        FirstName: `${firstName}`,
-        LastName: `${lastName}`,
+        FirstName: `${firstNameUpperFirst}`,
+        LastName: `${lastNameUpperFirst}`,
         Email: `${emailOrPhone}`,
         Password: `${password}`,
         Birthday: `${timeStampVal}`,
@@ -62,22 +56,12 @@ const Register = () => {
         Username: `${username}`
       })
     });
-    // let data = await response.json();
-    // console.log(data);
     if (response.status === 200) {
       alert("Welcome , See your email for confirmation");
       navigate("/login", { replace: true });
     }
 
   }
-
-  // const validateInputIfEmail = (email) => {
-  //   var re = /\S+@\S+\.\S+/;
-  //   return re.test(email);
-  // };
-  // const validateInputIfPhone = (phone) => {
-  //   return phone.match(/^\d+$/);
-  // }
   return <div className='reg-page'>
     <div className='register'>
       <div className='reg-title'>
@@ -88,12 +72,12 @@ const Register = () => {
         <div className='reg-credentials'>
 
           <div className='fullname'>
-            <input type='text' name='firstName' id='first-name' placeholder='First Name'  required='required' />
+            <input type='text' name='firstName' id='first-name' placeholder='First Name' required='required' />
             <input type='text' name='lastName' id='last-name' placeholder='Last Name' required='required' />
           </div>
           <div className='credentials'>
             <input type='email' name='email' id='email' placeholder='Email' required='required' />
-            <input type='text' name='phone' id='phone' placeholder='09XXXXXXXXX (Optional)' />
+            <input type='text' name='phone' id='phone' placeholder='09XXXXXXXXX (Optional)' pattern="[0]{1}[9]{1}[0-9]{9}" />
             <input type='password' name='password' id='password' placeholder='Password' required='required' />
           </div>
           <div className='date'>

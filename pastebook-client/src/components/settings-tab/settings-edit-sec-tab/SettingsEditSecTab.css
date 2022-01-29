@@ -1,26 +1,3 @@
-/* .edit-pass{
-    padding: 10px;
-    margin: 10px;
-} */
-/* .borderline {
-    border-bottom: 2px solid black;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.edit-pass-new-pass {
-    display: grid;
-    grid-template-columns: 400px;
-    justify-items: center;
-    align-items: center;
-    grid-template-rows: 100px;
-} */
-/* .edit-pass-new-pass input{
-    padding: 10px;
-    width: 175px;
-    border-radius: 6px;
-    border: solid 1px #696a69;
-} */
-/*#def3ee;*/
 .edit-email-with-pass {
     /* border: solid 1px black; */
     height: 150px;
