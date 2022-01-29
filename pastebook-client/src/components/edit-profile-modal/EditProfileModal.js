@@ -34,11 +34,18 @@ const EditProfileModal = (props) => {
         <div id="edit-profile-modal" className="edit-profile-modal">
             <div className="edit-profile-modal-content">
                 <span id="edit-profile-modal-close" onClick={closeEditProfileModal}>&times;</span>
-                <input id="profile-first-name"type="text" placeholder='First Name'></input>
-                <input id="profile-last-name"type="text" placeholder='Last Name'></input>
-                <div id="profile-blurb-text-div">
-                    <textarea id="profile-blurb-text" name="profile-blurb-text" maxLength={2000} placeholder="Profile Decription"></textarea>
-                </div>
+                <h3>Profile Details</h3>
+                <h5>First Name</h5>
+                <input id="profile-first-name" type="text" placeholder='First Name'></input>
+                <h5>Last Name</h5>
+                <input id="profile-last-name" type="text" placeholder='Last Name'></input>
+                <h5>Email</h5>
+                <h5>Password</h5>
+                <h5>Birthday</h5>
+                <h5>Gender</h5>
+                <h5>Phone</h5>
+                <h5>Profile Description</h5>
+                <textarea id="profile-blurb-text" name="profile-blurb-text" maxLength={2000} placeholder="Profile Decription"></textarea>
             </div>
         </div>
     );
