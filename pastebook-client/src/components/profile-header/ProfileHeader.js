@@ -65,7 +65,7 @@ const ProfileHeader = (props) => {
         console.table(profilePictureDetails);
 
         const response = await fetch(`${baseUrl}/editprofilepicture`, {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-UserId': homeUserId,
@@ -110,7 +110,7 @@ const ProfileHeader = (props) => {
     }
 
     useEffect(() => {
-        
+
     }, []);
 
     return (
@@ -121,17 +121,19 @@ const ProfileHeader = (props) => {
                     <div className='s1-r2-user-photo'>
                         <img src={profilePictureSource ? profilePictureSource : userphoto} alt='Default User'></img>
                         <div className='s1-r2-edit-photo-btn'>
-                            {/* <button onClick={editProfilePicture}>< ImCamera size={20} /></button> */}
-                            <label id="profile-add-picture-label" className="profile-label">
-                                {/* "accept="image/*" so only image uploads are allowed. */}
-                                <input id="profile-open-file-system" type="file" accept="image/*" onChange={onSelectImageFile} required />
-                                <span id="profile-add-picture-button">
-                                    <ImCamera
-                                        id="profile-add-picture-icon"
-                                        size={20} />
-                                </span>
-                            </label>
-
+                            {
+                                (profileData.OwnProfile)
+                                    ? <label id="profile-add-picture-label" className="profile-label">
+                                        {/* "accept="image/*" so only image uploads are allowed. */}
+                                        <input id="profile-open-file-system" type="file" accept="image/*" onChange={onSelectImageFile} required />
+                                        <span id="profile-add-picture-button">
+                                            <ImCamera
+                                                id="profile-add-picture-icon"
+                                                size={20} />
+                                        </span>
+                                    </label>
+                                    : <div></div>
+                            }
                         </div>
 
                     </div>
@@ -139,7 +141,7 @@ const ProfileHeader = (props) => {
                         <p className='s1-r2-user-full-name'>{profileData.FirstName} {profileData.LastName}</p>
                     </div>
                     <div className='s1-r2-buttons'>
-                        <button className='text block-border-shadow' id='edit-profile-btn'>< MdModeEditOutline size={15} />  Edit profile</button>
+                        {profileData.OwnProfile ? <button className='text block-border-shadow' id='edit-profile-btn'>< MdModeEditOutline size={15} />  Edit profile</button> : <div></div>}
                         <button className='text block-border-shadow' id='add-friend-btn'>< BsPlusCircle size={15} />  Add friend</button>
                         <button className='text block-border-shadow' id='yes-friend-btn'>< BsFillPersonCheckFill size={15} />  Friends</button>
                     </div>
@@ -149,7 +151,7 @@ const ProfileHeader = (props) => {
                         <button className='text'><Link to='/friends' style={{ textDecoration: 'none', color: 'inherit' }}>Friends</Link></button>
                         <button className='text'><Link to='/photos' style={{ textDecoration: 'none', color: 'inherit' }}>Photos</Link></button>
                     </div>
-                    <EditProfileModal profileData={profileData}/>
+                    <EditProfileModal profileData={profileData} getSessionIdFromCookie={getSessionIdFromCookie}/>
                 </div>
             </div>
         </div>

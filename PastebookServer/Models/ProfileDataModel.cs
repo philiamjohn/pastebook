@@ -10,4 +10,5 @@ public class ProfileDataModel
     public string? ProfilePicture { get; set; }
     public string? ProfileDesc { get; set; }
     public string? UserName { get; set; }
+    public bool? OwnProfile { get; set; }
 }

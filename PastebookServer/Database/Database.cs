@@ -341,27 +341,25 @@ public class Database
     public static ProfileDataModel? GetProfileData(string username, int userId)
     {
         ProfileDataModel profileData = new ProfileDataModel();
-        bool ownProfilePage = false;
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = "SELECT * FROM Users WHERE User_ID = @User_ID AND UserName = @UserName";
-                command.Parameters.AddWithValue("@User_ID", userId);
+                command.CommandText = "SELECT * FROM Users WHERE UserName = @UserName";
                 command.Parameters.AddWithValue("@UserName", username);
                 command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    ownProfilePage = true;
                     profileData.User_ID = reader.GetInt32(0);
                     profileData.FirstName = reader.GetString(1);
                     profileData.LastName = reader.GetString(2);
                     profileData.Birthday = reader.GetString(5);
                     profileData.Gender = reader.GetString(6);
                     profileData.UserName = reader.GetString(10);
+                    // to avoid errors when data is null
                     if (!reader.IsDBNull(reader.GetOrdinal("Email")))
                     {
                         profileData.Email = reader.GetString(3);
@@ -378,7 +376,15 @@ public class Database
                     {
                         profileData.ProfileDesc = reader.GetString(9);
                     }
-                    break;
+
+                    if (userId == reader.GetInt32(0))
+                    {
+                        profileData.OwnProfile = true;
+                    }
+                    else
+                    {
+                        profileData.OwnProfile = false;
+                    }
                 }
             }
         }
@@ -437,7 +443,26 @@ public class Database
                 command.ExecuteNonQuery();
             }
         }
+    }
 
+    public static void EditProfileDescription(int userId, string profileDescription)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"UPDATE Users
+                 SET ProfileDesc=@ProfileDesc
+                 WHERE User_ID=@User_ID;";
+
+                command.Parameters.AddWithValue("@User_ID", userId);
+                command.Parameters.AddWithValue("@ProfileDesc", profileDescription);
+
+                command.ExecuteNonQuery();
+            }
+        }
     }
 
     public static HomeDataModel? GetUserById(string id)

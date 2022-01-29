@@ -2,7 +2,7 @@
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 10; /* Sit on top */
-    padding-top: 50px; /* Location of the box */
+    padding-top: 30vh; /*Location of the box*/
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -17,21 +17,15 @@
     background-color: white;
     border: 1px solid #888;
     width: 50%;
-    height: 80vh;
+    height: 40vh;
     border-radius: 6px;
     text-align: center;
     overflow-y: auto;
-}
-
-.edit-profile-modal-content h5 {
-    margin: 0;
-    padding: 0;
-    margin-left: 5vw;
-    text-align: left;
+    padding-bottom: 5vh;
 }
 
 .edit-profile-modal-content h3 {
-    margin-top: 5vh;
+    padding-top: 5.5vh;
 }
 
 #edit-profile-modal-close {
@@ -39,6 +33,7 @@
     float: right;
     font-size: 30px;
     font-weight: bold;
+    margin-top: 10px;
     padding-right: 3vw;
 }
   
@@ -48,15 +43,6 @@
     cursor: pointer;
 }
 
-#profile-first-name {
-    height: 30px;
-    width: 40vw;
-}
-
-#profile-last-name {
-    height: 30px;
-    width: 40vw;
-}
 
 #profile-blurb-text-div {
     margin: 0;
@@ -66,9 +52,33 @@
 #profile-blurb-text {
     padding-left: 7px;
     padding-right: 7px;
-    width: 40vw;
-    min-height: 20vh;
+    width: 33vw;
+    min-height: 15vh;
     resize: vertical;
     background-color: #f7f7f7;
     border-width: 2px;
+    border-radius: 6px;
+}
+
+#edit-profile-description-button {
+    height: 30px;
+    width: 7vw;
+    margin-top: 10px;
+    font-size: 18px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+
+#edit-profile-description-button:hover {
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+}
+
+#edit-profile-description-button:active {
+    background-color: #dfe3ee;
+    color: black;
+    border: 1px solid black;
 }

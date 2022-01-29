@@ -195,7 +195,7 @@ public class PastebookController : Controller
         return Json(Database.GetProfilePosts(username, userId));
     }
 
-    [HttpPost]
+    [HttpPatch]
     [Route("/editprofilepicture")]
     public IActionResult editProfilePicture(
         [FromHeader(Name = "X-UserId")] int userId,
@@ -209,6 +209,23 @@ public class PastebookController : Controller
             return Unauthorized();
         }
         Database.EditProfilePicture(userId, profileData.ProfilePicture!);
+        return Ok("Post Added successfully");
+    }
+
+    [HttpPatch]
+    [Route("/editprofiledescription")]
+    public IActionResult editProfileDescription(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromBody] ProfileDataModel profileData 
+        )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        Database.EditProfileDescription(userId, profileData.ProfileDesc!);
         return Ok("Post Added successfully");
     }
     // [HttpPost]
