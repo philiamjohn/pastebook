@@ -8,19 +8,15 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
     // let navigate = useNavigate();
     useEffect(() => {
         var stringDate = userData.Birthday;
-        console.log(stringDate);
+        // console.log(stringDate);
         var convertToRealDate = new Date(Date.parse(stringDate));
-        console.log(convertToRealDate + " real");
-        // var splitRealDate = convertToRealDate.getFullYear() + "-" + convertToRealDate.getDate() + "-" + (convertToRealDate.getMonth() + 1);
-        // console.log(splitRealDate+" real2");
-        // var realDate = new Date(splitRealDate.toString);
-        // console.log(realDate+" real3");
+        // console.log(convertToRealDate + " real");
         var parts = convertToRealDate.toString().split(" ");
         var months = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06", Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
         var newDefaultDateVal = parts[3] + "-" + months[parts[1]] + "-" + parts[2];
-        console.log(newDefaultDateVal + " zzzzz");
+        // console.log(newDefaultDateVal + " zzzzz");
         setDate(newDefaultDateVal);
-        console.log(userData);
+        // console.log(userData);
 
     }, []);
     const refreshPage = () => {
@@ -32,10 +28,6 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
         var lname = document.getElementById('last-name-settings').value;
         var birthday = document.getElementById('birthday-settings').value;
         var gender = document.getElementById('genderChoice').value;
-        // console.log(fname + "fname");
-        // console.log(lname + " lane");
-        // console.log(birthday + " birthday");
-        // console.log(gender + " gender");
         var birthDate = birthday.split("-")
         var timeStamp = parseInt(new Date(birthDate[0], birthDate[1] - 1, birthDate[2]).getTime()) / 1000;
         let timeStampVal = new Date(timeStamp * 1000).toLocaleDateString('en-US');

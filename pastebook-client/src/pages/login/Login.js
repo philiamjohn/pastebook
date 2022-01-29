@@ -8,7 +8,8 @@ const Login = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
 
-  const validateInputsAndLogin = async () => {
+  const validateInputsAndLogin = async (e) => {
+    e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
@@ -64,20 +65,20 @@ const Login = () => {
         <h2>Hello Connect to your Friends Now</h2>
       </div> */}
     </div>
-
-    <div className='login'>
-      <div className='loginCredentials'>
-        {/* pattern for email and phone number */}
-        <input type='text' name='email' id='email' placeholder='Email or Phone' pattern="^([0-9]{11})|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$" />
-        <input type='password' name='password' id='password' placeholder='Password' />
+    <form onSubmit={(e) => validateInputsAndLogin(e)}>
+      <div className='login'>
+        <div className='loginCredentials'>
+          {/* pattern for email and phone number */}
+          <input type='text' name='email' id='email' placeholder='Email or Phone' pattern="^([0-9]{11})|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$" />
+          <input type='password' name='password' id='password' placeholder='Password' />
+        </div>
+        <div className='loginPageButtonsLoginPage'>
+          <button id='loginButtonLoginPage' /*onClick={validateInputsAndLogin}*/ type='submit'>Login</button>
+          <div className='dashline'></div>
+          <button id='registerButtonLoginPage' onClick={() => { navigate("/register", { replace: true }) }}>Register</button>
+        </div>
       </div>
-      <div className='loginPageButtonsLoginPage'>
-        <button id='loginButtonLoginPage' onClick={validateInputsAndLogin}>Login</button>
-        <div className='dashline'></div>
-        <button id='registerButtonLoginPage' onClick={() => { navigate("/register", { replace: true }) }}>Register</button>
-      </div>
-    </div>
-
+    </form>
   </div>;
 };
 

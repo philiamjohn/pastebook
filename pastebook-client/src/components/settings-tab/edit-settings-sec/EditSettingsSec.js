@@ -5,22 +5,23 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
     const baseurl = "http://localhost:5000";
     const checkEmailIfExist = async (e) => {
         e.preventDefault();
-        var email = document.getElementById('new-email').value;
-        const res = await fetch(`${baseurl}/register/` + email, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+        var email = document.getElementById('new-email');
+        const res = await fetch(`${baseurl}/register/` + email.value, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
         if (res.status === 200) {
-            alert("already taken ")
+            // alert("already taken ")
             // setDisableButton(true);
+            email.className = 'active';
 
         } else if (res.status === 401) {
-            alert("available");
+            // alert("available");
             // setDisableButton(false);
-
+            email.className = 'test';
         }
 
     };
-    // // const refreshPage = () => {
-    // //     window.location.reload();
-    // // }
+    const refreshPage = () => {
+        window.location.reload();
+    }
     const updateEmailInSessions = async (e) => {
         e.preventDefault();
         var id = getSessionId();
@@ -34,15 +35,14 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
             })
         });
         if (response.status === 200) {
-            alert("yeye");
-            console.log(id + " idddddddd");
-            // navigate("/settings", { replace: true });
+            // alert("yeye");
+            refreshPage();
         }
 
     }
     const updateEmail = async (e) => {
         e.preventDefault();
-        updateEmailInSessions(e);
+        // updateEmailInSessions(e);
         var email = document.getElementById('new-email');
         const response = await fetch(`${baseurl}/updateEmail`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
@@ -51,8 +51,8 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
             })
         });
         if (response.status === 200) {
-            alert("yey");
-            // navigate("/settings", { replace: true });
+            // alert("yey");
+            updateEmailInSessions(e);
         }
     }
     const checkPasswordIfMatch = async (e) => {
@@ -67,12 +67,12 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
         if (res.status === 200) {
             console.log("true");
             password.className = 'test';
-            // setDisableButton(false);
+            setDisableButton(false);
 
         } else {
             console.log("false");
             password.className = 'active';
-            alert("old password incorrect")
+            // alert("old password incorrect")
             // setDisableButton(true);
         }
     }
@@ -86,7 +86,6 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
 
         } else {
             conNewE.className = 'test';
-            setDisableButton(false);
         }
     }
     const [disableButton, setDisableButton] = useState(true);
@@ -97,7 +96,7 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
             <label htmlFor='confirm-new-email'>Confirm New Email:</label>
             <input type='email' name='confirm-new-email' id='confirm-new-email' placeholder='Confirm New Email' onChange={(e) => changeColor(e)} className={''} />
             <label htmlFor='confirm-pass'>Confirm Password:</label>
-            <input type='password' name='confirm-pass' id='confirm-pass' placeholder='Enter Password' onBlur={(e) => checkPasswordIfMatch(e)} />
+            <input type='password' name='confirm-pass' id='confirm-pass' placeholder='Enter Password' onChange={(e) => checkPasswordIfMatch(e)} />
             <div className='buttons-change-email'>
                 <button onClick={(e) => handeleCancelEditSecClick(e)}>Cancel</button>
                 <button type='submit' disabled={disableButton}>Save</button>
