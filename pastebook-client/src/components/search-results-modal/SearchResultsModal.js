@@ -26,9 +26,12 @@ const SearchResultsModal = (props) => {
             <div className="search-results-modal-content">
                 <div id="search-results">
                     {
-                        searchResults.map((userData) => {
-                            return <SearchResult userData={userData} key={userData.User_ID}/>
-                        })
+                        searchResults.length >= 1
+                            ?
+                            searchResults.map((userData) => {
+                                return <SearchResult userData={userData} key={userData.User_ID} />
+                            })
+                            : <p>No user found, try another keyword :(</p>
                     }
                 </div>
             </div>

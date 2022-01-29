@@ -88,7 +88,7 @@ const Profile = () => {
 
     return (
         <div className='body'>
-            <Header username={username} getSessionIdFromCookie={getSessionIdFromCookie} />
+            <Header username={localStorage.getItem("profileUsername")} getSessionIdFromCookie={getSessionIdFromCookie} />
             <ProfileHeader profileData={profileData} />
             <div className='s2-content'>
                 <div className='s2-c1'>
@@ -98,6 +98,8 @@ const Profile = () => {
                             <div className='s2-c1-r1-intro-aboutme'><p>{profileData.ProfileDesc}</p></div>
                             <div className='text'>Gender: {profileData.Gender}</div>
                             <div className='text'> Birthday: {profileData.Birthday}</div>
+                            <div className='text'> Email: {profileData.Email}</div>
+                            {profileData.Phone ? <div className='text'> Phone: {profileData.Phone}</div> : <div />}
                         </div>
                     </div>
                     <div className='s2-c1-r2-photos block-border-shadow'>
@@ -166,19 +168,22 @@ const Profile = () => {
                 </div> */}
             </div>
             {
-                profilePosts.map((post) => {
-                    return (
-                        <PostComponent
-                            key={post.Post_ID}
-                            postID={post.Post_ID}
-                            authorID={post.User_ID}
-                            postTimeStamp={post.DatePosted}
-                            postContentText={post.Content}
-                            postContentImg={post.Image}
-                            userID={localStorage.getItem('homeUserId')}
-                        />
-                    )
-                })
+                profileData.OwnProfile || profileData.Friends
+                    ?
+                    profilePosts.map((post) => {
+                        return (
+                            <PostComponent
+                                key={post.Post_ID}
+                                postID={post.Post_ID}
+                                authorID={post.User_ID}
+                                postTimeStamp={post.DatePosted}
+                                postContentText={post.Content}
+                                postContentImg={post.Image}
+                                userID={localStorage.getItem('homeUserId')}
+                            />
+                        )
+                    })
+                    : <div />
             }
         </div>
     );

@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoMdSettings } from 'react-icons/io';
 import { FaUserAlt } from 'react-icons/fa';
 import { BiLogOut } from 'react-icons/bi';
 import './MenuModal.css';
-import { useNavigate } from 'react-router-dom';
 
 const MenuModal = (props) => {
     const { username } = props;
@@ -52,10 +51,15 @@ const MenuModal = (props) => {
             navigate("/login", { replace: true });
         }
     }
+
+    const goToProfilePage = () => {
+        navigate(`/profile/${username}`, { replace: true });
+        window.location.reload();
+    }
     return (
         <div id="menu-modal" className="menu-modal">
             <div className="menu-modal-content">
-                <Link id="profile-link" to={`/profile/${username}`}>
+                <a id="profile-link" onClick={goToProfilePage}>
                     <p>
                         <FaUserAlt
                             id="profile-icon"
@@ -63,7 +67,7 @@ const MenuModal = (props) => {
                             color='black' />
                         Profile
                     </p>
-                </Link>
+                </a>
                 <a href="/settings">
                     <p>
                         <IoMdSettings

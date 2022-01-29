@@ -382,6 +382,28 @@ public class Database
                     else
                     {
                         profileData.OwnProfile = false;
+                        profileData.Friends = false;
+                    }
+                }
+            }
+        }
+
+        if (profileData.OwnProfile == false)
+        {
+            using (var db = new SqlConnection(DB_CONNECTION_STRING))
+            {
+                db.Open();
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = "SELECT * FROM FriendsPerUser WHERE User_ID = @User_ID AND Friend_ID = @Friend_ID;";
+                    command.Parameters.AddWithValue("@Friend_ID", userId);
+                    command.Parameters.AddWithValue("@User_ID", profileData.User_ID);
+                    command.CommandTimeout = 120;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        profileData.Friends = true;
                     }
                 }
             }
@@ -873,14 +895,38 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText =
-                    @$"SELECT User_ID, FirstName, LastName, ProfilePicture, UserName 
-                  FROM Users
-                  WHERE FirstName LIKE '{filterKeyword}%' 
-                  OR FirstName LIKE '%{filterKeyword}%'
-                  OR LastName LIKE '{filterKeyword}%' 
-                  OR LastName LIKE '%{filterKeyword}%';";
+                // command.CommandText =
+                //     @$"SELECT User_ID, FirstName, LastName, ProfilePicture, UserName 
+                //   FROM Users
+                //   WHERE FirstName LIKE '{filterKeyword}%' 
+                //   OR FirstName LIKE '%{filterKeyword}%'
+                //   OR LastName LIKE '{filterKeyword}%' 
+                //   OR LastName LIKE '%{filterKeyword}%';";
 
+                if (filterKeyword.Length <= 1)
+                {
+                    command.CommandText = @$"
+                    SELECT TOP (5) User_ID, FirstName, LastName, ProfilePicture, UserName
+                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
+                    OR CONTAINS(LastName, @FilterKeyword)
+                    OR FirstName LIKE '{filterKeyword}%' 
+                    OR FirstName LIKE '%{filterKeyword}%'
+                    OR LastName LIKE '{filterKeyword}%' 
+                    OR LastName LIKE '%{filterKeyword}%';";
+                }
+                else
+                {
+                    command.CommandText = @$"
+                    SELECT User_ID, FirstName, LastName, ProfilePicture, UserName
+                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
+                    OR CONTAINS(LastName, @FilterKeyword)
+                    OR FirstName LIKE '{filterKeyword}%' 
+                    OR FirstName LIKE '%{filterKeyword}%'
+                    OR LastName LIKE '{filterKeyword}%' 
+                    OR LastName LIKE '%{filterKeyword}%';";
+                }
+
+                command.Parameters.AddWithValue("@FilterKeyword", filterKeyword);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())

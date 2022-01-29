@@ -13,7 +13,7 @@ const Home = () => {
   const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
   // set empty array of empty objects to achieve loading animation effect
-  const [homePosts, setHomePosts] = useState([]);
+  const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
 
   const getSessionIdFromCookie = () => {
@@ -152,18 +152,21 @@ const Home = () => {
 
       <div id="home-timeline-posts">
         {
-          homePosts.map((post) => {
-            return (
-              <PostComponent
-                key={post.Post_ID}
-                postID={post.Post_ID}
-                authorID={post.User_ID}
-                postTimeStamp={post.DatePosted}
-                postContentText={post.Content}
-                postContentImg={post.Image}
-                userID={localStorage.getItem('homeUserId')}
-              />)
-          })
+          homePosts
+            ?
+            homePosts.map((post) => {
+              return (
+                <PostComponent
+                  key={post.Post_ID}
+                  postID={post.Post_ID}
+                  authorID={post.User_ID}
+                  postTimeStamp={post.DatePosted}
+                  postContentText={post.Content}
+                  postContentImg={post.Image}
+                  userID={localStorage.getItem('homeUserId')}
+                />)
+            })
+            : <h5>Posts are being fetched, kindly wait...</h5>
         }
       </div>
     </div>
