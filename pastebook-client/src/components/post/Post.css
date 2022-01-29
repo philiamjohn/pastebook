@@ -16,7 +16,7 @@ div.post p, div.post h4 {
 /* POST-AUTHOR */
 
 div.post-author {
-    height: 50px;
+    height: 100%;
     background: #ffffff;
     display: flex;
     padding: 15px 10px 5px 15px;
@@ -51,10 +51,20 @@ div.post-author-details-name h4{
     cursor: pointer;
 }
 
+div.post-author-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+    margin-right: 5px ;
+    border-radius: 50%; 
+    overflow: hidden;
+}
+
 div.post-author-img  img{
     max-height: 100%;
-    max-width: 100%;
-    border-radius: 50%;
+    width: auto;;   
     cursor: pointer;
 }
 

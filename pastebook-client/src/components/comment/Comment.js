@@ -84,8 +84,12 @@ const Comment = (props) => {
         null
         }
         <div className='post-interactions-comments-create'>
-            <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
-            <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
+            <div className='post-interactions-comments-create-img'>
+              <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
+            </div>
+            <div className='post-interactions-comments-create-input'>
+              <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
+            </div>
         </div>
     </div>
   );
