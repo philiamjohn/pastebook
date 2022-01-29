@@ -18,7 +18,6 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
-
     public static void CreateTables()
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -44,7 +43,6 @@ public class Database
             }
         }
     }
-
 
     public static void DropTables()
     {
@@ -347,7 +345,8 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = "SELECT * FROM Users WHERE User_ID = @User_ID AND UserName = @UserName";
+                command.CommandText =
+                    "SELECT * FROM Users WHERE User_ID = @User_ID AND UserName = @UserName";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.Parameters.AddWithValue("@UserName", username);
                 command.CommandTimeout = 120;
@@ -393,8 +392,8 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-
-                command.CommandText = "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
+                command.CommandText =
+                    "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@Target_ID", userId);
                 command.CommandTimeout = 120;
 
@@ -437,7 +436,6 @@ public class Database
                 command.ExecuteNonQuery();
             }
         }
-
     }
 
     public static HomeDataModel? GetUserById(string id)
@@ -550,8 +548,8 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-
-                command.CommandText = "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
+                command.CommandText =
+                    "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.CommandTimeout = 120;
 
@@ -624,7 +622,6 @@ public class Database
 
     public static void AddPost(PostModel postDetails)
     {
-
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
@@ -663,13 +660,13 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 albumDetails.AlbumDate = DateTime.Now;
-                command.CommandText = 
+                command.CommandText =
                     @"INSERT INTO Albums (AlbumName, DateCreated) 
                     VALUES (@AlbumName, @DateCreated);";
 
                 command.Parameters.AddWithValue("@AlbumName", albumDetails.AlbumName);
                 command.Parameters.AddWithValue("@DateCreated", albumDetails.AlbumDate);
-                
+
                 command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
@@ -679,7 +676,7 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = 
+                command.CommandText =
                     @"SELECT MAX(Album_ID) 
                     FROM Albums;
                     ";
@@ -696,13 +693,13 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = 
+                command.CommandText =
                     @"INSERT INTO AlbumPerUser (User_ID, Album_ID) 
                     VALUES (@User_ID, @Album_ID);";
 
                 command.Parameters.AddWithValue("@User_ID", albumDetails.User_ID);
                 command.Parameters.AddWithValue("@Album_ID", albumDetails.Album_ID);
-                
+
                 command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
@@ -713,7 +710,7 @@ public class Database
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
-            db.Open();    
+            db.Open();
             using (var cmd = db.CreateCommand())
             {
                 cmd.CommandText =
@@ -731,16 +728,17 @@ public class Database
         }
     }
 
-    public static void UpdateUserEmail(HomeDataModel model){
-        using (var db= new SqlConnection(DB_CONNECTION_STRING))
+    public static void UpdateUserEmail(HomeDataModel model)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var cmd = db.CreateCommand())
             {
                 cmd.CommandText = @"UPDATE Users SET Email=@email WHERE User_ID=@id";
-                cmd.Parameters.AddWithValue("@email",model.Email);
-                cmd.Parameters.AddWithValue("@id",model.User_ID);
-                command.CommandTimeout = 120;
+                cmd.Parameters.AddWithValue("@email", model.Email);
+                cmd.Parameters.AddWithValue("@id", model.User_ID);
+                cmd.CommandTimeout = 120;
                 cmd.ExecuteNonQuery();
             }
         }
@@ -754,7 +752,7 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = 
+                command.CommandText =
                     @"SELECT Albums.AlbumName, Albums.DateCreated
                     FROM AlbumPerUser AS AlbUser
                     LEFT JOIN Users ON AlbUser.User_ID = Users.User_ID
@@ -762,7 +760,7 @@ public class Database
                     WHERE AlbUser.User_ID = @User_ID 
                     ORDER BY DateCreated DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
-                
+
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -786,14 +784,52 @@ public class Database
             {
                 cmd.CommandText = "SELECT Password FROM Users WHERE User_ID=@id";
                 cmd.Parameters.AddWithValue("@id", model.User_ID);
-                command.CommandTimeout = 120;
+                cmd.CommandTimeout = 120;
 
                 var passwordInDb = cmd.ExecuteScalar();
-                var result = BCrypt.Net.BCrypt.Verify(
-                    model.Password,
-                    passwordInDb.ToString()
-                );
+                var result = BCrypt.Net.BCrypt.Verify(model.Password, passwordInDb.ToString());
                 return result ? true : false;
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void ChangePassBaseOnID(HomeDataModel model)
+    {
+        var hashPass = BCrypt.Net.BCrypt.HashPassword(model.Password);
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = @"UPDATE Users SET Password=@p WHERE User_ID=@id";
+                cmd.Parameters.AddWithValue("@p", hashPass);
+                cmd.Parameters.AddWithValue("@id", model.User_ID);
+                cmd.CommandTimeout = 120;
+                cmd.ExecuteNonQuery();
             }
         }
     }

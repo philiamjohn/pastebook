@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/header/Header';
 import SettingEditInfoTab from '../../components/settings-tab/settings-edit-info-tab/SettingsEditInfoTab';
 import SettingEditSecTab from '../../components/settings-tab/settings-edit-sec-tab/SettingsEditSecTab';
@@ -33,16 +33,19 @@ const Settings = () => {
     }
     useEffect(() => {
         getUserData();
-    }, []);
+        console.log(userData);
+    },[]);
     const handleTab1 = () => {
         setActiveTab("tab1");
+
     }
     const handleTab2 = () => {
         setActiveTab("tab2");
     }
+    const username = localStorage.getItem('profileUsername');
     return <div>
         <div className='header'>
-            <Header />
+            <Header username={username} />
         </div>
         <div className='settings-container'>
             <div className='settings'>
@@ -53,7 +56,7 @@ const Settings = () => {
                     </ul>
                 </div>
                 <div className='out'>
-                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} />}
+                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getUserData={getUserData} />}
                 </div>
             </div>
         </div>
