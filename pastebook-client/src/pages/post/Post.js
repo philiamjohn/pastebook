@@ -16,7 +16,7 @@ const Post = () => {
             <PostComponent postID="7"
                            authorID="10"
                            postTimeStamp="2022-01-26 18:03:34.893" 
-                           postContentP="Test" 
+                           postContentText={null} 
                            postContentImg={MeowDrama} 
             />              
         </div>

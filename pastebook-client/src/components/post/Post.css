@@ -61,21 +61,19 @@ div.post-author-img  img{
 /* POST-CONTENT */
 
 div.post-content {
-    max-height: 400px;
+    height: 100%;
     background: #ffffff;
-    padding-top: 5px;
-    padding-bottom: 5px;
     overflow: hidden;
 }
 
 div.post-content-p {
     height: 7%;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 5px 15px;
 }
 
 div.post-content-img {
     height: 93%;
+    padding: 5px 0;
 }
 
 div.post-content-img img {
@@ -99,7 +97,7 @@ div.post-interactions {
 }
 
 div.post-interactions-counts {
-    height: 20px;
+    max-height: 100%;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -107,10 +105,12 @@ div.post-interactions-counts {
 }
 
 div.post-interactions-counts-like {
+    height: 20px;
     margin-left: 15px;
 }
 
 div.post-interactions-counts-comment {
+    height: 20px;
     margin-right: 15px;
 }
 
