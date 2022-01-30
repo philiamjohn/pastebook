@@ -544,7 +544,7 @@ public class Database
                     db.Open();
                     using (var command = db.CreateCommand())
                     {
-                        command.CommandText = "SELECT User_ID FROM Notifications WHERE Type = @Type AND Target_ID = @Target_ID AND User_ID = @User_ID;";
+                        command.CommandText = "SELECT User_ID FROM Notifications WHERE Type = @Type AND (Target_ID = @Target_ID AND User_ID = @User_ID OR Target_ID = @User_ID AND User_ID = @Target_ID);";
                         command.Parameters.AddWithValue("@Type", "friendrequest");
                         command.Parameters.AddWithValue("@User_ID", userId);
                         command.Parameters.AddWithValue("@Target_ID", profileData.User_ID);

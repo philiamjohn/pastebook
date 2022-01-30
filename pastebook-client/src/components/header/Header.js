@@ -85,6 +85,9 @@ const Header = (props) => {
   useEffect(async () => {
     if (userId) {
       await getNotifications();
+      setInterval(async () => {
+        await getNotifications();
+      }, 20000);
     }
   }, [userId])
 

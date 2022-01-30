@@ -6,7 +6,7 @@ import { FaUserFriends } from 'react-icons/fa';
 const HomeFriends = () => {
   return (
     <div id="home-friends">
-      <a id="friends-anchor" href="#">
+      <a id="friends-anchor" href="/friends">
         <FaUserFriends
           id="home-friends-icon"
           size={25}
