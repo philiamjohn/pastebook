@@ -3,6 +3,8 @@
     margin-top: 15px;
     margin-left: 15px;
     width: 22vw;
+    height: 12vh;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 #home-albums h4{

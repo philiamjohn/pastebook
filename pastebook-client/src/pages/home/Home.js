@@ -12,7 +12,6 @@ const Home = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
-  // set empty array of empty objects to achieve loading animation effect
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
 

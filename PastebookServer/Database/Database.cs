@@ -336,6 +336,134 @@ public class Database
         return homeData;
     }
 
+    public static List<NotificationModel>? GetNotifications(int userId)
+    {
+        List<NotificationModel> notifications = new List<NotificationModel>();
+        //retrieve unread notifs
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = $@"
+                SELECT 
+                    Notifs.Notification_ID,
+                    Notifs.DateTriggered,
+                    Notifs.Target_ID AS ReceivingUser_User_ID,
+                    Notifs.User_ID AS TriggerUser_User_ID,
+                    Notifs.Type,
+                    Notifs.Content,
+                    Notifs.ReadStatus,
+                    TriggerUser.FirstName AS TriggerUser_FirstName,
+                    TriggerUser.LastName AS TriggerUser_LastName
+                FROM Notifications AS Notifs
+                LEFT JOIN Users AS ReceivingUser ON Notifs.Target_ID = ReceivingUser.User_ID
+                LEFT JOIN Users As TriggerUser ON Notifs.User_ID = TriggerUser.User_ID
+                WHERE Notifs.ReadStatus = 'unread' AND Notifs.Target_ID = @Target_ID
+                ORDER BY Notifs.DateTriggered DESC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    NotificationModel notification = new NotificationModel();
+                    notification.Notification_ID = reader.GetInt32(0);
+                    notification.DateTriggered = $"{reader.GetDateTime(1).ToString("f")}";
+                    notification.Target_ID = reader.GetInt32(2);
+                    notification.User_ID = reader.GetInt32(3);
+                    notification.Type = reader.GetString(4);
+                    notification.Content = reader.GetString(5);
+                    notification.ReadStatus = reader.GetString(6);
+                    notification.Name = $"{reader.GetString(7)} {reader.GetString(8)}";
+                    notifications.Add(notification);
+                }
+            }
+        }
+        //retrieve already read notifs
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = $@"
+                SELECT 
+                    Notifs.Notification_ID,
+                    Notifs.DateTriggered,
+                    Notifs.Target_ID AS ReceivingUser_User_ID,
+                    Notifs.User_ID AS TriggerUser_User_ID,
+                    Notifs.Type,
+                    Notifs.Content,
+                    Notifs.ReadStatus,
+                    TriggerUser.FirstName AS TriggerUser_FirstName,
+                    TriggerUser.LastName AS TriggerUser_LastName
+                FROM Notifications AS Notifs
+                LEFT JOIN Users AS ReceivingUser ON Notifs.Target_ID = ReceivingUser.User_ID
+                LEFT JOIN Users As TriggerUser ON Notifs.User_ID = TriggerUser.User_ID
+                WHERE (Notifs.ReadStatus = 'read' OR Notifs.ReadStatus = 'accepted') AND Notifs.Target_ID = @Target_ID
+                ORDER BY Notifs.DateTriggered DESC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    NotificationModel notification = new NotificationModel();
+                    notification.Notification_ID = reader.GetInt32(0);
+                    notification.DateTriggered = $"{reader.GetDateTime(1).ToString("f")}";
+                    notification.Target_ID = reader.GetInt32(2);
+                    notification.User_ID = reader.GetInt32(3);
+                    notification.Type = reader.GetString(4);
+                    notification.Content = reader.GetString(5);
+                    notification.ReadStatus = reader.GetString(6);
+                    notification.Name = $"{reader.GetString(7)} {reader.GetString(8)}";
+                    notifications.Add(notification);
+                }
+            }
+        }
+        return notifications;
+    }
+
+    public static void ChangeNotificationReadStatus(int notificationId)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"UPDATE Notifications
+                 SET ReadStatus=@ReadStatus
+                 WHERE Notification_ID=@Notification_ID;";
+
+                command.Parameters.AddWithValue("@Notification_ID", notificationId);
+                command.Parameters.AddWithValue("@ReadStatus", "read");
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void ChangeAllNotificationsReadStatus(int userId)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"UPDATE Notifications
+                 SET ReadStatus='read'
+                 WHERE ReadStatus='unread' AND Target_ID = @Target_ID;";
+
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
     public static ProfileDataModel? GetProfileData(string username, int userId)
     {
         ProfileDataModel profileData = new ProfileDataModel();
