@@ -12,12 +12,13 @@ import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 const Header = (props) => {
   const { username, getSessionIdFromCookie } = props;
   const [userId, setUserId] = useState(null);
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = useState(0);
   const baseUrl = `http://localhost:5000`;
 
   const searchUser = async () => {
+    setSearchResults(null);
     const searchKeyword = document.getElementById("search-bar").value;
     const sessionId = getSessionIdFromCookie();
     const response = await fetch(`${baseUrl}/searchusers`, {
