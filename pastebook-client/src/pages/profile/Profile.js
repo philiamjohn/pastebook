@@ -89,7 +89,7 @@ const Profile = () => {
     return (
         <div className='body'>
             <Header username={localStorage.getItem("profileUsername")} getSessionIdFromCookie={getSessionIdFromCookie} />
-            <ProfileHeader profileData={profileData} />
+            <ProfileHeader profileData={profileData} username={username}/>
             <div className='s2-content'>
                 <div className='s2-c1'>
                     <div className='s2-c1-r1-intro block-border-shadow'>

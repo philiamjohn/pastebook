@@ -383,6 +383,7 @@ public class Database
                     {
                         profileData.OwnProfile = false;
                         profileData.Friends = false;
+                        profileData.FriendRequestSent = false;
                     }
                 }
             }
@@ -395,7 +396,7 @@ public class Database
                 db.Open();
                 using (var command = db.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM FriendsPerUser WHERE User_ID = @User_ID AND Friend_ID = @Friend_ID;";
+                    command.CommandText = "SELECT User_ID FROM FriendsPerUser WHERE User_ID = @User_ID AND Friend_ID = @Friend_ID;";
                     command.Parameters.AddWithValue("@Friend_ID", userId);
                     command.Parameters.AddWithValue("@User_ID", profileData.User_ID);
                     command.CommandTimeout = 120;
@@ -407,8 +408,72 @@ public class Database
                     }
                 }
             }
+
+            if (profileData.Friends == false)
+            {
+                using (var db = new SqlConnection(DB_CONNECTION_STRING))
+                {
+                    db.Open();
+                    using (var command = db.CreateCommand())
+                    {
+                        command.CommandText = "SELECT User_ID FROM Notifications WHERE Type = @Type AND Target_ID = @Target_ID AND User_ID = @User_ID;";
+                        command.Parameters.AddWithValue("@Type", "friendrequest");
+                        command.Parameters.AddWithValue("@User_ID", userId);
+                        command.Parameters.AddWithValue("@Target_ID", profileData.User_ID);
+                        command.CommandTimeout = 120;
+
+                        var reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            profileData.FriendRequestSent = true;
+                        }
+                    }
+                }
+            }
         }
         return profileData;
+    }
+
+    public static void AddFriend(int userId, string username, NotificationModel addFriendNotification)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT User_ID FROM Users WHERE UserName = @UserName;";
+                command.Parameters.AddWithValue("@UserName", username);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    addFriendNotification.Target_ID = reader.GetInt32(0);
+                }
+            }
+        }
+
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+
+                command.CommandText =
+                    @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@DateTriggered, @Target_ID, @User_ID, @Type, @Content, @ReadStatus);";
+
+                command.Parameters.AddWithValue("@DateTriggered", DateTime.Now);
+                command.Parameters.AddWithValue("@Target_ID", addFriendNotification.Target_ID);
+                command.Parameters.AddWithValue("@User_ID", addFriendNotification.User_ID);
+                command.Parameters.AddWithValue("@Type", addFriendNotification.Type);
+                command.Parameters.AddWithValue("@Content", addFriendNotification.Content);
+                command.Parameters.AddWithValue("@ReadStatus", addFriendNotification.ReadStatus);
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
     }
 
     public static List<PostModel>? GetProfilePosts(string username)
@@ -895,14 +960,6 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                // command.CommandText =
-                //     @$"SELECT User_ID, FirstName, LastName, ProfilePicture, UserName 
-                //   FROM Users
-                //   WHERE FirstName LIKE '{filterKeyword}%' 
-                //   OR FirstName LIKE '%{filterKeyword}%'
-                //   OR LastName LIKE '{filterKeyword}%' 
-                //   OR LastName LIKE '%{filterKeyword}%';";
-
                 if (filterKeyword.Length <= 1)
                 {
                     command.CommandText = @$"
