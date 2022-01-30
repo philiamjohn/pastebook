@@ -59,3 +59,7 @@
 #like-icon, #comment-icon, #friend-request-icon, #friend-request-accepted-icon, #post-on-profile-icon {
     padding-right: 5px;
 }
+
+.notification-unread {
+    background-color: rgb(218, 248, 255);
+}

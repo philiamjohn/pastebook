@@ -41,6 +41,7 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
+        
         return Json(Database.GetHomeData(session));
     }
 
