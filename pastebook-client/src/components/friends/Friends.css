@@ -18,6 +18,8 @@ div.friends-title h3 {
 div.friends-nav {
     display: flex;
     margin-bottom: 5px;
+    cursor: pointer; /* added by arhon*/
+
 }
 
 div.friends-nav p{

@@ -48,6 +48,9 @@ const MenuModal = (props) => {
         const response = await fetch(`${baseUrl}/session/` + coockieValue, { method: 'DELETE' });
         if (response.status === 200) {
             document.cookie = `${searchCookie}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+            localStorage.removeItem("homeUserId");
+            localStorage.removeItem("profileUsername");
+
             navigate("/login", { replace: true });
         }
     }

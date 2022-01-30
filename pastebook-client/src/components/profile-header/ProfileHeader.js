@@ -20,6 +20,7 @@ const ProfileHeader = (props) => {
     useEffect(() => {
         setProfilePictureSource(profileData.ProfilePicture);
     }, [props]);
+   
 
     const getSessionIdFromCookie = () => {
         const searchCookie = "pastebookSessionId=";
