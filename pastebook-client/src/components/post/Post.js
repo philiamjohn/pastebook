@@ -38,8 +38,6 @@ const Post = (props) => {
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
-    const [modalId, setModalId] = useState();
-    const [likeCountsShown, setLikeCountShown] = useState(false);
     
     // like/unlike  toggle
     const toggleLike = () => {
@@ -67,7 +65,6 @@ const Post = (props) => {
 
     //show Likes modal 
     const showLikesModal = (id) => {
-        setModalId(`likesModal${id}`);
         document.getElementById(`likesModal${id}`).style.display = "flex";  
     }
 
@@ -79,6 +76,7 @@ const Post = (props) => {
     useEffect(() => {
 
         //fetch author info
+        if(authorData!=null){
         fetch(`${baseUrl}/users`, {
             method: 'GET',
             headers: {
@@ -87,26 +85,31 @@ const Post = (props) => {
         })
         .then(response => response.json())
         .then(data => setAuthorData(data.Value));
+        }
 
         //fetch likes info
-        fetch(`${baseUrl}/postLikes`, {
-            method: 'GET',
-            headers: {
-              'PostID': postID
-            }
-        })
-        .then(response => response.json())
-        .then(data => setLikes(data.Value));
+        if(postID!=null){
+            fetch(`${baseUrl}/postLikes`, {
+                method: 'GET',
+                headers: {
+                  'PostID': postID
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLikes(data.Value));
+        }
 
         //fetch comment info
-        fetch(`${baseUrl}/postComments`, {
-            method: 'GET',
-            headers: {
-              'PostID': postID
-            }
-        })
-        .then(response => response.json())
-        .then(data => setComments(data.Value));
+        if(postID!=null) {
+            fetch(`${baseUrl}/postComments`, {
+                method: 'GET',
+                headers: {
+                  'PostID': postID
+                }
+            })
+            .then(response => response.json())
+            .then(data => setComments(data.Value));
+        }
         
         return () => {};
     }, []);   
@@ -139,32 +142,32 @@ const Post = (props) => {
                 }                         
             </div>
             <div className='post-interactions'>
-                <div className='post-interactions-counts'>
-                    <div className='post-interactions-counts-like'>
-                        {likes.length > 1 ? 
-                                            <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Likes</p>
-                                         : 
-                                            null
-                        }
-                        {likes.length == 1 ? 
-                                            <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Like</p>
-                                         : 
-                                            null
-                        }                     
-                    </div>
-                    <div className='post-interactions-counts-comment'>
-                        {comments.length > 1 ?
-                                                <p onClick={toggleComment}>{comments.length} Comments</p>
+                    <div className='post-interactions-counts'>
+                        <div className='post-interactions-counts-like'>
+                            {likes.length > 1 ? 
+                                                <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Likes</p>
                                              : 
-                                               null
-                        }
-                        {comments.length == 1 ?
-                                                <p onClick={toggleComment}>{comments.length} Comment</p>
+                                                null
+                            }
+                            {likes.length == 1 ? 
+                                                <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Like</p>
                                              : 
-                                               null
-                        }      
+                                                null
+                            }                     
+                        </div>
+                        <div className='post-interactions-counts-comment'>
+                            {comments.length > 1 ?
+                                                    <p onClick={toggleComment}>{comments.length} Comments</p>
+                                                 : 
+                                                   null
+                            }
+                            {comments.length == 1 ?
+                                                    <p onClick={toggleComment}>{comments.length} Comment</p>
+                                                 : 
+                                                   null
+                            }      
+                        </div>
                     </div>
-                </div>
                 <div className='post-interactions-btns'>
                     <div className='post-interactions-btns-like' onClick={toggleLike}>
                         <img src={likeStatus? LikedIcon : LikeIcon} alt='like-icon'/>
@@ -196,7 +199,7 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} likesCountUpdate={setLikeCountShown}/> : null }
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID}/> : null }
             </div>
             
         </div>

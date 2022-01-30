@@ -7,8 +7,7 @@ const Comment = (props) => {
 
   const {postAuthorImg,
          postID,
-         comments,
-         likesCountUpdate} = props;
+         comments} = props;
 
   const baseUrl = `http://localhost:5000`;
         
@@ -28,7 +27,6 @@ const Comment = (props) => {
     
     setCommentsList(comments);
     console.log(commentsList.length);
-    likesCountUpdate(commentsList.length);
     return () => {};
     }, [comments]);  
 
