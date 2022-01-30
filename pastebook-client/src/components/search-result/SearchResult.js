@@ -8,11 +8,6 @@ import './SearchResult.css';
 const SearchResult = (props) => {
     const { userData } = props;
     let navigate = useNavigate();
-    const [friends, setFriends] = useState(false);
-
-    useEffect(() => {
-        setFriends(userData.Friends);
-    }, [props]);
 
     const navigateToProfile = () => {
         navigate(`/profile/${userData.UserName}`, { replace: true });
@@ -31,25 +26,6 @@ const SearchResult = (props) => {
                     ? <a id="search-result-name" onClick={navigateToProfile}>{userData.FirstName} {userData.LastName}</a>
                     : <div id="search-result-name">First Name Last Name</div>
             }
-            <div id="search-result-relationship">
-                {friends
-                    ? <button>
-                        <FaUserFriends
-                            size={20}
-                            onMouseOver={({ target }) => target.style.color = "#3b5998"}
-                            onMouseOut={({ target }) => target.style.color = "black"}
-                        />
-                        <p>Friends</p>
-                    </button>
-                    : <button>
-                        <IoPersonAdd
-                            size={20}
-                            onMouseOver={({ target }) => target.style.color = "#3b5998"}
-                            onMouseOut={({ target }) => target.style.color = "black"}
-                        />
-                        <p>Add Friend</p>
-                    </button>}
-            </div>
         </div>);
 };
 

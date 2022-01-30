@@ -41,6 +41,7 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
+        
         return Json(Database.GetHomeData(session));
     }
 
@@ -51,16 +52,47 @@ public class PastebookController : Controller
         [FromHeader(Name = "X-SearchKeyword")] string searchKeyword
     )
     {
-        Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        Console.WriteLine($"SessionID: {pastebookSessionId}");
-        Console.WriteLine($"SearchKeyword: {searchKeyword}");
-        Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
         if (session == null)
         {
             return Unauthorized();
         }
         return Json(Database.SearchUsers(searchKeyword));
+    }
+
+    [HttpGet]
+    [Route("/notifications/{userId?}")]
+    public IActionResult getNotifications(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        int userId
+    )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        return Json(Database.GetNotifications(userId));
+    }
+
+    [HttpPatch]
+    [Route("/notifications/{notificationId?}")]
+    public IActionResult changeNotificationReadStatus(
+        int notificationId
+    )
+    {
+        Database.ChangeNotificationReadStatus(notificationId);
+        return Ok("Notification read status changed.");
+    }
+
+    [HttpPatch]
+    [Route("/clearallnotifications/{userId?}")]
+    public IActionResult changeAllNotificationsReadStatus(
+        int userId
+    )
+    {
+        Database.ChangeAllNotificationsReadStatus(userId);
+        return Ok("All Notifications read status changed.");
     }
 
     [HttpGet]
