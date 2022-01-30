@@ -1,5 +1,8 @@
 #home-friends {
-    border: 3px solid #8b9dc3;
+    /* border: 3px solid #8b9dc3; */
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 1px 5px 15px -10px #8b9dc3;
     margin-top: 15px;
     margin-left: 15px;
     width: 22vw;

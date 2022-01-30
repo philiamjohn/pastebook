@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../edit-settings-sec/EditSettingsSec.css'
 
-const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) => {
+const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionIdFromCookie }) => {
     const baseurl = "http://localhost:5000";
     const checkEmailIfExist = async (e) => {
         e.preventDefault();
@@ -24,7 +24,7 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) 
     }
     const updateEmailInSessions = async (e) => {
         e.preventDefault();
-        var id = getSessionId();
+        var id = getSessionIdFromCookie();
         console.log(id.toString());
         var email = document.getElementById('new-email');
         console.log(email.value + " Email");

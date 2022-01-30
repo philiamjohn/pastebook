@@ -8,39 +8,39 @@ import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
 import './Home.css'
 
-const Home = () => {
+const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
-  const baseUrl = `http://localhost:5000`;
+  // const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
   // set empty array of empty objects to achieve loading animation effect
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
 
-  const getSessionIdFromCookie = () => {
-    const searchCookie = "pastebookSessionId=";
-    if (document.cookie.length > 0) {
-      // Search for pastebookSessionId cookie.
-      let offset = document.cookie.indexOf(searchCookie)
+  // const getSessionIdFromCookie = () => {
+  //   const searchCookie = "pastebookSessionId=";
+  //   if (document.cookie.length > 0) {
+  //     // Search for pastebookSessionId cookie.
+  //     let offset = document.cookie.indexOf(searchCookie)
 
-      if (offset != -1) {
-        offset += searchCookie.length
-        // Set index of beginning of value 
-        let end = document.cookie.indexOf(";", offset)
+  //     if (offset != -1) {
+  //       offset += searchCookie.length
+  //       // Set index of beginning of value 
+  //       let end = document.cookie.indexOf(";", offset)
 
-        if (end == -1) {
-          end = document.cookie.length
-        }
+  //       if (end == -1) {
+  //         end = document.cookie.length
+  //       }
 
-        const pastebookSessionId = document.cookie.substring(offset, end);
-        console.log(`pastebookSessionId: ${pastebookSessionId}`);
-        return pastebookSessionId;
-      }
-    }
-    // If no cookie stored, redirect immediately to login
-    else {
-      navigate("/login", { replace: true });
-    }
-  }
+  //       const pastebookSessionId = document.cookie.substring(offset, end);
+  //       console.log(`pastebookSessionId: ${pastebookSessionId}`);
+  //       return pastebookSessionId;
+  //     }
+  //   }
+  //   // If no cookie stored, redirect immediately to login
+  //   else {
+  //     navigate("/login", { replace: true });
+  //   }
+  // }
 
   const getHomePageData = async () => {
     const pastebookSessionId = getSessionIdFromCookie();
@@ -103,6 +103,7 @@ const Home = () => {
   }
 
   useEffect(async () => {
+    getUserData();
     //clear all setIntervals
     for (let id = 0; id <= 1000; id++) {
       window.clearInterval(id);
@@ -137,10 +138,10 @@ const Home = () => {
   }, []);
   return (
     <div id="home-body">
-      <Header username={homeData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
+      <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} username={homeData.UserName} />
+          <HomeProfile currentUser={`${userData.FirstName} ${userData.LastName}`} username={userData.UserName} />
           <HomeFriends />
           <HomeAlbums />
         </div>
@@ -150,24 +151,26 @@ const Home = () => {
         </div>
       </div>
 
-      <div id="home-timeline-posts">
-        {
-          homePosts
-            ?
-            homePosts.map((post) => {
-              return (
-                <PostComponent
-                  key={post.Post_ID}
-                  postID={post.Post_ID}
-                  authorID={post.User_ID}
-                  postTimeStamp={post.DatePosted}
-                  postContentText={post.Content}
-                  postContentImg={post.Image}
-                  userID={localStorage.getItem('homeUserId')}
-                />)
-            })
-            : <h5>Posts are being fetched, kindly wait...</h5>
-        }
+      <div className='home-timeline-container'>
+        <div id="home-timeline-posts">
+          {
+            homePosts
+              ?
+              homePosts.map((post) => {
+                return (
+                  <PostComponent
+                    key={post.Post_ID}
+                    postID={post.Post_ID}
+                    authorID={post.User_ID}
+                    postTimeStamp={post.DatePosted}
+                    postContentText={post.Content}
+                    postContentImg={post.Image}
+                    userID={localStorage.getItem('homeUserId')}
+                  />)
+              })
+              : <h5>Posts are being fetched, kindly wait...</h5>
+          }
+        </div>
       </div>
     </div>
   );
