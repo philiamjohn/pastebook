@@ -279,6 +279,7 @@ public class Database
             {
                 command.CommandText = "SELECT * FROM Sessions WHERE Session_ID = @Id;";
                 command.Parameters.AddWithValue("@Id", Id);
+                command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -303,6 +304,7 @@ public class Database
             {
                 command.CommandText = "SELECT * FROM Users WHERE Email = @Email";
                 command.Parameters.AddWithValue("@Email", session.Email);
+                command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -329,7 +331,6 @@ public class Database
                     {
                         homeData.ProfileDesc = reader.GetString(9);
                     }
-                    break;
                 }
             }
         }
