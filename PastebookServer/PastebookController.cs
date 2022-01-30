@@ -45,6 +45,25 @@ public class PastebookController : Controller
     }
 
     [HttpGet]
+    [Route("/searchusers")]
+    public IActionResult searchUsers(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromHeader(Name = "X-SearchKeyword")] string searchKeyword
+    )
+    {
+        Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        Console.WriteLine($"SessionID: {pastebookSessionId}");
+        Console.WriteLine($"SearchKeyword: {searchKeyword}");
+        Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        return Json(Database.SearchUsers(searchKeyword));
+    }
+
+    [HttpGet]
     [Route("/users")]
     public IActionResult getUserData([FromHeader(Name = "UserID")] string userID)
     {
@@ -181,11 +200,10 @@ public class PastebookController : Controller
     [HttpGet]
     [Route("/profileposts/{username?}")]
     public IActionResult getProfilePosts(
-        [FromHeader(Name = "X-UserId")] int userId,
         string username
     )
     {
-        return Json(Database.GetProfilePosts(username, userId));
+        return Json(Database.GetProfilePosts(username));
     }
 
     [HttpPatch]
@@ -205,12 +223,24 @@ public class PastebookController : Controller
         return Ok("Post Added successfully");
     }
 
+    [HttpPost]
+    [Route("/addfriend/{username?}")]
+    public IActionResult addFriend(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromBody] NotificationModel addFriendNotification,
+        string username
+    )
+    {
+        Database.AddFriend(userId, username, addFriendNotification!);
+        return Ok("Friend request sent successfully");
+    }
+
     [HttpPatch]
     [Route("/editprofiledescription")]
     public IActionResult editProfileDescription(
         [FromHeader(Name = "X-UserId")] int userId,
         [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
-        [FromBody] ProfileDataModel profileData 
+        [FromBody] ProfileDataModel profileData
         )
     {
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
@@ -269,6 +299,16 @@ public class PastebookController : Controller
     {
         System.Console.WriteLine(model.Password + " passsss");
         Database.ChangePassBaseOnID(model);
+        return Ok();
+    }
+
+    [HttpPut]
+    [Route("/updateEmailSessions")]
+    public IActionResult updateUserEmailSessions([FromBody] SessionModel model)
+    {
+        System.Console.WriteLine(model.SessionId + " sesid");
+        System.Console.WriteLine(model.Email + " EMail");
+        Database.UpdateUserEmailSessions(model);
         return Ok();
     }
 

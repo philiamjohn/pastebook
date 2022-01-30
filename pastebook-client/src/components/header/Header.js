@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import pastebookLogo from '../../images/pastebook-logo.png';
 import { AiFillHome } from 'react-icons/ai';
 import { GiHamburgerMenu } from 'react-icons/gi';
@@ -10,7 +10,32 @@ import NotificationsModal from '../notifications/notifications-modal/Notificatio
 import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 
 const Header = (props) => {
-  const { username } = props;
+  const { username, getSessionIdFromCookie } = props;
+  // set empty array of empty objects to achieve loading animation effect
+  const [searchResults, setSearchResults] = useState([]);
+  const baseUrl = `http://localhost:5000`;
+
+
+  const searchUser = async () => {
+    const searchKeyword = document.getElementById("search-bar").value;
+    const sessionId = getSessionIdFromCookie();
+    const response = await fetch(`${baseUrl}/searchusers`, {
+      method: 'GET',
+      headers: {
+        "X-SessionID": sessionId,
+        "X-SearchKeyword": searchKeyword
+      },
+    });
+
+    if (response.status === 200) {
+      const profileSearchResults = await response.json();
+      console.table(await profileSearchResults);
+      setSearchResults(profileSearchResults);
+    }
+    else {
+      console.log(response.status);
+    }
+  }
   //Triggers after first render
   useEffect(() => {
     // Get the modal
@@ -39,7 +64,7 @@ const Header = (props) => {
         <input type="text" id="search-bar" placeholder="Search People" />
       </div>
 
-      <button id="search-button" href="#">
+      <button id="search-button" /*onClick={searchUser}*/>
         <ImSearch
           size={20} color='gray'
           onMouseOver={({ target }) => target.style.color = "black"}
@@ -71,9 +96,9 @@ const Header = (props) => {
         </button>
       </div>
 
-      <SearchResultsModal />
+      <SearchResultsModal searchUser={searchUser} searchResults={searchResults} />
       <NotificationsModal />
-      <MenuModal username={username}/>
+      <MenuModal username={username} />
     </div>);
 };
 

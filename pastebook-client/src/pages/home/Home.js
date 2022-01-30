@@ -12,7 +12,8 @@ const Home = () => {
   let navigate = useNavigate();
   const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
-  const [homePosts, setHomePosts] = useState([{},{},{},{},{}]);
+  // set empty array of empty objects to achieve loading animation effect
+  const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
   const getSessionIdFromCookie = () => {
     const searchCookie = "pastebookSessionId=";
@@ -133,18 +134,9 @@ const Home = () => {
 
     return () => clearInterval(refreshPage);
   }, []);
-
-  useEffect(() => {
-    if (homePosts[0].Post_ID) {
-      document.getElementById("home-timeline-posts").className = "";
-    }
-  }, [homePosts]);
-  
-
-
   return (
     <div id="home-body">
-      <Header username={homeData.UserName} />
+      <Header username={homeData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
       <div id="home-content">
         <div id="home-content-left">
           <HomeProfile currentUser={`${homeData.FirstName} ${homeData.LastName}`} username={homeData.UserName} />
@@ -157,28 +149,25 @@ const Home = () => {
         </div>
       </div>
 
-      {/* {
-        homePosts
-          ? */}
-      <div id="home-timeline-posts" className="home-timeline-posts">
+      <div id="home-timeline-posts">
         {
-          homePosts.map((post) => {
-            return (
-              <PostComponent
-                key={post.Post_ID}
-                postID={post.Post_ID}
-                authorID={post.User_ID}
-                postTimeStamp={post.DatePosted}
-                postContentText={post.Content}
-                postContentImg={post.Image}
-                userID={localStorage.getItem('homeUserId')}
-              />)
-          })
+          homePosts
+            ?
+            homePosts.map((post) => {
+              return (
+                <PostComponent
+                  key={post.Post_ID}
+                  postID={post.Post_ID}
+                  authorID={post.User_ID}
+                  postTimeStamp={post.DatePosted}
+                  postContentText={post.Content}
+                  postContentImg={post.Image}
+                  userID={localStorage.getItem('homeUserId')}
+                />)
+            })
+            : <h5>Posts are being fetched, kindly wait...</h5>
         }
       </div>
-      {/* : <div></div>
-      } */}
-
     </div>
   );
 };

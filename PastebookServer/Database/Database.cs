@@ -382,6 +382,51 @@ public class Database
                     else
                     {
                         profileData.OwnProfile = false;
+                        profileData.Friends = false;
+                        profileData.FriendRequestSent = false;
+                    }
+                }
+            }
+        }
+
+        if (profileData.OwnProfile == false)
+        {
+            using (var db = new SqlConnection(DB_CONNECTION_STRING))
+            {
+                db.Open();
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = "SELECT User_ID FROM FriendsPerUser WHERE User_ID = @User_ID AND Friend_ID = @Friend_ID;";
+                    command.Parameters.AddWithValue("@Friend_ID", userId);
+                    command.Parameters.AddWithValue("@User_ID", profileData.User_ID);
+                    command.CommandTimeout = 120;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        profileData.Friends = true;
+                    }
+                }
+            }
+
+            if (profileData.Friends == false)
+            {
+                using (var db = new SqlConnection(DB_CONNECTION_STRING))
+                {
+                    db.Open();
+                    using (var command = db.CreateCommand())
+                    {
+                        command.CommandText = "SELECT User_ID FROM Notifications WHERE Type = @Type AND Target_ID = @Target_ID AND User_ID = @User_ID;";
+                        command.Parameters.AddWithValue("@Type", "friendrequest");
+                        command.Parameters.AddWithValue("@User_ID", userId);
+                        command.Parameters.AddWithValue("@Target_ID", profileData.User_ID);
+                        command.CommandTimeout = 120;
+
+                        var reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            profileData.FriendRequestSent = true;
+                        }
                     }
                 }
             }
@@ -389,8 +434,70 @@ public class Database
         return profileData;
     }
 
-    public static List<PostModel>? GetProfilePosts(string username, int? userId)
+    public static void AddFriend(int userId, string username, NotificationModel addFriendNotification)
     {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT User_ID FROM Users WHERE UserName = @UserName;";
+                command.Parameters.AddWithValue("@UserName", username);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    addFriendNotification.Target_ID = reader.GetInt32(0);
+                }
+            }
+        }
+
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+
+                command.CommandText =
+                    @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@DateTriggered, @Target_ID, @User_ID, @Type, @Content, @ReadStatus);";
+
+                command.Parameters.AddWithValue("@DateTriggered", DateTime.Now);
+                command.Parameters.AddWithValue("@Target_ID", addFriendNotification.Target_ID);
+                command.Parameters.AddWithValue("@User_ID", addFriendNotification.User_ID);
+                command.Parameters.AddWithValue("@Type", addFriendNotification.Type);
+                command.Parameters.AddWithValue("@Content", addFriendNotification.Content);
+                command.Parameters.AddWithValue("@ReadStatus", addFriendNotification.ReadStatus);
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static List<PostModel>? GetProfilePosts(string username)
+    {
+        //get the userId of username
+        int targetId = -1;
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    "SELECT User_ID FROM Users WHERE UserName = @Username;";
+                command.Parameters.AddWithValue("@Username", username);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    targetId = reader.GetInt32(0);
+                }
+            }
+        }
+
         List<PostModel> profilePosts = new List<PostModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
@@ -399,7 +506,7 @@ public class Database
             {
                 command.CommandText =
                     "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
-                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.Parameters.AddWithValue("@Target_ID", targetId);
                 command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
@@ -409,7 +516,10 @@ public class Database
                     post.Post_ID = reader.GetInt32(0);
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
-                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Content")))
+                    {
+                        post.Content = reader.GetString(3);
+                    }
                     if (!reader.IsDBNull(reader.GetOrdinal("Image")))
                     {
                         post.Image = reader.GetString(4);
@@ -587,7 +697,10 @@ public class Database
                     post.Post_ID = reader.GetInt32(0);
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
-                    post.Content = reader.GetString(3);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Content")))
+                    {
+                        post.Content = reader.GetString(3);
+                    }
                     if (!reader.IsDBNull(reader.GetOrdinal("Image")))
                     {
                         post.Image = reader.GetString(4);
@@ -675,7 +788,6 @@ public class Database
                 command.Parameters.AddWithValue("@Content", postDetails.Content);
                 command.Parameters.AddWithValue("@Target_ID", postDetails.Target_ID);
                 command.CommandTimeout = 120;
-
 
                 command.ExecuteNonQuery();
             }
@@ -848,26 +960,87 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText =
-                    @$"SELECT * 
-                  FROM Users
-                  WHERE FirstName LIKE '%{filterKeyword}' 
-                  OR FirstName LIKE '{filterKeyword}%' 
-                  OR FirstName LIKE '%{filterKeyword}%'
-                  OR LastName LIKE '%{filterKeyword}' 
-                  OR LastName LIKE '{filterKeyword}%' 
-                  OR LastName LIKE '%{filterKeyword}%';";
+                if (filterKeyword.Length <= 1)
+                {
+                    command.CommandText = @$"
+                    SELECT TOP (5) User_ID, FirstName, LastName, ProfilePicture, UserName
+                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
+                    OR CONTAINS(LastName, @FilterKeyword)
+                    OR FirstName LIKE '{filterKeyword}%' 
+                    OR FirstName LIKE '%{filterKeyword}%'
+                    OR LastName LIKE '{filterKeyword}%' 
+                    OR LastName LIKE '%{filterKeyword}%';";
+                }
+                else
+                {
+                    command.CommandText = @$"
+                    SELECT User_ID, FirstName, LastName, ProfilePicture, UserName
+                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
+                    OR CONTAINS(LastName, @FilterKeyword)
+                    OR FirstName LIKE '{filterKeyword}%' 
+                    OR FirstName LIKE '%{filterKeyword}%'
+                    OR LastName LIKE '{filterKeyword}%' 
+                    OR LastName LIKE '%{filterKeyword}%';";
+                }
 
+                command.Parameters.AddWithValue("@FilterKeyword", filterKeyword);
+                command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     ProfileDataModel profile = new ProfileDataModel();
-                    // profile.Id = reader.GetInt32(0);
-                    // profile.Model = reader.GetString(1);
+                    profile.User_ID = reader.GetInt32(0);
+                    profile.FirstName = reader.GetString(1);
+                    profile.LastName = reader.GetString(2);
+                    profile.UserName = reader.GetString(4);
+                    if (!reader.IsDBNull(reader.GetOrdinal("ProfilePicture")))
+                    {
+                        profile.ProfilePicture = reader.GetString(3);
+                    }
                     profiles.Add(profile);
                 }
             }
         }
         return profiles;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void UpdateUserEmailSessions(SessionModel model)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = @"UPDATE Sessions SET Email=@email WHERE Session_ID=@id";
+                cmd.Parameters.AddWithValue("@email", model.Email);
+                cmd.Parameters.AddWithValue("@id", model.SessionId);
+                cmd.CommandTimeout = 120;
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }

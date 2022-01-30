@@ -15,6 +15,29 @@ const Profile = () => {
     const [profileData, setProfileData] = useState({});
     const [profilePosts, setProfilePosts] = useState([{}, {}, {}, {}, {}]);
 
+    const getSessionIdFromCookie = () => {
+        const searchCookie = "pastebookSessionId=";
+        if (document.cookie.length > 0) {
+            // Search for pastebookSessionId cookie.
+            let offset = document.cookie.indexOf(searchCookie)
+
+            if (offset != -1) {
+                offset += searchCookie.length
+                // Set index of beginning of value 
+                let end = document.cookie.indexOf(";", offset)
+
+                if (end == -1) {
+                    end = document.cookie.length
+                }
+
+                const pastebookSessionId = document.cookie.substring(offset, end);
+                console.log(`pastebookSessionId: ${pastebookSessionId}`);
+                return pastebookSessionId;
+            }
+        }
+        return null;
+    }
+
     const getProfilePageData = async () => {
         const response = await fetch(`${baseUrl}/profile/${username}`, {
             method: 'GET',
@@ -35,10 +58,7 @@ const Profile = () => {
 
     const getProfilePosts = async () => {
         const response = await fetch(`${baseUrl}/profileposts/${username}`, {
-            method: 'GET',
-            headers: {
-                'X-UserId': homeUserId
-            },
+            method: 'GET'
         });
 
         if (response.status === 200) {
@@ -68,8 +88,8 @@ const Profile = () => {
 
     return (
         <div className='body'>
-            <Header username={username} />
-            <ProfileHeader profileData={profileData} />
+            <Header username={localStorage.getItem("profileUsername")} getSessionIdFromCookie={getSessionIdFromCookie} />
+            <ProfileHeader profileData={profileData} username={username}/>
             <div className='s2-content'>
                 <div className='s2-c1'>
                     <div className='s2-c1-r1-intro block-border-shadow'>
@@ -78,6 +98,8 @@ const Profile = () => {
                             <div className='s2-c1-r1-intro-aboutme'><p>{profileData.ProfileDesc}</p></div>
                             <div className='text'>Gender: {profileData.Gender}</div>
                             <div className='text'> Birthday: {profileData.Birthday}</div>
+                            <div className='text'> Email: {profileData.Email}</div>
+                            {profileData.Phone ? <div className='text'> Phone: {profileData.Phone}</div> : <div />}
                         </div>
                     </div>
                     <div className='s2-c1-r2-photos block-border-shadow'>
@@ -146,19 +168,22 @@ const Profile = () => {
                 </div> */}
             </div>
             {
-                profilePosts.map((post) => {
-                    return (
-                        <PostComponent
-                            key={post.Post_ID}
-                            postID={post.Post_ID}
-                            authorID={post.User_ID}
-                            postTimeStamp={post.DatePosted}
-                            postContentText={post.Content}
-                            postContentImg={post.Image}
-                            userID={localStorage.getItem('homeUserId')}
-                        />
-                    )
-                })
+                profileData.OwnProfile || profileData.Friends
+                    ?
+                    profilePosts.map((post) => {
+                        return (
+                            <PostComponent
+                                key={post.Post_ID}
+                                postID={post.Post_ID}
+                                authorID={post.User_ID}
+                                postTimeStamp={post.DatePosted}
+                                postContentText={post.Content}
+                                postContentImg={post.Image}
+                                userID={localStorage.getItem('homeUserId')}
+                            />
+                        )
+                    })
+                    : <div />
             }
         </div>
     );

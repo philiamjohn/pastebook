@@ -32,7 +32,22 @@
     width: 60px;
     margin-left: 10px;
     padding: 5px;
+    border-radius: 20px;
+    border: solid 1px #719ece;
 }
 .error {
     border:2px solid red;
+}
+.set-new-email input:focus {
+    outline: none !important;
+    border-color: #719ece;
+    box-shadow: 0 0 10px #719ece;
+}
+.set-new-email input.active { 
+    border: red 2px solid;
+    /* background-color: rgba(255, 0, 0, 0.604); */
+}
+.set-new-email input.test {
+    border: green 2px solid;
+    /* background-color: rgba(0, 128, 0, 0.631); */
 }

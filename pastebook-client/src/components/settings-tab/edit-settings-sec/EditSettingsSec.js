@@ -1,45 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../edit-settings-sec/EditSettingsSec.css'
 
-const EditSettingsSec = ({ handeleCancelEditSecClick, userData,getUserData }) => {
+const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionId }) => {
     const baseurl = "http://localhost:5000";
-    const checkEmailIfExist = async () => {
-        // e.preventDefault();
-        var checkVal = false;
-        var email = document.getElementById('new-email').value;
-        const res = await fetch(`${baseurl}/register/` + email, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const checkEmailIfExist = async (e) => {
+        e.preventDefault();
+        var email = document.getElementById('new-email');
+        const res = await fetch(`${baseurl}/register/` + email.value, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
         if (res.status === 200) {
-            alert("already taken ")
-            return checkVal;
+            // alert("already taken ")
+            // setDisableButton(true);
+            email.className = 'active';
+
         } else if (res.status === 401) {
-            return checkVal = true;
+            // alert("available");
+            // setDisableButton(false);
+            email.className = 'test';
         }
 
     };
-    const checkPassword = async () => {
-        var password = document.getElementById('confirm-pass').value;
-        const res = await fetch(`${baseurl}/userUpdate`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-                User_ID: `${userData.User_ID}`,
-                Password: `${password}`
+    const refreshPage = () => {
+        window.location.reload();
+    }
+    const updateEmailInSessions = async (e) => {
+        e.preventDefault();
+        var id = getSessionId();
+        console.log(id.toString());
+        var email = document.getElementById('new-email');
+        console.log(email.value + " Email");
+        const response = await fetch(`${baseurl}/updateEmailSessions`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+                SessionId: `${id}`,
+                Email: `${email.value}`
             })
         });
-        if (res.status === 200) {
-            return true;
-        }else{return false}
-        // if (res.status === 200) {
-        //     var hello = await res.status();
-        //     return hello;
-        // }
-        // else {
-        //     return false;
+        if (response.status === 200) {
+            // alert("yeye");
+            refreshPage();
+        }
 
-        // }
     }
-    // const refreshPage = () => {
-    //     window.location.reload();
-    // }
-    const updateEmail = async () => {
+    const updateEmail = async (e) => {
+        e.preventDefault();
+        // updateEmailInSessions(e);
         var email = document.getElementById('new-email');
         const response = await fetch(`${baseurl}/updateEmail`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
@@ -48,73 +51,55 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData,getUserData }) =>
             })
         });
         if (response.status === 200) {
-            alert("yey");
-            getUserData();
-            // navigate("/settings", { replace: true });
+            // alert("yey");
+            updateEmailInSessions(e);
         }
     }
-    // const checkEmailIfTheSame = async (e) => {
-    //     e.preventDefault();
-    //     var email = document.getElementById('new-email');
-    //     var email2 = document.getElementById('confirm-new-email');
-    //     if (email.value === email2.value) {
-    //         console.log("yes");
-    //         var check = await checkEmailIfExist();
-    //         var checkpass = await checkPassword();
-    //         console.log(check + "calue ");
-    //         console.log(checkpass + " valie");
-    //         if (!check || !checkpass) {
-    //             email2.value = " ";
-    //             email.value = " ";
-    //         } else {
-    //             var emailupdate = await updateEmail(e);
-    //             if (emailupdate) {
-    //                 refreshPage();
-    //             }
-    //         }
-    //     }
-    //     else {
-    //         alert("pls input one email");
-    //         email2.value = " ";
-    //         email.value = " ";
-    //     }
-    // }
-    const checkEmailIfSame = () => {
-        var email1 = document.getElementById('new-email').value;
-        var email2 = document.getElementById('confirm-new-email').value;
-        if (email1 === email2) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    const submitVal = async (e) => {
+    const checkPasswordIfMatch = async (e) => {
         e.preventDefault();
-        var resEmail = checkEmailIfSame();
-        // console.log(result + " bebe");
-        if (resEmail) {
-            let emailExistence = await checkEmailIfExist();
-            let passtest = await checkPassword();
-            console.log(passtest);
-            console.log(emailExistence);
-            if (passtest && emailExistence) {
-                console.log("200 na siya");
-                updateEmail().then(console.log);
-            }
+        var password = document.getElementById('confirm-pass');
+        const res = await fetch(`${baseurl}/userUpdate`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+                User_ID: `${userData.User_ID}`,
+                Password: `${password.value}`
+            })
+        });
+        if (res.status === 200) {
+            console.log("true");
+            password.className = 'test';
+            setDisableButton(false);
+
+        } else {
+            console.log("false");
+            password.className = 'active';
+            // alert("old password incorrect")
+            // setDisableButton(true);
         }
     }
+    const changeColor = (e) => {
+        e.preventDefault();
+        var newE = document.getElementById('new-email').value;
+        var conNewE = document.getElementById('confirm-new-email');
+        if ((newE != conNewE.value) && (newE != " " || conNewE.value != " ")) {
+            conNewE.className = 'active';
+            setDisableButton(true);
+
+        } else {
+            conNewE.className = 'test';
+        }
+    }
+    const [disableButton, setDisableButton] = useState(true);
     return <div className='set-new-email'>
-        <form onSubmit={(e) => submitVal(e)}>
+        <form onSubmit={(e) => updateEmail(e)}>
             <label htmlFor='new-email'>New Email:</label>
-            <input type='email' name='new-email' id='new-email' placeholder='New Email' />
+            <input type='email' name='new-email' id='new-email' placeholder='New Email' onChange={(e) => changeColor(e)} onBlur={(e) => checkEmailIfExist(e)} className={''} />
             <label htmlFor='confirm-new-email'>Confirm New Email:</label>
-            <input type='email' name='confirm-new-email' id='confirm-new-email' placeholder='Confirm New Email' />
+            <input type='email' name='confirm-new-email' id='confirm-new-email' placeholder='Confirm New Email' onChange={(e) => changeColor(e)} className={''} />
             <label htmlFor='confirm-pass'>Confirm Password:</label>
-            <input type='password' name='confirm-pass' id='confirm-pass' placeholder='Enter Password' />
+            <input type='password' name='confirm-pass' id='confirm-pass' placeholder='Enter Password' onChange={(e) => checkPasswordIfMatch(e)} />
             <div className='buttons-change-email'>
                 <button onClick={(e) => handeleCancelEditSecClick(e)}>Cancel</button>
-                <button type='submit'>Save</button>
+                <button type='submit' disabled={disableButton}>Save</button>
             </div>
         </form>
     </div>;
