@@ -11,10 +11,11 @@ import SearchResultsModal from '../search-results-modal/SearchResultsModal';
 
 const Header = (props) => {
   const { username, getSessionIdFromCookie } = props;
-  // set empty array of empty objects to achieve loading animation effect
+  const [userId, setUserId] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [newNotificationsCount, setNewNotificationsCount] = useState(0);
   const baseUrl = `http://localhost:5000`;
-
 
   const searchUser = async () => {
     const searchKeyword = document.getElementById("search-bar").value;
@@ -36,6 +37,26 @@ const Header = (props) => {
       console.log(response.status);
     }
   }
+
+  const getNotifications = async () => {
+    const sessionId = getSessionIdFromCookie();
+    const response = await fetch(`${baseUrl}/notifications/${userId}`, {
+      method: 'GET',
+      headers: {
+        "X-SessionID": sessionId,
+      },
+    });
+
+    if (response.status === 200) {
+      const notificationList = await response.json();
+      console.table(await notificationList);
+      setNotifications(notificationList);
+    }
+    else {
+      console.log(response.status);
+    }
+  }
+
   //Triggers after first render
   useEffect(() => {
     // Get the modal
@@ -56,6 +77,32 @@ const Header = (props) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    setUserId(localStorage.getItem('homeUserId'));
+  }, [props]);
+
+  useEffect(async () => {
+    if (userId) {
+      await getNotifications();
+    }
+  }, [userId])
+
+
+  useEffect(() => {
+    document.getElementById("notifications-circle").style.display = "none";
+    if (notifications.length) {
+      let unreadNotificationsCount = 0;
+      notifications.forEach((notification) => {
+        if (notification.ReadStatus === "unread") {
+          document.getElementById("notifications-circle").style.display = "block";
+          unreadNotificationsCount++;
+        }
+      });
+      setNewNotificationsCount(unreadNotificationsCount);
+    }
+  }, [notifications]);
+
   return (
     <div id='header'>
       <div><a href="/"><img id="pastebook-logo" src={pastebookLogo} alt="pastebook-logo"></img></a></div>
@@ -81,7 +128,9 @@ const Header = (props) => {
             onMouseOut={({ target }) => target.style.color = "black"} />
         </a>
         <button id="notifications-button" href="#">
+          <div id="notifications-circle">{newNotificationsCount}</div>
           <IoMdNotifications
+            id="notifications-icon"
             size={25}
             color='black'
             onMouseOver={({ target }) => target.style.color = "white"}
@@ -97,7 +146,7 @@ const Header = (props) => {
       </div>
 
       <SearchResultsModal searchUser={searchUser} searchResults={searchResults} />
-      <NotificationsModal />
+      <NotificationsModal notifications={notifications} getNotifications={getNotifications} baseUrl={baseUrl} userId={userId} />
       <MenuModal username={username} />
     </div>);
 };
