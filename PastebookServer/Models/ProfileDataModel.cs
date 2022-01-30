@@ -12,4 +12,5 @@ public class ProfileDataModel
     public string? UserName { get; set; }
     public bool? OwnProfile { get; set; }
     public bool? Friends { get; set; }
+    public bool? FriendRequestSent { get; set; }
 }

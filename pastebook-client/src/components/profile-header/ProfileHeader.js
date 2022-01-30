@@ -11,7 +11,7 @@ import EditProfileModal from '../edit-profile-modal/EditProfileModal';
 
 
 const ProfileHeader = (props) => {
-    const { profileData } = props;
+    const { profileData, username } = props;
     const baseUrl = `http://localhost:5000`;
     const homeUserId = localStorage.getItem('homeUserId');
     const [profilePictureSource, setProfilePictureSource] = useState(null);
@@ -109,9 +109,36 @@ const ProfileHeader = (props) => {
         }
     }
 
-    useEffect(() => {
+    const addFriend = async () => {
+        const addFriendNotification = {
+            User_ID: homeUserId,
+            Type: "friendrequest",
+            Content: "",
+            ReadStatus: "unread"
+        }
+        const response = await fetch(`${baseUrl}/addfriend/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-UserId': homeUserId
+            },
+            body: JSON.stringify(addFriendNotification)
+        });
+        if (response.status === 500 || response.status === 401) {
+            alert("Friend request not sent");
+        }
+        else if (response.status === 200) {
+            alert("Friend request sent");
+            window.location.reload();
+        }
+        else {
+            alert(response.status);
+        }
+    }
 
-    }, []);
+    const unfriend = () => {
+
+    }
 
     return (
         <div className='body'>
@@ -147,8 +174,15 @@ const ProfileHeader = (props) => {
                             <div>
                                 {
                                     profileData.Friends
-                                        ? <button className='text block-border-shadow' id='yes-friend-btn'>< BsFillPersonCheckFill size={15} />  Friends</button>
-                                        : <button className='text block-border-shadow' id='add-friend-btn'>< BsPlusCircle size={15} />  Add friend</button>
+                                        ? <button className='text block-border-shadow' id='yes-friend-btn' onClick={unfriend}>< BsFillPersonCheckFill size={15} />  Friends</button>
+                                        :
+                                        <div>
+                                            {
+                                                profileData.FriendRequestSent
+                                                    ? <button className='text block-border-shadow' id='add-friend-btn'>< BsPlusCircle size={15} />  Request Sent</button>
+                                                    : <button className='text block-border-shadow' id='add-friend-btn' onClick={addFriend}>< BsPlusCircle size={15} />  Add friend</button>
+                                            }
+                                        </div>
                                 }
                             </div>
                         }

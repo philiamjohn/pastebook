@@ -223,12 +223,24 @@ public class PastebookController : Controller
         return Ok("Post Added successfully");
     }
 
+    [HttpPost]
+    [Route("/addfriend/{username?}")]
+    public IActionResult addFriend(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromBody] NotificationModel addFriendNotification,
+        string username
+    )
+    {
+        Database.AddFriend(userId, username, addFriendNotification!);
+        return Ok("Friend request sent successfully");
+    }
+
     [HttpPatch]
     [Route("/editprofiledescription")]
     public IActionResult editProfileDescription(
         [FromHeader(Name = "X-UserId")] int userId,
         [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
-        [FromBody] ProfileDataModel profileData 
+        [FromBody] ProfileDataModel profileData
         )
     {
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
@@ -289,7 +301,7 @@ public class PastebookController : Controller
         Database.ChangePassBaseOnID(model);
         return Ok();
     }
-   
+
     [HttpPut]
     [Route("/updateEmailSessions")]
     public IActionResult updateUserEmailSessions([FromBody] SessionModel model)
