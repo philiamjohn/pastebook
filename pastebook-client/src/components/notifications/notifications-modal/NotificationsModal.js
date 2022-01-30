@@ -5,8 +5,10 @@ import FriendRequestAcceptedNotification from '../friend-request-accepted-notifi
 import CommentNotification from '../comment-notification/CommentNotification';
 import FriendRequestNotification from '../friend-request-notification/FriendRequestNotification';
 import PostOnProfileNotification from '../post-on-profile-notification/PostOnProfileNotification';
+import { BsListCheck } from 'react-icons/bs';
 
-const NotificationsModal = () => {
+const NotificationsModal = (props) => {
+    const { notifications, getNotifications, baseUrl, userId } = props;
     //Triggers after first render
     useEffect(() => {
         // Get the modal
@@ -21,29 +23,59 @@ const NotificationsModal = () => {
         }
     }, []);
 
+    const makeAllNotificationsRead = async () => {
+        const response = await fetch(`${baseUrl}/clearallnotifications/${userId}`, {
+            method: 'PATCH'
+        });
+        if (response.status === 500 || response.status === 401) {
+            alert("Notifications not changed to read");
+        }
+        else if (response.status === 200) {
+            await getNotifications();
+        }
+        else {
+            alert(response.status);
+        }
+    }
+
+    const makeNotificationRead = async (notificationId) => {
+        const response = await fetch(`${baseUrl}/notifications/${notificationId}`, {
+            method: 'PATCH'
+        });
+        if (response.status === 500 || response.status === 401) {
+            alert("Notification not changed to read");
+        }
+        else if (response.status === 200) {
+            await getNotifications();
+        }
+        else {
+            alert(response.status);
+        }
+    }
+
     return (
         <div id="notifications-modal" className="notifications-modal">
             <div className="notifications-modal-content">
-                <LikeNotification liker={"Jacqueline"} />
+                <p>
+                    <button onClick={makeAllNotificationsRead}>
+                        {/* <BsListCheck size={15} color='black' /> */}
+                        Clear All Notifications
+                    </button>
+                </p>
+                {
+                    notifications.map((notification) => {
+                        if (notification.Type === "friendrequest") {
+                            return (
+                                <FriendRequestNotification key={notification.Notification_ID} notification={notification} makeNotificationRead={makeNotificationRead} />
+                            )
+                        }
+                    })
+                }
+                {/* <LikeNotification liker={"Jacqueline"} />
                 <FriendRequestAcceptedNotification newFriend={"Philiam"} />
                 <CommentNotification commenter={"Gavin"} />
                 <FriendRequestNotification requestSender={"Arhon"} />
-                <PostOnProfileNotification friendWhoPosted={"Nigel"} />
-                <LikeNotification liker={"Miguel"} />
-                <FriendRequestAcceptedNotification newFriend={"Jen"} />
-                <CommentNotification commenter={"Jasper"} />
-                <FriendRequestNotification requestSender={"Charles"} />
-                <PostOnProfileNotification friendWhoPosted={"Claude"} />
-                <LikeNotification liker={"Bree"} />
-                <FriendRequestAcceptedNotification newFriend={"Cams"} />
-                <CommentNotification commenter={"JP"} />
-                <FriendRequestNotification requestSender={"JK"} />
-                <PostOnProfileNotification friendWhoPosted={"Josh"} />
-                <LikeNotification liker={"Chock"} />
-                <FriendRequestAcceptedNotification newFriend={"Val"} />
-                <CommentNotification commenter={"Vincent"} />
-                <FriendRequestNotification requestSender={"Marc"} />
-                <PostOnProfileNotification friendWhoPosted={"Bene"} />
+                <PostOnProfileNotification friendWhoPosted={"Nigel"} /> */}
             </div>
         </div>
     );

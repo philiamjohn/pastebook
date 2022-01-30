@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const HomeFriends = () => {
   return (
     <div id="home-friends">
-      <a id="friends-anchor" href="/friends"> {/* replace href="#" to href="/friends"*/}
+      <a id="friends-anchor" href="/friends">
         <FaUserFriends
           id="home-friends-icon"
           size={25}
