@@ -13,7 +13,7 @@ div.post p, div.post h4 {
     margin-block-end: 0px;
 }
 
-#post-component-link {
+* .post-component-link {
     text-decoration: none;
 }
 

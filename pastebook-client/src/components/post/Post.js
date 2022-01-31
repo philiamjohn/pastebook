@@ -11,7 +11,7 @@ import GrayStock from '../../images/gray.jpg';
 const Post = (props) => {
     
     const {//FROM POSTS TABLE
-           getSessionIdFromCookie,
+           sessionIdFromCookie,
            postID,   // This is the ID of the post
                      // It will be used in ID-ing each post
                      // Will also be used for determining the likes and comment list    
@@ -40,7 +40,7 @@ const Post = (props) => {
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
  
-    const pastebookSessionId = getSessionIdFromCookie();
+    const pastebookSessionId = sessionIdFromCookie;
 
     // like/unlike  toggle
     const toggleLike = () => {
@@ -78,7 +78,6 @@ const Post = (props) => {
 
     useEffect(() => {
         
-
         //fetch author info
         if(authorID != null){
         fetch(`${baseUrl}/users`, {
@@ -114,6 +113,8 @@ const Post = (props) => {
             .then(response => response.json())
             .then(data => setComments(data.Value));
         }
+
+        console.log(comments);
         
         return () => {};
     }, [authorID]);   
@@ -121,12 +122,16 @@ const Post = (props) => {
     return (
         <div className='post'>
             <div className='post-author'>
-                <div className='post-author-img'>
-                    <img src={authorData.ProfilePicture ? authorData.ProfilePicture  : GrayStock } alt="author-img"/>
-                </div>
+                <Link id="" target="_blank" to={`/profile/${authorData.UserName}`}>
+                    <div className='post-author-img'>
+                        <img src={authorData.ProfilePicture ? authorData.ProfilePicture  : GrayStock } alt="author-img"/> 
+                    </div>
+                </Link> 
                 <div className='post-author-details'>
-                    <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
-                    <Link id="post-component-link" target="_blank" to={`/posts/${postID}`}>
+                    <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                        <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
+                    </Link> 
+                    <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
                         <div className='post-timestamp'>{postTimeStamp}</div>
                     </Link> 
                 </div>

@@ -45,7 +45,7 @@ const Post = (props) => {
     return (
         <div className='post-page'>
             <PostComponent 
-                           getSessionIdFromCookie={getSessionIdFromCookie}
+                           sessionIdFromCookie={pastebookSessionId}
                            postID={postId}
                            authorID={postData.User_ID}
                            postTimeStamp={postData.DatePosted}

@@ -26,7 +26,7 @@ const Comment = (props) => {
   useEffect(() => {
     
     setCommentsList(comments);
-    console.log(commentsList.length);
+    console.log(commentsList.UserName);
     return () => {};
     }, [comments]);  
 
@@ -36,7 +36,8 @@ const Comment = (props) => {
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
               {commentsList.length > 0 ?
-                <CommentCard profilePic={commentsList[0].ProfilePic} 
+                <CommentCard uname={commentsList[0].UserName}
+                             profilePic={commentsList[0].ProfilePic} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
                              content={commentsList[0].Content}/>
@@ -62,6 +63,7 @@ const Comment = (props) => {
                                   if(index>0){
                                   return ( <div className='post-interactions-comments-list-item'>
                                   <CommentCard key={comment.Id}
+                                               uname={comment.Username}
                                                profilePic={comment.ProfilePic} 
                                                firstName={comment.FirstName}
                                                lastName={comment.LastName}
