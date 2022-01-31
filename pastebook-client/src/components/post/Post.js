@@ -60,7 +60,9 @@ const Post = (props) => {
 
     // user wants to add a comment
     const addComment = () => {
-        setIsCommentShown(v => !v);
+        if(!isCommentShown){
+            setIsCommentShown(v => !v);
+        }
         setTimeout(function(){
             document.getElementById(`comment-box${postID}`).focus();
         });  
@@ -139,7 +141,9 @@ const Post = (props) => {
             <div className='post-content'>
                 {postContentText ?
                     <div className='post-content-p'>
-                        {postContentText}
+                        <p>
+                            {postContentText}
+                        </p>
                     </div>       
                         :
                         null

@@ -15,8 +15,8 @@ const Comment = (props) => {
   const [commentsList, setCommentsList] = useState(comments); 
 
 
-  const addComment = () => {
-    document.getElementById('comment-box').focus();
+  const addComment = (id) => {
+    document.getElementById('comment-box'+id).focus();
   }
 
   const showMoreComments = () => {
@@ -86,7 +86,7 @@ const Comment = (props) => {
         }
         <div className='post-interactions-comments-create'>
             <div className='post-interactions-comments-create-img'>
-              <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
+              <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={() => addComment(postID)}/>
             </div>
             <div className='post-interactions-comments-create-input'>
               <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
