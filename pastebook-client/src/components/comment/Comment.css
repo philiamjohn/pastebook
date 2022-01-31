@@ -15,6 +15,7 @@ div.post-interactions-comments-list {
 
 div.post-interactions-comments-list-item {
     padding: 10px 15px 5px 15px;
+    display: flex;
 }
 
 div.post-interactions-comments-expand {
