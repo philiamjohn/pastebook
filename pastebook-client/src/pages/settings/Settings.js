@@ -3,7 +3,7 @@ import Header from '../../components/header/Header';
 import SettingEditInfoTab from '../../components/settings-tab/settings-edit-info-tab/SettingsEditInfoTab';
 import SettingEditSecTab from '../../components/settings-tab/settings-edit-sec-tab/SettingsEditSecTab';
 import '../settings/Settings.css';
-const Settings = ({getSessionIdFromCookie,getUserData,userData}) => {
+const Settings = ({ getSessionIdFromCookie, getUserData, userData }) => {
     const [activeTab, setActiveTab] = useState("tab1");
     // const [userData, setUserData] = useState({});
     // const baseUrl = `http://localhost:5000`;
@@ -31,10 +31,15 @@ const Settings = ({getSessionIdFromCookie,getUserData,userData}) => {
     //         setUserData(recUserDataVal);
     //     }
     // }
+
     useEffect(() => {
+        for (let id = 0; id <= 1000; id++) {
+            window.clearInterval(id);
+        }
         getUserData();
+        getSessionIdFromCookie();
         console.log(userData);
-    },[]);
+    }, []);
     const handleTab1 = () => {
         setActiveTab("tab1");
 
@@ -45,7 +50,7 @@ const Settings = ({getSessionIdFromCookie,getUserData,userData}) => {
     const username = localStorage.getItem('profileUsername');
     return <div>
         <div className='header'>
-            <Header username={username} getSessionIdFromCookieFromCookie={getSessionIdFromCookie} />
+            <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
         </div>
         <div className='settings-container'>
             <div className='settings'>
@@ -56,7 +61,7 @@ const Settings = ({getSessionIdFromCookie,getUserData,userData}) => {
                     </ul>
                 </div>
                 <div className='out'>
-                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getSessionIdFromCookie={getSessionIdFromCookie}  />}
+                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getSessionIdFromCookie={getSessionIdFromCookie} />}
                 </div>
             </div>
         </div>

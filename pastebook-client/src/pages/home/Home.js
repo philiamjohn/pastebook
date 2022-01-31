@@ -140,7 +140,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile currentUser={`${userData.FirstName} ${userData.LastName}`} username={userData.UserName} />
+          <HomeProfile /*currentUser={`${userData.FirstName} ${userData.LastName}`} username={userData.UserName} */ userData={userData} />
           <HomeFriends />
           <HomeAlbums />
         </div>
