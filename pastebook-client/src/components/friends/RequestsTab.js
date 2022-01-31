@@ -19,7 +19,7 @@ const RequestsTab = ({ getSessionIdFromCookie }) => {
 
     if (response.status === 200) {
       const friendRequestList = await response.json();
-      console.table(await friendRequestList);
+      console.log(await friendRequestList);
       setFriendRequests(friendRequestList);
     }
     else {

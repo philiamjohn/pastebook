@@ -1311,4 +1311,62 @@ public class Database
             }
         }
     }
+    public static List<HomeDataModel>? GetFriendsList(int userId)
+    {
+        List<HomeDataModel> friends = new List<HomeDataModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = $@"SELECT 
+                                                FrndUser.User_ID,
+                                                MainUser.FirstName,
+                                                MainUser.LastName,
+                                                MainUser.Email,
+                                                MainUser.Password,
+                                                MainUser.Birthday,
+                                                MainUser.Gender,
+                                                MainUser.Phone,
+                                                MainUser.ProfilePicture,
+                                                MainUser.ProfileDesc,
+                                                MainUser.Username,
+                                                FrndUser.Friend_ID AS Friend_User_ID,
+                                                Friend.FirstName AS Friend_FirstName,
+                                                Friend.LastName AS Friend_LastName,
+                                                Friend.Email AS Friend_Email,
+                                                Friend.Password AS Friend_Password,
+                                                Friend.Birthday AS Friend_Birthday,
+                                                Friend.Gender AS Friend_Gender,
+                                                Friend.Phone AS Friend_Phone,
+                                                Friend.ProfilePicture AS Friend_ProfilePicture,
+                                                Friend.ProfileDesc AS Friend_ProfileDesc,
+                                                Friend.Username AS Friend_Username
+                                                FROM FriendsPerUser AS FrndUser
+                                                LEFT JOIN Users AS MainUser ON FrndUser.User_ID = MainUser.User_ID
+                                                LEFT JOIN Users As Friend ON FrndUser.Friend_ID = Friend.User_ID
+                WHERE FrndUser.User_ID = @Target_ID ORDER BY Friend_FirstName ASC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    HomeDataModel friend = new HomeDataModel();
+                    friend.FirstName =reader.GetString(12);
+                    friend.LastName =reader.GetString(13);
+                    friend.User_ID = reader.GetInt32(11);
+                    friend.UserName =reader.GetString(21);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
+                    {
+                        friend.ProfilePicture = reader.GetString(19);
+                    }
+                    System.Console.WriteLine(friend.FirstName+" hadwgjhdgajhsd");
+                    friends.Add(friend);
+                }
+            }
+        }
+        return friends;
+    }
+
 }

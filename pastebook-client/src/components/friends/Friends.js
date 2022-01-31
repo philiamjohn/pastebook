@@ -3,14 +3,14 @@ import '../friends/Friends.css';
 import ListTab from './ListTab';
 import RequestsTab from './RequestsTab';
 
-const Friends = ({ getSessionIdFromCookie }) => {
+const Friends = ({ getSessionIdFromCookie,userData  }) => {
 
 
     const [tab, setTab] = useState("list");
 
     // On page load
     useEffect(() => {
-
+        console.log(userData.User_ID);
         var list = document.getElementById('friends-list');
         var listOuter = document.getElementById('friends-list-outer');
         var requests = document.getElementById('friend-requests');
@@ -77,7 +77,7 @@ const Friends = ({ getSessionIdFromCookie }) => {
                 </div>
             </div>
             <div className='friends-content'>
-                {tab === "list" ? <ListTab />
+                {tab === "list" ? <ListTab getSessionIdFromCookie={getSessionIdFromCookie} userData={userData}  />
                     : <RequestsTab getSessionIdFromCookie={getSessionIdFromCookie} />
                 }
             </div>
