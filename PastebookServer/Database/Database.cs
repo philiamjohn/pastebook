@@ -944,8 +944,20 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
+                // command.CommandText =
+                //     "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.CommandText =
-                    "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
+                @"SELECT DISTINCT
+                    Posts.Post_ID,
+                    Posts.DatePosted,
+                    Posts.User_ID,
+                    Posts.Content,
+                    Posts.Image,
+                    Posts.Target_ID					
+                FROM Posts 
+                LEFT JOIN FriendsPerUser ON FriendsPerUser.Friend_ID = Posts.User_ID
+                WHERE FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID
+                ORDER BY DatePosted DESC;";
                 command.Parameters.AddWithValue("@User_ID", userId);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -965,7 +977,6 @@ public class Database
                     }
                     post.Target_ID = reader.GetInt32(5);
                     homePosts.Add(post);
-                    // break;
                 }
             }
         }

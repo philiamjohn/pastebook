@@ -57,13 +57,15 @@ const RequestsTab = ({ getSessionIdFromCookie }) => {
     <div className='friends-content-requests-list'>
       {
         friendRequests
-          ? friendRequests.map((friendRequest) => {
-            return (
-              <div className='friends-content-requests-list-item' key={friendRequest.Notification_ID}>
-                <FriendRequestCard key={friendRequest.Notification_ID} friendRequestDetails={friendRequest} confirmFriendRequest={confirmFriendRequest}/>
-              </div>
-            )
-          })
+          ? friendRequests.length
+            ? friendRequests.map((friendRequest) => {
+              return (
+                <div className='friends-content-requests-list-item' key={friendRequest.Notification_ID}>
+                  <FriendRequestCard key={friendRequest.Notification_ID} friendRequestDetails={friendRequest} confirmFriendRequest={confirmFriendRequest} />
+                </div>
+              )
+            })
+            : <div>You don't have any friend request.</div>
           : <div>Fetching Friend Requests, kindly wait...</div>
       }
     </div>
