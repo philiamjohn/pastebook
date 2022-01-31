@@ -87,6 +87,11 @@ div.post-content-p {
     padding: 5px 15px;
 }
 
+div.post-content-p p{
+    word-break: break-all;
+    white-space: normal;
+}
+
 div.post-content-img {
     height: 93%;
     padding: 5px 0;
