@@ -1048,6 +1048,7 @@ public class Database
                             new CommentModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 Content = reader["Content"].ToString(),

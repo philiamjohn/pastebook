@@ -8,7 +8,7 @@ const NamePicCard = (props) => {
 
     const { profilePic, fullname, username } = props;
     useEffect(() => {
-        console.log(profilePic, "heeeee");
+
     }, []);
 
     return (
