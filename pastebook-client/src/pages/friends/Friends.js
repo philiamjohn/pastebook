@@ -9,6 +9,9 @@ const Friends = ({ getSessionIdFromCookie, getUserData, userData }) => {
     //added new div for header and FriendsComponent
     // 
     useEffect(() => {
+        for (let id = 0; id <= 1000; id++) {
+            window.clearInterval(id);
+        }
         getSessionIdFromCookie();
         getUserData();
     }, []);
