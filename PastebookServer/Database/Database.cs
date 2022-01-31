@@ -355,7 +355,12 @@ public class Database
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
                     post.Content = reader.GetString(3);
-                    post.Image = reader.GetString(4);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Image"))){
+                        post.Image = reader.GetString(4);
+                    }
+                    else {
+                        post.Image = null;
+                    }
                     post.Target_ID = reader.GetInt32(5);
                 }
                 return post;
