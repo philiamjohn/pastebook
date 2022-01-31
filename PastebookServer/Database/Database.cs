@@ -1336,7 +1336,7 @@ public class Database
                                                 FROM FriendsPerUser AS FrndUser
                                                 LEFT JOIN Users AS MainUser ON FrndUser.User_ID = MainUser.User_ID
                                                 LEFT JOIN Users As Friend ON FrndUser.Friend_ID = Friend.User_ID
-                WHERE FrndUser.User_ID = @Target_ID  ORDER BY Friend.FirstName DESC;";
+                WHERE FrndUser.User_ID = @Target_ID ORDER BY Friend_FirstName ASC;";
                 command.Parameters.AddWithValue("@Target_ID", userId);
                 command.CommandTimeout = 120;
 
