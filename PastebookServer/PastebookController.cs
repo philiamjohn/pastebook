@@ -387,6 +387,23 @@ public class PastebookController : Controller
         System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
         return Json(data);
     }
+    [HttpGet]
+    [Route("/friendslistprofpage/{userId?}")]
+    public IActionResult getFriendsListProfilePage(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        int userId
+    )
+    {
+        System.Console.WriteLine($"{userId} hhehehe {pastebookSessionId} hehehehe");
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        var data = Database.GetFriendsListProfilePage(userId);
+        System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
+        return Json(data);
+    }
 
 
 
