@@ -605,6 +605,135 @@ public class Database
         }
     }
 
+    public static List<NotificationModel>? GetFriendRequests(int userId)
+    {
+        List<NotificationModel> friendRequests = new List<NotificationModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = $@"
+                SELECT 
+                    Notifs.Notification_ID,
+                    Notifs.DateTriggered,
+                    Notifs.Target_ID AS ReceivingUser_User_ID,
+                    Notifs.User_ID AS TriggerUser_User_ID,
+                    Notifs.Type,
+                    Notifs.Content,
+                    Notifs.ReadStatus,
+                    TriggerUser.FirstName AS TriggerUser_FirstName,
+                    TriggerUser.LastName AS TriggerUser_LastName,
+                    TriggerUser.ProfilePicture AS TriggerUser_ProfilePicture,
+                    TriggerUser.Username AS TriggerUser_Username
+                FROM Notifications AS Notifs
+                LEFT JOIN Users AS ReceivingUser ON Notifs.Target_ID = ReceivingUser.User_ID
+                LEFT JOIN Users As TriggerUser ON Notifs.User_ID = TriggerUser.User_ID
+                WHERE (Notifs.ReadStatus = 'unread' OR Notifs.ReadStatus = 'read') AND Notifs.Target_ID = @Target_ID AND Notifs.Type = 'friendrequest'
+                ORDER BY Notifs.DateTriggered DESC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    NotificationModel friendRequest = new NotificationModel();
+                    friendRequest.Notification_ID = reader.GetInt32(0);
+                    friendRequest.DateTriggered = $"{reader.GetDateTime(1).ToString("f")}";
+                    friendRequest.Target_ID = reader.GetInt32(2);
+                    friendRequest.User_ID = reader.GetInt32(3);
+                    friendRequest.Type = reader.GetString(4);
+                    friendRequest.Content = reader.GetString(5);
+                    friendRequest.ReadStatus = reader.GetString(6);
+                    friendRequest.Name = $"{reader.GetString(7)} {reader.GetString(8)}";
+                    if (!reader.IsDBNull(reader.GetOrdinal("TriggerUser_ProfilePicture")))
+                    {
+                        friendRequest.ProfilePicture = reader.GetString(9);
+                    }
+                    friendRequest.UserName = reader.GetString(10);
+                    friendRequests.Add(friendRequest);
+                }
+            }
+        }
+        return friendRequests;
+    }
+
+    public static void ConfirmFriendRequest(int notificationId, int currentUserId, int requestorUserId)
+    {
+        //change existing friend request notification to accepted
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"UPDATE Notifications
+                 SET ReadStatus=@ReadStatus
+                 WHERE Notification_ID=@Notification_ID;";
+
+                command.Parameters.AddWithValue("@Notification_ID", notificationId);
+                command.Parameters.AddWithValue("@ReadStatus", "accepted");
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
+        //add the two users to friendsperuser table
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"INSERT INTO FriendsPeruser (User_ID, Friend_ID) 
+                    VALUES (@User_ID, @Friend_ID);";
+
+                command.Parameters.AddWithValue("@User_ID", currentUserId);
+                command.Parameters.AddWithValue("@Friend_ID", requestorUserId);
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"INSERT INTO FriendsPeruser (User_ID, Friend_ID) 
+                    VALUES (@User_ID, @Friend_ID);";
+
+                command.Parameters.AddWithValue("@User_ID", requestorUserId);
+                command.Parameters.AddWithValue("@Friend_ID", currentUserId);
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
+        // add notification to notify requestor that the friend request has been accepted
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@DateTriggered, @Target_ID, @User_ID, @Type, @Content, @ReadStatus);";
+
+                command.Parameters.AddWithValue("@DateTriggered", DateTime.Now);
+                command.Parameters.AddWithValue("@Target_ID", requestorUserId);
+                command.Parameters.AddWithValue("@User_ID", currentUserId);
+                command.Parameters.AddWithValue("@Type", "requestaccepted");
+                command.Parameters.AddWithValue("@Content", "");
+                command.Parameters.AddWithValue("@ReadStatus", "unread");
+                command.CommandTimeout = 120;
+
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
     public static List<PostModel>? GetProfilePosts(string username)
     {
         //get the userId of username
@@ -1089,6 +1218,7 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
+                // top 5 results only for one-character search query to avoid timeouts
                 if (filterKeyword.Length <= 1)
                 {
                     command.CommandText = @$"

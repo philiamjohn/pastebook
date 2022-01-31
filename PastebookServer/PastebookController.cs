@@ -41,7 +41,7 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        
+
         return Json(Database.GetHomeData(session));
     }
 
@@ -93,6 +93,33 @@ public class PastebookController : Controller
     {
         Database.ChangeAllNotificationsReadStatus(userId);
         return Ok("All Notifications read status changed.");
+    }
+
+    [HttpGet]
+    [Route("/friendrequests/{userId?}")]
+    public IActionResult getFriendRequests(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        int userId
+    )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        return Json(Database.GetFriendRequests(userId));
+    }
+
+    [HttpPatch]
+    [Route("/confirmfriendrequest/{notificationId?}")]
+    public IActionResult confirmFriendRequest(
+        [FromHeader(Name = "X-CurrentUserId")] int currentUserId,
+        [FromHeader(Name = "X-RequestorUserId")] int requestorUserId,
+        int notificationId
+    )
+    {
+        Database.ConfirmFriendRequest(notificationId, currentUserId, requestorUserId);
+        return Ok("Friend Request Confirmed");
     }
 
     [HttpGet]

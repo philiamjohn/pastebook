@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoPersonAdd } from 'react-icons/io5';
-import { AiFillDelete } from 'react-icons/ai';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsCheck2 } from 'react-icons/bs';
 import './FriendRequestNotification.css';
 
@@ -17,11 +17,11 @@ const FriendRequestNotification = (props) => {
             {
                 notification.ReadStatus === "unread"
                     ?
-                    <button id="friend-request-clear-button" onClick={() => makeNotificationRead(notification.Notification_ID)}>
+                    <button className="notification-clear-button" onClick={() => makeNotificationRead(notification.Notification_ID)}>
                         <BsCheck2
-                            id="friend-request-clear-icon"
+                            className="notification-clear-icon"
                             size={15}
-                            color='black' />
+                            color='rgb(0, 165, 22)' />
                     </button>
                     : <div></div>
             }
