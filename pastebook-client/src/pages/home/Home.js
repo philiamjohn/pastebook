@@ -16,21 +16,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
     const searchCookie = "pastebookSessionId=";
-    if (document.cookie.length > 0) {
-      // Search for pastebookSessionId cookie.
-      let offset = document.cookie.indexOf(searchCookie)
-
-
-  //       const pastebookSessionId = document.cookie.substring(offset, end);
-  //       console.log(`pastebookSessionId: ${pastebookSessionId}`);
-  //       return pastebookSessionId;
-  //     }
-  //   }
-  //   // If no cookie stored, redirect immediately to login
-  //   else {
-  //     navigate("/login", { replace: true });
-  //   }
-  // }
+    //
 
   const getHomePageData = async () => {
     const pastebookSessionId = getSessionIdFromCookie();

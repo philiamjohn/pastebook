@@ -38,7 +38,7 @@ const Post = (props) => {
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
-    
+ 
     // like/unlike  toggle
     const toggleLike = () => {
         if(likeStatus){
