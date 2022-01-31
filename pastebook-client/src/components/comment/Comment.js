@@ -39,7 +39,7 @@ const Comment = (props) => {
               {commentsList.length > 0 ?
                 <CommentCard key={commentsList[0].Id}
                              uname={commentsList[0].UserName}
-                             profilePic={commentsList[0].ProfilePic} 
+                             profilePic={commentsList[0].ProfilePicture} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
                              content={commentsList[0].Content}/>
@@ -66,7 +66,7 @@ const Comment = (props) => {
                                   return ( <div className='post-interactions-comments-list-item'>
                                   <CommentCard key={comment.Id}
                                                uname={comment.UserName}
-                                               profilePic={comment.ProfilePic} 
+                                               profilePic={comment.ProfilePicture} 
                                                firstName={comment.FirstName}
                                                lastName={comment.LastName}
                                                content={comment.Content}/>
