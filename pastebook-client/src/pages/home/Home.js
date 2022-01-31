@@ -7,7 +7,6 @@ import HomeFriends from '../../components/home-friends/HomeFriends';
 import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
 import './Home.css';
-import { BsBoxArrowUpRight } from 'react-icons/bs';
 
 const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
