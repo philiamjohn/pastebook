@@ -8,7 +8,7 @@ import './FriendRequestNotification.css';
 const FriendRequestNotification = (props) => {
     const { notification, makeNotificationRead } = props;
     return (
-        <p>
+        <p className={notification.ReadStatus === "unread" ? 'notification-unread' : ''}>
             <IoPersonAdd
                 id="friend-request-icon"
                 size={15}
@@ -25,6 +25,7 @@ const FriendRequestNotification = (props) => {
                     </button>
                     : <div></div>
             }
+            <div className="notification-date-triggered">{notification.DateTriggered}</div>
         </p>);
 };
 

@@ -18,7 +18,7 @@
     border: 1px solid #888;
     width: 32vw;
     height: calc(100vh - 80px);
-    border-radius: 6px;
+    border-radius: 20px;
     overflow-y: auto;
 }
 
@@ -50,6 +50,7 @@
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 15px;
+    border-radius: 20px;
 }
 
 .notifications-modal-content p:hover {
@@ -58,4 +59,8 @@
 
 #like-icon, #comment-icon, #friend-request-icon, #friend-request-accepted-icon, #post-on-profile-icon {
     padding-right: 5px;
+}
+
+.notification-unread {
+    background-color: rgb(218, 248, 255);
 }

@@ -17,7 +17,7 @@
     background-color: white;
     border: 1px solid #888;
     width: 15%;
-    border-radius: 6px;
+    border-radius: 20px;
 }
 
 .menu-modal-content p {
@@ -33,6 +33,7 @@
     display: flex;
     color: black;
     text-decoration: none;
+    border-radius: 20px;
 }
 
 #profile-link:hover, .menu-modal-content a:hover{
