@@ -46,6 +46,30 @@ public class PastebookController : Controller
     }
 
     [HttpGet]
+    [Route("/post/{postId}")]
+    public IActionResult getPostById(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId, 
+        int postId
+        )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId);
+        if (session == null)
+        {
+            return Unauthorized("User is not logged in");
+        }
+        else {
+            var post = Database.GetPostById(postId);
+            if(post != null) {
+                return Json(post);
+            }
+            else{
+                return Unauthorized("No post data found");
+            }
+        }
+        
+    }
+
+    [HttpGet]
     [Route("/searchusers")]
     public IActionResult searchUsers(
         [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
@@ -124,7 +148,7 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/users")]
-    public IActionResult getUserData([FromHeader(Name = "UserID")] string userID)
+    public IActionResult getUserData([FromHeader(Name = "UserID")] int userID)
     {
         HomeDataModel user = Database.GetUserById(userID);
         if (user == null)

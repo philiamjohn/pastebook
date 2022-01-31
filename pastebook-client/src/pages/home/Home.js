@@ -135,6 +135,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                 return (
                   <PostComponent
                     key={post.Post_ID}
+                    getSessionIdFromCookie={getSessionIdFromCookie}
                     postID={post.Post_ID}
                     authorID={post.User_ID}
                     postTimeStamp={post.DatePosted}

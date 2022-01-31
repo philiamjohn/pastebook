@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { Link } from 'react-router-dom';
 import './Post.css';
 import Comment from '../comment/Comment';
 import LikerCard from '../name-pic-card/NamePicCard';
@@ -10,15 +11,15 @@ import GrayStock from '../../images/gray.jpg';
 const Post = (props) => {
     
     const {//FROM POSTS TABLE
+           getSessionIdFromCookie,
            postID,   // This is the ID of the post
                      // It will be used in ID-ing each post
-                     // Will also be used for determining the likes and comment list 
-           authorID, // This is the ID of the post author
-                     // It will be used for determining the name of the author
-           postTimeStamp,     
-           postContentText, 
-           postContentImg,
+                     // Will also be used for determining the likes and comment list    
            // From the cookies or local storage.
+           authorID,
+           postTimeStamp,
+           postContentText,
+           postContentImg,
            userID   // This is the ID of the currently signed-in user
                      // This will be used for determining the liked status of the post
                      // Can be retrieved 
@@ -39,6 +40,8 @@ const Post = (props) => {
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
  
+    const pastebookSessionId = getSessionIdFromCookie();
+
     // like/unlike  toggle
     const toggleLike = () => {
         if(likeStatus){
@@ -74,9 +77,10 @@ const Post = (props) => {
     }
 
     useEffect(() => {
+        
 
         //fetch author info
-        if(authorData!=null){
+        if(authorID != null){
         fetch(`${baseUrl}/users`, {
             method: 'GET',
             headers: {
@@ -112,7 +116,7 @@ const Post = (props) => {
         }
         
         return () => {};
-    }, []);   
+    }, [authorID]);   
     
     return (
         <div className='post'>
@@ -122,14 +126,16 @@ const Post = (props) => {
                 </div>
                 <div className='post-author-details'>
                     <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
-                    <div className='post-timestamp'>{postTimeStamp}</div>
+                    <Link id="post-component-link" target="_blank" to={`/posts/${postID}`}>
+                        <div className='post-timestamp'>{postTimeStamp}</div>
+                    </Link> 
                 </div>
             </div>
             <div className='post-content'>
                 {postContentText ?
                     <div className='post-content-p'>
                         {postContentText}
-                    </div>    
+                    </div>       
                         :
                         null
                 }  
@@ -200,9 +206,8 @@ const Post = (props) => {
                     </div>
                 </div>
                 {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID}/> : null }
-            </div>
-            
-        </div>
+            </div>     
+        </div>     
     );
   };
   

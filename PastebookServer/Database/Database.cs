@@ -337,6 +337,33 @@ public class Database
         return homeData;
     }
 
+    public static PostModel? GetPostById(int id)
+    {
+        var post = new PostModel();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT * FROM Posts WHERE Post_ID = @id";
+                command.Parameters.AddWithValue("@id", id);
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    post.Post_ID = reader.GetInt32(0);
+                    post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
+                    post.User_ID = reader.GetInt32(2);
+                    post.Content = reader.GetString(3);
+                    post.Image = reader.GetString(4);
+                    post.Target_ID = reader.GetInt32(5);
+                }
+                return post;
+            }
+        }
+        return null;
+    }
+
     public static List<NotificationModel>? GetNotifications(int userId)
     {
         List<NotificationModel> notifications = new List<NotificationModel>();
@@ -833,7 +860,7 @@ public class Database
         }
     }
 
-    public static HomeDataModel? GetUserById(string id)
+    public static HomeDataModel? GetUserById(int id)
     {
         HomeDataModel user = new HomeDataModel();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
