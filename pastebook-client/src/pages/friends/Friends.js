@@ -15,6 +15,7 @@ const Friends = ({ getSessionIdFromCookie, getUserData, userData }) => {
         }
         getSessionIdFromCookie();
         getUserData();
+        console.log(userData+" iyagduW");
     }, []);
 
     return (
@@ -23,7 +24,7 @@ const Friends = ({ getSessionIdFromCookie, getUserData, userData }) => {
                 <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
             </div>
             <div className='friends-page-component'>
-                <FriendsComponent getSessionIdFromCookie={getSessionIdFromCookie} />
+                <FriendsComponent getSessionIdFromCookie={getSessionIdFromCookie} userData={userData} />
             </div>
         </div>
 

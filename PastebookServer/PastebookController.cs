@@ -370,7 +370,23 @@ public class PastebookController : Controller
         Database.UpdateUserEmailSessions(model);
         return Ok();
     }
-
+    [HttpGet]
+    [Route("/friendslist/{userId?}")]
+    public IActionResult getFriendsList(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        int userId
+    )
+    {
+        System.Console.WriteLine($"{userId} hhehehe {pastebookSessionId} hehehehe");
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        var data = Database.GetFriendsList(userId);
+        System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
+        return Json(data);
+    }
 
 
 
