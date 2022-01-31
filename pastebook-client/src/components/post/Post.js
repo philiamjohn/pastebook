@@ -39,8 +39,10 @@ const Post = (props) => {
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
+    const [loggedInUserData, setLoggedInUserData] = useState([]);
  
     const pastebookSessionId = sessionIdFromCookie;
+    const loggedInId = localStorage.getItem('homeUserId');
 
     // like/unlike  toggle
     const toggleLike = () => {
@@ -114,6 +116,19 @@ const Post = (props) => {
             })
             .then(response => response.json())
             .then(data => setComments(data.Value));
+        }
+
+        
+        //fetch currently logged in user info
+        if(pastebookSessionId!=null){
+            fetch(`${baseUrl}/users`, {
+                method: 'GET',
+                headers: {
+                    'UserID': loggedInId
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLoggedInUserData(data.Value));
         }
 
         console.log(comments);
@@ -214,7 +229,7 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID}/> : null }
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture}/> : null }
             </div>     
         </div>     
     );

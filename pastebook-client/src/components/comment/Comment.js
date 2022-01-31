@@ -7,7 +7,8 @@ const Comment = (props) => {
 
   const {postAuthorImg,
          postID,
-         comments} = props;
+         comments,
+         loggedInUserPic} = props;
 
   const baseUrl = `http://localhost:5000`;
         
@@ -86,7 +87,7 @@ const Comment = (props) => {
         }
         <div className='post-interactions-comments-create'>
             <div className='post-interactions-comments-create-img'>
-              <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={() => addComment(postID)}/>
+              <img src={loggedInUserPic ? loggedInUserPic  : GrayStock } alt="author-img" onClick={() => addComment(postID)}/>
             </div>
             <div className='post-interactions-comments-create-input'>
               <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
