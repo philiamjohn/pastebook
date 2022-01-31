@@ -9,6 +9,11 @@ div.comment-card {
     display: flex;
 }
 
+* .post-component-link {
+    text-decoration: none;
+    color: #05051e;
+}
+
 div.comment-card-img {
     width: 7%;
     margin-right: 5px;
@@ -31,6 +36,10 @@ div.comment-card-content-author {
 div.comment-card-content-author h5 {
     margin-block-start: 0;
     margin-block-end: 0;
+}
+
+div.comment-card-content-author h5:hover {
+    text-decoration: underline;
 }
 
 

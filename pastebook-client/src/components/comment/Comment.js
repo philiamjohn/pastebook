@@ -7,8 +7,7 @@ const Comment = (props) => {
 
   const {postAuthorImg,
          postID,
-         comments,
-         likesCountUpdate} = props;
+         comments} = props;
 
   const baseUrl = `http://localhost:5000`;
         
@@ -27,8 +26,7 @@ const Comment = (props) => {
   useEffect(() => {
     
     setCommentsList(comments);
-    console.log(commentsList.length);
-    likesCountUpdate(commentsList.length);
+    console.log(commentsList.UserName);
     return () => {};
     }, [comments]);  
 
@@ -38,7 +36,8 @@ const Comment = (props) => {
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
               {commentsList.length > 0 ?
-                <CommentCard profilePic={commentsList[0].ProfilePic} 
+                <CommentCard uname={commentsList[0].UserName}
+                             profilePic={commentsList[0].ProfilePic} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
                              content={commentsList[0].Content}/>
@@ -64,6 +63,7 @@ const Comment = (props) => {
                                   if(index>0){
                                   return ( <div className='post-interactions-comments-list-item'>
                                   <CommentCard key={comment.Id}
+                                               uname={comment.Username}
                                                profilePic={comment.ProfilePic} 
                                                firstName={comment.FirstName}
                                                lastName={comment.LastName}
@@ -84,8 +84,12 @@ const Comment = (props) => {
         null
         }
         <div className='post-interactions-comments-create'>
-            <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
-            <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
+            <div className='post-interactions-comments-create-img'>
+              <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
+            </div>
+            <div className='post-interactions-comments-create-input'>
+              <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
+            </div>
         </div>
     </div>
   );

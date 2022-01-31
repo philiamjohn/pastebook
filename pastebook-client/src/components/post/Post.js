@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { Link } from 'react-router-dom';
 import './Post.css';
 import Comment from '../comment/Comment';
 import LikerCard from '../name-pic-card/NamePicCard';
@@ -10,15 +11,15 @@ import GrayStock from '../../images/gray.jpg';
 const Post = (props) => {
     
     const {//FROM POSTS TABLE
+           sessionIdFromCookie,
            postID,   // This is the ID of the post
                      // It will be used in ID-ing each post
-                     // Will also be used for determining the likes and comment list 
-           authorID, // This is the ID of the post author
-                     // It will be used for determining the name of the author
-           postTimeStamp,     
-           postContentText, 
-           postContentImg,
+                     // Will also be used for determining the likes and comment list    
            // From the cookies or local storage.
+           authorID,
+           postTimeStamp,
+           postContentText,
+           postContentImg,
            userID   // This is the ID of the currently signed-in user
                      // This will be used for determining the liked status of the post
                      // Can be retrieved 
@@ -38,9 +39,9 @@ const Post = (props) => {
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
-    const [modalId, setModalId] = useState();
-    const [likeCountsShown, setLikeCountShown] = useState(false);
-    
+ 
+    const pastebookSessionId = sessionIdFromCookie;
+
     // like/unlike  toggle
     const toggleLike = () => {
         if(likeStatus){
@@ -67,7 +68,6 @@ const Post = (props) => {
 
     //show Likes modal 
     const showLikesModal = (id) => {
-        setModalId(`likesModal${id}`);
         document.getElementById(`likesModal${id}`).style.display = "flex";  
     }
 
@@ -77,8 +77,9 @@ const Post = (props) => {
     }
 
     useEffect(() => {
-
+        
         //fetch author info
+        if(authorID != null){
         fetch(`${baseUrl}/users`, {
             method: 'GET',
             headers: {
@@ -87,46 +88,59 @@ const Post = (props) => {
         })
         .then(response => response.json())
         .then(data => setAuthorData(data.Value));
+        }
 
         //fetch likes info
-        fetch(`${baseUrl}/postLikes`, {
-            method: 'GET',
-            headers: {
-              'PostID': postID
-            }
-        })
-        .then(response => response.json())
-        .then(data => setLikes(data.Value));
+        if(postID!=null){
+            fetch(`${baseUrl}/postLikes`, {
+                method: 'GET',
+                headers: {
+                  'PostID': postID
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLikes(data.Value));
+        }
 
         //fetch comment info
-        fetch(`${baseUrl}/postComments`, {
-            method: 'GET',
-            headers: {
-              'PostID': postID
-            }
-        })
-        .then(response => response.json())
-        .then(data => setComments(data.Value));
+        if(postID!=null) {
+            fetch(`${baseUrl}/postComments`, {
+                method: 'GET',
+                headers: {
+                  'PostID': postID
+                }
+            })
+            .then(response => response.json())
+            .then(data => setComments(data.Value));
+        }
+
+        console.log(comments);
         
         return () => {};
-    }, []);   
+    }, [authorID]);   
     
     return (
         <div className='post'>
             <div className='post-author'>
-                <div className='post-author-img'>
-                    <img src={authorData.ProfilePicture ? authorData.ProfilePicture  : GrayStock } alt="author-img"/>
-                </div>
+                <Link id="" target="_blank" to={`/profile/${authorData.UserName}`}>
+                    <div className='post-author-img'>
+                        <img src={authorData.ProfilePicture ? authorData.ProfilePicture  : GrayStock } alt="author-img"/> 
+                    </div>
+                </Link> 
                 <div className='post-author-details'>
-                    <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
-                    <div className='post-timestamp'>{postTimeStamp}</div>
+                    <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                        <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
+                    </Link> 
+                    <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
+                        <div className='post-timestamp'>{postTimeStamp}</div>
+                    </Link> 
                 </div>
             </div>
             <div className='post-content'>
                 {postContentText ?
                     <div className='post-content-p'>
                         {postContentText}
-                    </div>    
+                    </div>       
                         :
                         null
                 }  
@@ -139,32 +153,32 @@ const Post = (props) => {
                 }                         
             </div>
             <div className='post-interactions'>
-                <div className='post-interactions-counts'>
-                    <div className='post-interactions-counts-like'>
-                        {likes.length > 1 ? 
-                                            <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Likes</p>
-                                         : 
-                                            null
-                        }
-                        {likes.length == 1 ? 
-                                            <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Like</p>
-                                         : 
-                                            null
-                        }                     
-                    </div>
-                    <div className='post-interactions-counts-comment'>
-                        {comments.length > 1 ?
-                                                <p onClick={toggleComment}>{comments.length} Comments</p>
+                    <div className='post-interactions-counts'>
+                        <div className='post-interactions-counts-like'>
+                            {likes.length > 1 ? 
+                                                <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Likes</p>
                                              : 
-                                               null
-                        }
-                        {comments.length == 1 ?
-                                                <p onClick={toggleComment}>{comments.length} Comment</p>
+                                                null
+                            }
+                            {likes.length == 1 ? 
+                                                <p id='likesCount' onClick={() => { showLikesModal(postID) }}>{likes.length} Like</p>
                                              : 
-                                               null
-                        }      
+                                                null
+                            }                     
+                        </div>
+                        <div className='post-interactions-counts-comment'>
+                            {comments.length > 1 ?
+                                                    <p onClick={toggleComment}>{comments.length} Comments</p>
+                                                 : 
+                                                   null
+                            }
+                            {comments.length == 1 ?
+                                                    <p onClick={toggleComment}>{comments.length} Comment</p>
+                                                 : 
+                                                   null
+                            }      
+                        </div>
                     </div>
-                </div>
                 <div className='post-interactions-btns'>
                     <div className='post-interactions-btns-like' onClick={toggleLike}>
                         <img src={likeStatus? LikedIcon : LikeIcon} alt='like-icon'/>
@@ -196,10 +210,9 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} likesCountUpdate={setLikeCountShown}/> : null }
-            </div>
-            
-        </div>
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID}/> : null }
+            </div>     
+        </div>     
     );
   };
   

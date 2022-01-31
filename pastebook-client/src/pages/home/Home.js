@@ -14,32 +14,8 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
-
-  // const getSessionIdFromCookie = () => {
-  //   const searchCookie = "pastebookSessionId=";
-  //   if (document.cookie.length > 0) {
-  //     // Search for pastebookSessionId cookie.
-  //     let offset = document.cookie.indexOf(searchCookie)
-
-  //     if (offset != -1) {
-  //       offset += searchCookie.length
-  //       // Set index of beginning of value 
-  //       let end = document.cookie.indexOf(";", offset)
-
-  //       if (end == -1) {
-  //         end = document.cookie.length
-  //       }
-
-  //       const pastebookSessionId = document.cookie.substring(offset, end);
-  //       console.log(`pastebookSessionId: ${pastebookSessionId}`);
-  //       return pastebookSessionId;
-  //     }
-  //   }
-  //   // If no cookie stored, redirect immediately to login
-  //   else {
-  //     navigate("/login", { replace: true });
-  //   }
-  // }
+    const searchCookie = "pastebookSessionId=";
+    //
 
   const getHomePageData = async () => {
     const pastebookSessionId = getSessionIdFromCookie();
@@ -159,6 +135,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                 return (
                   <PostComponent
                     key={post.Post_ID}
+                    getSessionIdFromCookie={getSessionIdFromCookie}
                     postID={post.Post_ID}
                     authorID={post.User_ID}
                     postTimeStamp={post.DatePosted}
