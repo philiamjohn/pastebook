@@ -944,8 +944,6 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                // command.CommandText =
-                //     "SELECT * FROM Posts WHERE User_ID = @User_ID ORDER BY DatePosted DESC;";
                 command.CommandText =
                 @"SELECT DISTINCT
                     Posts.Post_ID,
