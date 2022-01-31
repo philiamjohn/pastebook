@@ -87,7 +87,15 @@
     background-color: white;
 }
 
-.notification-clear-icon {
+.notification-link {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.notification-link:hover {
+    color: #1b74e4;
+    text-decoration: underline;
 }
 
 .notification-date-triggered {

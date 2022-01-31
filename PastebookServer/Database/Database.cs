@@ -705,7 +705,7 @@ public class Database
                 command.ExecuteNonQuery();
             }
         }
-        //add the two users to friendsperuser table
+        //add the two users to FriendsPerUser table
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
@@ -756,6 +756,21 @@ public class Database
                 command.Parameters.AddWithValue("@ReadStatus", "unread");
                 command.CommandTimeout = 120;
 
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void DeleteFriendRequest(int notificationId)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "DELETE FROM Notifications WHERE Notification_ID = @Notification_ID";
+                command.Parameters.AddWithValue("@Notification_ID", notificationId);
+                command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
         }
@@ -1255,28 +1270,39 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                // top 5 results only for one-character search query to avoid timeouts
-                if (filterKeyword.Length <= 1)
+                // determine if the filterKeyword contains more than one word 
+                if (filterKeyword.Split(' ').Length <= 1)
                 {
-                    command.CommandText = @$"
-                    SELECT TOP (5) User_ID, FirstName, LastName, ProfilePicture, UserName
-                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
-                    OR CONTAINS(LastName, @FilterKeyword)
-                    OR FirstName LIKE '{filterKeyword}%' 
-                    OR FirstName LIKE '%{filterKeyword}%'
-                    OR LastName LIKE '{filterKeyword}%' 
-                    OR LastName LIKE '%{filterKeyword}%';";
+                    //if filterKeyword is only one character, select 5 entries only to avoid timeout
+                    if (filterKeyword.Length <= 1)
+                    {
+                        command.CommandText = @$"
+                        SELECT TOP (5) User_ID, FirstName, LastName, ProfilePicture, UserName
+                        FROM Users 
+                        WHERE FirstName LIKE '{filterKeyword}%' 
+                        OR FirstName LIKE '%{filterKeyword}%'
+                        OR LastName LIKE '{filterKeyword}%' 
+                        OR LastName LIKE '%{filterKeyword}%';";
+                    }
+                    else
+                    {
+                        command.CommandText = @$"
+                        SELECT User_ID, FirstName, LastName, ProfilePicture, UserName
+                        FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
+                        OR CONTAINS(LastName, @FilterKeyword)
+                        OR FirstName LIKE '{filterKeyword}%' 
+                        OR FirstName LIKE '%{filterKeyword}%'
+                        OR LastName LIKE '{filterKeyword}%' 
+                        OR LastName LIKE '%{filterKeyword}%';";
+                    }
                 }
+                // if more than one word
                 else
                 {
                     command.CommandText = @$"
                     SELECT User_ID, FirstName, LastName, ProfilePicture, UserName
-                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
-                    OR CONTAINS(LastName, @FilterKeyword)
-                    OR FirstName LIKE '{filterKeyword}%' 
-                    OR FirstName LIKE '%{filterKeyword}%'
-                    OR LastName LIKE '{filterKeyword}%' 
-                    OR LastName LIKE '%{filterKeyword}%';";
+                    FROM Users WHERE FREETEXT(FirstName, '{filterKeyword}')
+                    OR FREETEXT(LastName, '{filterKeyword}');";
                 }
 
                 command.Parameters.AddWithValue("@FilterKeyword", filterKeyword);
@@ -1381,15 +1407,15 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(12);
-                    friend.LastName =reader.GetString(13);
+                    friend.FirstName = reader.GetString(12);
+                    friend.LastName = reader.GetString(13);
                     friend.User_ID = reader.GetInt32(11);
-                    friend.UserName =reader.GetString(21);
+                    friend.UserName = reader.GetString(21);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(19);
                     }
-                    System.Console.WriteLine(friend.FirstName+" hadwgjhdgajhsd");
+                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
                     friends.Add(friend);
                 }
             }
