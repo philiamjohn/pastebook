@@ -1,7 +1,8 @@
 import React from 'react';
 import { FaUserFriends } from 'react-icons/fa';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
-import { BsCheck2 } from 'react-icons/bs';
+import { BsCheckLg } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
 const FriendRequestAcceptedNotification = (props) => {
     const { notification, makeNotificationRead } = props;
@@ -11,12 +12,12 @@ const FriendRequestAcceptedNotification = (props) => {
                 id="friend-request-accepted-icon"
                 size={15}
                 color='black' />
-            {notification.Name} accepted your friend request.
+            <Link to='/friends' className='notification-link'>{notification.Name} accepted your friend request.</Link>
             {
                 notification.ReadStatus === "unread"
                     ?
                     <button className="notification-clear-button" onClick={() => makeNotificationRead(notification.Notification_ID)}>
-                        <BsCheck2
+                        <BsCheckLg
                             className="notification-clear-icon"
                             size={15}
                             color='rgb(0, 165, 22)' />
