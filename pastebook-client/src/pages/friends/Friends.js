@@ -9,6 +9,10 @@ const Friends = ({ getSessionIdFromCookie, getUserData, userData }) => {
     //added new div for header and FriendsComponent
     // 
     useEffect(() => {
+        //clear all setIntervals
+        for (let id = 0; id <= 1000; id++) {
+            window.clearInterval(id);
+        }
         getSessionIdFromCookie();
         getUserData();
     }, []);
@@ -19,7 +23,7 @@ const Friends = ({ getSessionIdFromCookie, getUserData, userData }) => {
                 <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
             </div>
             <div className='friends-page-component'>
-                <FriendsComponent />
+                <FriendsComponent getSessionIdFromCookie={getSessionIdFromCookie} />
             </div>
         </div>
 
