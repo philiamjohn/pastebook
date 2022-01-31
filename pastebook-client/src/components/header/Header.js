@@ -79,6 +79,7 @@ const Header = (props) => {
     }
   }, []);
 
+  //make sure to get the stored value after fetching the userId from home
   useEffect(() => {
     setUserId(localStorage.getItem('homeUserId'));
   }, [props]);
