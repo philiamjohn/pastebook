@@ -237,6 +237,25 @@ public class PastebookController : Controller
         return Ok("Post Added successfully");
     }
 
+    [HttpPost]
+    [Route("/comment")]
+    public IActionResult addComment(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "Content")] string content,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        var result = Database.AddComment(postID, content, userID);
+        if (result == null)
+        {
+            return Ok("Comment added successfully");
+        }
+        else{
+            return Unauthorized("Failed to add comment");
+        }
+        
+    }
+
     [HttpGet]
     [Route("/homeposts")]
     public IActionResult getHomePosts(
@@ -440,8 +459,6 @@ public class PastebookController : Controller
         System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
         return Json(data);
     }
-
-
 
 
 }

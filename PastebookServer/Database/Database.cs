@@ -1464,5 +1464,29 @@ public class Database
         return friends;
     }
 
+     public static System.Exception AddComment(string postID, string content, string userID)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                try {
+                command.CommandText = @"INSERT INTO CommentsInPosts (Content, User_ID, Post_ID, Date) 
+                    VALUES (@content, @userId, @postId, @date);";
 
+                command.Parameters.AddWithValue("@content", content);
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.Parameters.AddWithValue("@date", DateTime.Now);
+                command.ExecuteNonQuery();
+                return null;
+                }
+                catch(System.Exception e) {
+                    Console.WriteLine(e.ToString());
+                    return e;
+                }
+            }
+        }
+    }
 }
