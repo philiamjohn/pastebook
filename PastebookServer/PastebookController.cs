@@ -146,6 +146,16 @@ public class PastebookController : Controller
         return Ok("Friend Request Confirmed");
     }
 
+    [HttpDelete]
+    [Route("/deletefriendrequest/{notificationId?}")]
+    public IActionResult deleteFriendRequest(
+        int notificationId
+    )
+    {
+        Database.DeleteFriendRequest(notificationId);
+        return Ok("Friend Request Deleted");
+    }
+
     [HttpGet]
     [Route("/users")]
     public IActionResult getUserData([FromHeader(Name = "UserID")] int userID)
@@ -229,7 +239,9 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/homeposts")]
-    public IActionResult getHomePosts([FromHeader(Name = "X-UserId")] int userId)
+    public IActionResult getHomePosts(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromHeader(Name = "X-FetchCount")] int fetchCount)
     {
         List<PostModel> homePosts = Database.GetHomePosts(userId)!;
         return Json(homePosts);
@@ -408,6 +420,23 @@ public class PastebookController : Controller
             return Unauthorized();
         }
         var data = Database.GetFriendsList(userId);
+        System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
+        return Json(data);
+    }
+    [HttpGet]
+    [Route("/friendslistprofpage/{userId?}")]
+    public IActionResult getFriendsListProfilePage(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        int userId
+    )
+    {
+        System.Console.WriteLine($"{userId} hhehehe {pastebookSessionId} hehehehe");
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        var data = Database.GetFriendsListProfilePage(userId);
         System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
         return Json(data);
     }

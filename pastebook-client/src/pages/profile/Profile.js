@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './Profile.css';
 import Header from '../../components/header/Header';
 import ProfileHeader from '../../components/profile-header/ProfileHeader';
 import PostComponent from '../../components/post/Post';
 import userphoto from '../../images/default-dp.jpg';
 import photo from '../../images/default-image.png';
+import HomeCreatePost from '../../components/home-create-post/HomeCreatePost';
 
 
 const Profile = () => {
@@ -14,6 +15,7 @@ const Profile = () => {
     const homeUserId = localStorage.getItem('homeUserId');
     const [profileData, setProfileData] = useState({});
     const [profilePosts, setProfilePosts] = useState([{}, {}, {}, {}, {}]);
+    const [friendsList, setFriendsList] = useState(null);
 
     const getSessionIdFromCookie = () => {
         const searchCookie = "pastebookSessionId=";
@@ -49,7 +51,10 @@ const Profile = () => {
         if (response.status === 200) {
             const profilePageData = await response.json();
             console.table(await profilePageData);
+            console.log(profilePageData.User_ID);
             setProfileData(profilePageData);
+            getFriendsListProfPage(profilePageData.User_ID);
+
         }
         else {
             console.log(response.status);
@@ -75,21 +80,41 @@ const Profile = () => {
         await getProfilePageData();
         await getProfilePostsCallback();
     }
+    const getFriendsListProfPage = async (id) => {
+        console.log(profileData);
+
+        const sessionId = getSessionIdFromCookie();
+        // const homeUserId = localStorage.getItem('homeUserId');
+
+        const response = await fetch(`${baseUrl}/friendslistprofpage/${id}`, {
+            method: 'GET',
+            headers: {
+                "X-SessionID": sessionId,
+            },
+        });
+
+        if (response.status === 200) {
+            const friendRequestList = await response.json();
+            console.table(friendRequestList);
+            setFriendsList(friendRequestList);
+        }
+        else {
+            console.log(response.status);
+        }
+    }
 
     useEffect(async () => {
         //clear all setIntervals
         for (let id = 0; id <= 1000; id++) {
             window.clearInterval(id);
         }
-
         await getProfile(getProfilePosts);
-
     }, []);
 
     return (
         <div className='body'>
             <Header username={localStorage.getItem("profileUsername")} getSessionIdFromCookie={getSessionIdFromCookie} />
-            <ProfileHeader profileData={profileData} username={username}/>
+            <ProfileHeader profileData={profileData} username={username} />
             <div className='s2-content'>
                 <div className='s2-c1'>
                     <div className='s2-c1-r1-intro block-border-shadow'>
@@ -117,54 +142,60 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className='s2-c1-r3-friends block-border-shadow'>
-                        <div className='block-title-1'>Friends</div>
+                        {profileData.OwnProfile
+                            ?
+                            <a href="/friends">
+                                <div className='block-title-1'>Friends</div>
+                            </a>
+                            : <div className='block-title-1'>Friends</div>
+                        }
+
                         <div className='s2-c1-r3-friends-content'>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
-                            <div>
-                                <img src={userphoto} alt='Recently Added Friends'></img>
-                                <p className='text'>FirstName LastName</p>
-                            </div>
+                            {friendsList ? friendsList.map((e) => {
+                                return (<div key={e.User_ID}>
+                                    <Link to={`/profile/${e.UserName}`} target="_blank">
+                                        <img src={e.ProfilePicture ? e.ProfilePicture : userphoto} alt='Recently Added Friends'></img>
+                                        <p className='text'>{`${e.FirstName}  ${e.LastName}`}</p>
+                                    </Link>
+
+                                </div>)
+                            }) : <div>Getting your Friends</div >
+                            }
                         </div>
                     </div>
                 </div>
                 {/* <div className='s2-c2'>
-                    <div className='s2-c2-r1-write-post block-border-shadow'>
 
-                    </div>
-                    <div className='s2-c2-r2-posts block-border-shadow'>
-                        
-                    </div>
+                    {
+                        profileData.OwnProfile || profileData.Friends
+                            ?
+                            <div className='s2-c2-r1-write-post block-border-shadow'>
+                                <HomeCreatePost />
+                            </div>
+                            : <div />
+                    }
+                    {
+                        profileData.OwnProfile || profileData.Friends
+                            ?
+                            profilePosts.map((post) => {
+                                return (
+                                    <div className='s2-c2-r2-posts block-border-shadow'>
+
+                                        <PostComponent
+                                            key={post.Post_ID}
+                                            postID={post.Post_ID}
+                                            authorID={post.User_ID}
+                                            postTimeStamp={post.DatePosted}
+                                            postContentText={post.Content}
+                                            postContentImg={post.Image}
+                                            userID={localStorage.getItem('homeUserId')}
+                                        />
+                                    </div>
+
+                                )
+                            })
+                            : <div />
+                    }
                 </div> */}
             </div>
             {

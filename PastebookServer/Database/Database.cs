@@ -710,7 +710,7 @@ public class Database
                 command.ExecuteNonQuery();
             }
         }
-        //add the two users to friendsperuser table
+        //add the two users to FriendsPerUser table
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
@@ -761,6 +761,21 @@ public class Database
                 command.Parameters.AddWithValue("@ReadStatus", "unread");
                 command.CommandTimeout = 120;
 
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void DeleteFriendRequest(int notificationId)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "DELETE FROM Notifications WHERE Notification_ID = @Notification_ID";
+                command.Parameters.AddWithValue("@Notification_ID", notificationId);
+                command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
         }
@@ -1263,28 +1278,39 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                // top 5 results only for one-character search query to avoid timeouts
-                if (filterKeyword.Length <= 1)
+                // determine if the filterKeyword contains more than one word 
+                if (filterKeyword.Split(' ').Length <= 1)
                 {
-                    command.CommandText = @$"
-                    SELECT TOP (5) User_ID, FirstName, LastName, ProfilePicture, UserName
-                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
-                    OR CONTAINS(LastName, @FilterKeyword)
-                    OR FirstName LIKE '{filterKeyword}%' 
-                    OR FirstName LIKE '%{filterKeyword}%'
-                    OR LastName LIKE '{filterKeyword}%' 
-                    OR LastName LIKE '%{filterKeyword}%';";
+                    //if filterKeyword is only one character, select 5 entries only to avoid timeout
+                    if (filterKeyword.Length <= 1)
+                    {
+                        command.CommandText = @$"
+                        SELECT TOP (5) User_ID, FirstName, LastName, ProfilePicture, UserName
+                        FROM Users 
+                        WHERE FirstName LIKE '{filterKeyword}%' 
+                        OR FirstName LIKE '%{filterKeyword}%'
+                        OR LastName LIKE '{filterKeyword}%' 
+                        OR LastName LIKE '%{filterKeyword}%';";
+                    }
+                    else
+                    {
+                        command.CommandText = @$"
+                        SELECT User_ID, FirstName, LastName, ProfilePicture, UserName
+                        FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
+                        OR CONTAINS(LastName, @FilterKeyword)
+                        OR FirstName LIKE '{filterKeyword}%' 
+                        OR FirstName LIKE '%{filterKeyword}%'
+                        OR LastName LIKE '{filterKeyword}%' 
+                        OR LastName LIKE '%{filterKeyword}%';";
+                    }
                 }
+                // if more than one word
                 else
                 {
                     command.CommandText = @$"
                     SELECT User_ID, FirstName, LastName, ProfilePicture, UserName
-                    FROM Users WHERE CONTAINS(FirstName, @FilterKeyword)
-                    OR CONTAINS(LastName, @FilterKeyword)
-                    OR FirstName LIKE '{filterKeyword}%' 
-                    OR FirstName LIKE '%{filterKeyword}%'
-                    OR LastName LIKE '{filterKeyword}%' 
-                    OR LastName LIKE '%{filterKeyword}%';";
+                    FROM Users WHERE FREETEXT(FirstName, '{filterKeyword}')
+                    OR FREETEXT(LastName, '{filterKeyword}');";
                 }
 
                 command.Parameters.AddWithValue("@FilterKeyword", filterKeyword);
@@ -1359,24 +1385,12 @@ public class Database
                                                 FrndUser.User_ID,
                                                 MainUser.FirstName,
                                                 MainUser.LastName,
-                                                MainUser.Email,
-                                                MainUser.Password,
-                                                MainUser.Birthday,
-                                                MainUser.Gender,
-                                                MainUser.Phone,
                                                 MainUser.ProfilePicture,
-                                                MainUser.ProfileDesc,
                                                 MainUser.Username,
                                                 FrndUser.Friend_ID AS Friend_User_ID,
                                                 Friend.FirstName AS Friend_FirstName,
                                                 Friend.LastName AS Friend_LastName,
-                                                Friend.Email AS Friend_Email,
-                                                Friend.Password AS Friend_Password,
-                                                Friend.Birthday AS Friend_Birthday,
-                                                Friend.Gender AS Friend_Gender,
-                                                Friend.Phone AS Friend_Phone,
                                                 Friend.ProfilePicture AS Friend_ProfilePicture,
-                                                Friend.ProfileDesc AS Friend_ProfileDesc,
                                                 Friend.Username AS Friend_Username
                                                 FROM FriendsPerUser AS FrndUser
                                                 LEFT JOIN Users AS MainUser ON FrndUser.User_ID = MainUser.User_ID
@@ -1389,13 +1403,58 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(12);
-                    friend.LastName =reader.GetString(13);
-                    friend.User_ID = reader.GetInt32(11);
-                    friend.UserName =reader.GetString(21);
+                    friend.FirstName =reader.GetString(6);
+                    friend.LastName =reader.GetString(7);
+                    friend.User_ID = reader.GetInt32(5);
+                    friend.UserName =reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
-                        friend.ProfilePicture = reader.GetString(19);
+                        friend.ProfilePicture = reader.GetString(8);
+                    }
+                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
+                    friends.Add(friend);
+                }
+            }
+        }
+        return friends;
+    }
+     public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
+    {
+        List<HomeDataModel> friends = new List<HomeDataModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = $@"SELECT TOP 9
+                                                FrndUser.User_ID,
+                                                MainUser.FirstName,
+                                                MainUser.LastName,
+                                                MainUser.ProfilePicture,
+                                                MainUser.Username,
+                                                FrndUser.Friend_ID AS Friend_User_ID,
+                                                Friend.FirstName AS Friend_FirstName,
+                                                Friend.LastName AS Friend_LastName,
+                                                Friend.ProfilePicture AS Friend_ProfilePicture,
+                                                Friend.Username AS Friend_Username
+                                                FROM FriendsPerUser AS FrndUser
+                                                LEFT JOIN Users AS MainUser ON FrndUser.User_ID = MainUser.User_ID
+                                                LEFT JOIN Users As Friend ON FrndUser.Friend_ID = Friend.User_ID
+                WHERE FrndUser.User_ID = @Target_ID ORDER BY Friend_FirstName ASC;";
+                command.Parameters.AddWithValue("@Target_ID", userId);
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    HomeDataModel friend = new HomeDataModel();
+                    friend.FirstName =reader.GetString(6);
+                    friend.LastName =reader.GetString(7);
+                    friend.User_ID = reader.GetInt32(5);
+                    friend.UserName =reader.GetString(9);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
+                    {
+                        friend.ProfilePicture = reader.GetString(8);
                     }
                     System.Console.WriteLine(friend.FirstName+" hadwgjhdgajhsd");
                     friends.Add(friend);
@@ -1404,5 +1463,6 @@ public class Database
         }
         return friends;
     }
+
 
 }
