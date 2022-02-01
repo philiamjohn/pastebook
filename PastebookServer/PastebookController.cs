@@ -256,6 +256,43 @@ public class PastebookController : Controller
         
     }
 
+    [HttpPost]
+    [Route("/like")]
+    public IActionResult addLike(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        var result = Database.AddLike(postID, userID);
+        if (result == null)
+        {
+            return Ok("Like added successfully");
+        }
+        else{
+            return Unauthorized("Failed to add like");
+        }
+        
+    }
+
+    [HttpDelete]
+    [Route("/like")]
+    public IActionResult removeLike(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        var result = Database.RemoveLike(postID, userID);
+        if (result == null)
+        {
+            return Ok("Like removed successfully");
+        }
+        else{
+            return Unauthorized("Failed to remove like");
+        }
+        
+    }
+
+
     [HttpGet]
     [Route("/homeposts")]
     public IActionResult getHomePosts(

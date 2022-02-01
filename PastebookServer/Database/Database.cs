@@ -947,7 +947,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT LikesInPosts.Id, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                    "SELECT LikesInPosts.Id, LikesInPosts.User_ID, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -959,6 +959,7 @@ public class Database
                             new LikerModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserId = reader["User_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1464,7 +1465,7 @@ public class Database
         return friends;
     }
 
-     public static System.Exception AddComment(string postID, string content, string userID)
+    public static System.Exception AddComment(string postID, string content, string userID)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
@@ -1489,4 +1490,52 @@ public class Database
             }
         }
     }
+
+    public static System.Exception AddLike(string postID, string userID)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                try {
+                command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
+                    VALUES (@userId, @postId);";
+
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.ExecuteNonQuery();
+                return null;
+                }
+                catch(System.Exception e) {
+                    Console.WriteLine(e.ToString());
+                    return e;
+                }
+            }
+        }
+    }
+
+    public static System.Exception RemoveLike(string postID, string userID)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                try {
+                command.CommandText = @"DELETE FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);";
+
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.ExecuteNonQuery();
+                return null;
+                }
+                catch(System.Exception e) {
+                    Console.WriteLine(e.ToString());
+                    return e;
+                }
+            }
+        }
+    }
+
 }

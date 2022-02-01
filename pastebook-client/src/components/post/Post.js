@@ -34,7 +34,7 @@ const Post = (props) => {
    
     const baseUrl = `http://localhost:5000`;
 
-    const [likeStatus, setLike] = useState(/* likeStatus */true);
+    const [likeStatus, setLikeStatus] = useState();
     const [isCommentShown, setIsCommentShown] = useState(true); // the comments portion is shown by default
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
@@ -47,12 +47,12 @@ const Post = (props) => {
     // like/unlike  toggle
     const toggleLike = () => {
         if(likeStatus){
-            window.alert("Like has been undone!");
+            deleteLike();
         }
         else{
-            window.alert("Liked!");
+            sendLike();
         }
-        setLike(v => !v);
+            
     };
 
     // show/hide comment toggle
@@ -101,6 +101,43 @@ const Post = (props) => {
         
     }
 
+    const sendLike = async () => {
+        if(loggedInId != null && postID != null){
+            var response = await fetch(`${baseUrl}/like`, {
+                method: 'POST',
+                headers: {
+                  'PostID': postID,
+                  'UserID': loggedInId,
+                }
+            });
+            if (response.status === 200) {
+                setLikeStatus(v => !v);  
+            }
+            else {
+              alert("Failed to like post "+postID);
+            }
+          }
+    }
+
+    const deleteLike = async () => {
+        if(loggedInId != null && postID != null){
+            var response = await fetch(`${baseUrl}/like`, {
+                method: 'DELETE',
+                headers: {
+                  'PostID': postID,
+                  'UserID': loggedInId,
+                }
+            });
+            if (response.status === 200) {
+                setLikeStatus(v => !v);  
+            }
+            else {
+              alert("Failed unlike post "+postID);
+            }
+          }
+    }
+    
+
     useEffect(() => {
         
         //fetch author info
@@ -127,6 +164,12 @@ const Post = (props) => {
             .then(data => setLikes(data.Value));
         }
 
+        likes.forEach(element => {
+            if(element.UserId==loggedInId){
+                setLikeStatus(true);
+            }
+        });
+
         //fetch comment info
         if(postID!=null) {
             fetch(`${baseUrl}/postComments`, {
@@ -138,7 +181,6 @@ const Post = (props) => {
             .then(response => response.json())
             .then(data => setComments(data.Value));
         }
-
         
         //fetch currently logged in user info
         if(pastebookSessionId!=null){
@@ -152,7 +194,7 @@ const Post = (props) => {
             .then(data => setLoggedInUserData(data.Value));
         }
 
-        console.log(comments);
+        
         
         return () => {};
     }, [authorID]);   

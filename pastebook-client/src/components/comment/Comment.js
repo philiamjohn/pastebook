@@ -42,29 +42,31 @@ const Comment = (props) => {
       if (response.status === 200) {
           alert("Comment sent!");
       }
+      else {
+        alert("Failed to send comment");
+      }
     }
 
   }
 
-  var commentBoxes = document.getElementsByClassName("commentBoxes");
-
-  for (let index = 0; index < commentBoxes.length; index++) {
-    commentBoxes[index].addEventListener("keyup", function(event) {
-      if (event.key === 'Enter') {
-        if(commentBoxes[index].value!="") {
-          var val = commentBoxes[index].value;
-          var id = commentBoxes[index].id.replace('comment-box','');
-          sendComment(id,val);
-        }
-        else {
-          console.log("emptyshit");
-        }
+  const addAComment = (event) => {
+    var el = document.getElementById('comment-box'+postID)
+    if (event.key === 'Enter') {
+      if(el.value!="") {
+        var val = el.value;
+        var id = el.id.replace('comment-box','');
+        sendComment(id,val);
       }
-    });
+      else {
+        console.log("emptyshit");
+      }
+    }
   }
 
   useEffect(() => {
 
+    document.getElementById('comment-box'+postID).addEventListener("keyup", addAComment);
+     
     setCommentsList(comments);
     console.log(commentsList);
     return () => {};
