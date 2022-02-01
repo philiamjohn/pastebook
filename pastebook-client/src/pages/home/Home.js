@@ -15,12 +15,12 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [currentSessionId, setCurrentSessionId] = useState("");
 
   const [intervalId, setIntervalId] = useState(null);
-  const [fetchCountState, setFetchCountState] = useState(1);
+  const [fetchCountState, setFetchCountState] = useState(2);
   const [allPostsLoaded, setAllPostsLoaded] = useState(false);
-  
+
   const pastebookSessionId = getSessionIdFromCookie();
   const getHomePageData = async () => {
-    
+
     if (pastebookSessionId == null) {
       navigate("/login", { replace: true });
     }
@@ -68,14 +68,49 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
     if (response.status === 200) {
       const homepagePosts = await response.json();
       console.table(await homepagePosts);
+
+      if (fetchCount === 1) {
+        // fetchCount === 1 means the homePosts array is being updated with new posts
+        // thus the newly fetched data should be put in the beginning of the array
+        // to avoid duplicate posts, we filter them out using their Post_IDs
+        console.log("homePosts current value");
+        console.table(homePosts);
+        const homePostsFromLocalStorage = JSON.parse(localStorage.getItem("homePosts"));
+
+        const posts = homePosts
+          ? [...homepagePosts, ...homePosts]
+          :
+          homePostsFromLocalStorage
+            ? [...homepagePosts, ...homePostsFromLocalStorage]
+            : [...homepagePosts];
+
+        const uniquePosts = Array.from(new Set(posts.map(post => post.Post_ID)))
+          .map(postId => {
+            return posts.find(post => post.Post_ID === postId)
+          });
+
+        console.table(uniquePosts);
+        setHomePosts(uniquePosts);
+        localStorage.setItem("homePosts", JSON.stringify(uniquePosts));
+      }
+      else {
+        /// if fetchCount !== 1 means the posts being fetched are from earlier dates
+        // thus the newly fetched data should be put in the end of the array
+        const posts = [...homePosts, ...homepagePosts];
+        const uniquePosts = Array.from(new Set(posts.map(post => post.Post_ID)))
+          .map(postId => {
+            return posts.find(post => post.Post_ID === postId)
+          })
+        console.table(uniquePosts);
+        setHomePosts(uniquePosts);
+        localStorage.setItem("homePosts", JSON.stringify(uniquePosts));
+      }
+
       if (homepagePosts.length < 10) {
         setAllPostsLoaded(true);
       }
-      if (homePosts !== null) {
-        setHomePosts([...homePosts, ...homepagePosts]);
-      }
       else {
-        setHomePosts(homepagePosts);
+        setAllPostsLoaded(false);
       }
     }
     else {
@@ -90,6 +125,9 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
 
   useEffect(async () => {
     getUserData();
+    // empty homePosts from localStorage
+    localStorage.setItem("homePosts", JSON.stringify([]));
+
     //clear all setIntervals
     for (let id = 0; id <= 1000; id++) {
       window.clearInterval(id);
@@ -111,34 +149,21 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       }
     }
 
-    await getHome(getHomePosts, fetchCountState);
-    setFetchCountState(fetchCountState + 1)
+    await getHome(getHomePosts, 1);
 
     // refresh page content after 1 minute
-    // const refreshPage = setInterval(async () => {
-    //   await getHome(getHomePosts, 1);
-    // }, 60000);
+    const refreshPage = setInterval(async () => {
+      await getHomePosts(1);
+    }, 60000);
 
-    // setIntervalId(refreshPage);
+    setIntervalId(refreshPage);
 
-    // return () => clearInterval(refreshPage);
+    return () => clearInterval(refreshPage);
   }, []);
-
-  useEffect(() => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      alert("interval stopped");
-    }
-  }, [intervalId]);
-
-  useEffect(() => {
-  }, [fetchCountState]);
-
 
   const loadMorePosts = () => {
     getHomePosts(fetchCountState);
     setFetchCountState(fetchCountState + 1);
-    clearInterval(intervalId);
   }
 
   return (
@@ -177,8 +202,11 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
               : <h5>Posts are being fetched, kindly wait...</h5>
           }
           {
-            homePosts && !allPostsLoaded
-              ? <button id="home-load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+            homePosts
+              ?
+              homePosts.length >= 1 && !allPostsLoaded
+                ? <button id="home-load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+                : <div>All posts have been loaded.</div>
               : null
           }
         </div>
