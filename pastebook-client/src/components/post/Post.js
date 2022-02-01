@@ -80,6 +80,27 @@ const Post = (props) => {
         document.getElementById(`likesModal${id}`).style.display = "none";
     }
 
+    //show edit post modal 
+    const showEditPostModal = (id) => {
+        document.getElementById(`editPostModal${id}`).style.display = "flex";
+        setTimeout(function(){
+            document.getElementById(`edit-post-input${postID}`).focus();
+        });   
+    }
+
+    //close Likes modal on close-button click
+    const closeEditPostModal = (id) => {
+        document.getElementById(`editPostModal${id}`).style.display = "none";
+    }
+    
+    const removeEditPostPhoto = (id) => {
+        
+    }
+
+    const saveEditPost = () => {
+        
+    }
+
     useEffect(() => {
         
         //fetch author info
@@ -152,6 +173,10 @@ const Post = (props) => {
                         <div className='post-timestamp'>{postTimeStamp}</div>
                     </Link> 
                 </div>
+                <div className='post-manage'>
+                    <p onClick={() => { showEditPostModal(postID) }}>Edit</p>
+                    <p>Delete</p>
+                </div>
             </div>
             <div className='post-content'>
                 {postContentText ?
@@ -203,14 +228,21 @@ const Post = (props) => {
                         <img src={likeStatus? LikedIcon : LikeIcon} alt='like-icon'/>
                         Like
                     </div>
-                    {/* Likes Modal */}
-                    <div id={"likesModal"+postID} className="modal">
+                    <div className='post-interactions-btns-comment' onClick={addComment}>
+                        <img src={CommentIcon} alt='comment-icon'/>
+                        Comment
+                    </div>
+                </div>
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture}/> : null }
+            </div>   
+            {/* Likes Modal */}
+            <div id={"likesModal"+postID} className="modal">
                         <div className="modal-content">
                             <div className='modal-content-title'>
                                 <h4>Likes</h4>
                                 <p className="close" onClick={() => { closeLikesModal(postID) }}>&times;</p>
                             </div>
-                            <div className='modal-content-list'>
+                            <div className='like-modal-content-list'>
                              {likes.map((liker) => {
                                   return (<LikerCard
                                     key={liker.Id}
@@ -224,14 +256,42 @@ const Post = (props) => {
                             </div> 
                         </div>
                     </div>
-                    {/* Likes Modal */}
-                    <div className='post-interactions-btns-comment' onClick={addComment}>
-                        <img src={CommentIcon} alt='comment-icon'/>
-                        Comment
+            {/* Likes Modal */}
+            {/* Edit post Modal */}
+            <div id={"editPostModal"+postID} className="modal">
+                        <div className="modal-content">
+                            <div className='modal-content-title'>
+                                <h4>Edit Post</h4>
+                                <p className="close" onClick={() => { closeEditPostModal(postID) }}>&times;</p>
+                            </div>
+                            <div className='edit-post-modal-content'>
+                                {postContentText
+                                    ?
+                                    <div className='post-content-edit-text'>
+                                        <input type="text" id={"edit-post-input"+postID} defaultValue={postContentText} />
+                                    </div>       
+                                    :
+                                    null
+                                }  
+                                {postContentImg 
+                                    ?
+                                    <div className='post-content-edit-img'>
+                                        <p className="close" onClick={() => { removeEditPostPhoto(postID) }}>&times;</p>
+                                        <img src={postContentImg} alt="content-img"/>
+                                    </div>
+                                   :
+                                    null
+                                }
+                                <div className='post-edit-save' onClick={saveEditPost}>
+                                    <p>
+                                        Save
+                                    </p>    
+                                </div>  
+                            </div> 
+                            
+                        </div>
                     </div>
-                </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture}/> : null }
-            </div>     
+            {/* Edit post Modal */}  
         </div>     
     );
   };

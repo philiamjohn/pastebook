@@ -46,12 +46,12 @@ const Post = (props) => {
     return (
         <div className='post-page'>
             <PostComponent 
-                           sessionIdFromCookie={pastebookSessionId}
-                           postID={postId}
-                           authorID={postData.User_ID}
-                           postTimeStamp={postData.DatePosted}
-                           postContentText={postData.Content}
-                           postContentImg={postData.Image}
+                sessionIdFromCookie={pastebookSessionId}
+                postID={postId}
+                authorID={postData.User_ID}
+                postTimeStamp={postData.DatePosted}
+                postContentText={postData.Content}
+                postContentImg={postData.Image}
             />           
         </div>
     );
