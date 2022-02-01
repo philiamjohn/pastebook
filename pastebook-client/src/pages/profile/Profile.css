@@ -93,6 +93,7 @@
 .s2-c1-r3-friends-content div a > img,
 .s2-c1-r3-friends-content div a > p {
     width: 85px;
+    height: 85px;
 }
 .s2-c1-r3-friends-content div a > img {
     border-radius: 6px;
