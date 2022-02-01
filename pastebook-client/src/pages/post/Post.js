@@ -19,6 +19,7 @@ const Post = (props) => {
     const [postData, setPostData] = useState({});
     
     const pastebookSessionId = getSessionIdFromCookie();
+    const loggedInId = localStorage.getItem('homeUserId');
 
     useEffect(() => {
         console.log(pastebookSessionId)

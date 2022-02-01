@@ -37,9 +37,11 @@ const CommentCard = (props) => {
             <Link id="" target="_blank" to={`/profile/${uname}`}><img src={GrayStock}/></Link>}
           </div>
         <div className='comment-card-content'>
-            <Link className="post-component-link" target="_blank" to={`/profile/${uname}`}>
-              <div className='comment-card-content-author'><h5>{firstName} {lastName}</h5></div>
-            </Link>  
+              <div className='comment-card-content-author'>
+                <Link className="post-component-link" target="_blank" to={`/profile/${uname}`}>
+                  <h5>{firstName} {lastName}</h5>
+                  </Link>
+              </div>   
             <div className='comment-card-content-text' id='contentText'>
               <p>{content}</p>
             </div>

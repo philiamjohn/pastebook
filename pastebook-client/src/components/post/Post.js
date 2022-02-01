@@ -39,8 +39,10 @@ const Post = (props) => {
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
+    const [loggedInUserData, setLoggedInUserData] = useState([]);
  
     const pastebookSessionId = sessionIdFromCookie;
+    const loggedInId = localStorage.getItem('homeUserId');
 
     // like/unlike  toggle
     const toggleLike = () => {
@@ -60,7 +62,9 @@ const Post = (props) => {
 
     // user wants to add a comment
     const addComment = () => {
-        setIsCommentShown(v => !v);
+        if(!isCommentShown){
+            setIsCommentShown(v => !v);
+        }
         setTimeout(function(){
             document.getElementById(`comment-box${postID}`).focus();
         });  
@@ -114,6 +118,19 @@ const Post = (props) => {
             .then(data => setComments(data.Value));
         }
 
+        
+        //fetch currently logged in user info
+        if(pastebookSessionId!=null){
+            fetch(`${baseUrl}/users`, {
+                method: 'GET',
+                headers: {
+                    'UserID': loggedInId
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLoggedInUserData(data.Value));
+        }
+
         console.log(comments);
         
         return () => {};
@@ -139,7 +156,9 @@ const Post = (props) => {
             <div className='post-content'>
                 {postContentText ?
                     <div className='post-content-p'>
-                        {postContentText}
+                        <p>
+                            {postContentText}
+                        </p>
                     </div>       
                         :
                         null
@@ -195,6 +214,7 @@ const Post = (props) => {
                              {likes.map((liker) => {
                                   return (<LikerCard
                                     key={liker.Id}
+                                    username={liker.UserName}
                                     profilePic={liker.ProfilePicture}
                                     firstName={liker.FirstName}
                                     lastName={liker.LastName}
@@ -210,7 +230,7 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID}/> : null }
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture}/> : null }
             </div>     
         </div>     
     );

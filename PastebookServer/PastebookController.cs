@@ -243,7 +243,7 @@ public class PastebookController : Controller
         [FromHeader(Name = "X-UserId")] int userId,
         [FromHeader(Name = "X-FetchCount")] int fetchCount)
     {
-        List<PostModel> homePosts = Database.GetHomePosts(userId)!;
+        List<PostModel> homePosts = Database.GetHomePosts(userId, fetchCount)!;
         return Json(homePosts);
     }
 

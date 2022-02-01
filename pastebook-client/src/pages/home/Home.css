@@ -40,6 +40,7 @@
     min-height: 20vh;
     height: auto;
 }
+
 .home-post-container{
     /* border: solid 1px purple; */
     width: 45vw;
@@ -47,3 +48,22 @@
     box-shadow: 1px 5px 15px -10px #000000;
 
 }
+
+
+#home-load-more-posts {
+    width: 35vw;
+    height: 40px;
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+}
+
+#home-load-more-posts:hover {
+    background-color: whitesmoke;
+}
+
+#home-load-more-posts:active {
+    background-color: white;
+    border: 1px solid black;
+}
+

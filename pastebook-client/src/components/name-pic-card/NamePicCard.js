@@ -6,21 +6,27 @@ import { Link } from 'react-router-dom';
 
 const NamePicCard = (props) => {
 
-    const { profilePic, fullname, username } = props;
+    const { profilePic,
+            firstName, 
+            lastName,
+            username } = props;
+    
     useEffect(() => {
-        console.log(profilePic, "heeeee");
+
     }, []);
 
     return (
-        <div className='NamePicCard'>
-            <Link to={`/profile/${username}`} target="_blank" >
+        <div className='NamePicCard'>   
+            <Link to={`/profile/${username}`} target="_blank" >         
                 <div className='namePicCard-img'>
                     <img src={profilePic ? profilePic : userPhoto} alt="user-img" />
                 </div>
-                <div className='namePicCard-name'>
-                    <h5>{fullname}</h5>
-                </div>
-            </Link>
+            </Link>    
+            <div className='namePicCard-name'>
+                <Link to={`/profile/${username}`} target="_blank" >
+                    <h5>{firstName} {lastName}</h5>
+                </Link>      
+            </div>
         </div>
     );
 };

@@ -355,7 +355,12 @@ public class Database
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
                     post.Content = reader.GetString(3);
-                    post.Image = reader.GetString(4);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Image"))){
+                        post.Image = reader.GetString(4);
+                    }
+                    else {
+                        post.Image = null;
+                    }
                     post.Target_ID = reader.GetInt32(5);
                 }
                 return post;
@@ -942,7 +947,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                    "SELECT LikesInPosts.Id, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -954,6 +959,7 @@ public class Database
                             new LikerModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 ProfilePicture = reader["ProfilePicture"].ToString()
@@ -966,6 +972,7 @@ public class Database
                             new LikerModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 ProfilePicture = null
@@ -978,7 +985,7 @@ public class Database
         }
     }
 
-    public static List<PostModel>? GetHomePosts(int? userId)
+    public static List<PostModel>? GetHomePosts(int? userId, int fetchCount)
     {
         List<PostModel> homePosts = new List<PostModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -993,12 +1000,15 @@ public class Database
                     Posts.User_ID,
                     Posts.Content,
                     Posts.Image,
-                    Posts.Target_ID					
+                    Posts.Target_ID
                 FROM Posts 
                 LEFT JOIN FriendsPerUser ON FriendsPerUser.Friend_ID = Posts.User_ID
-                WHERE FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID
-                ORDER BY DatePosted DESC;";
+                WHERE (FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID)
+                ORDER BY DatePosted DESC
+                OFFSET @RowsSkipped ROWS 
+                FETCH NEXT 10 ROWS ONLY;";
                 command.Parameters.AddWithValue("@User_ID", userId);
+                command.Parameters.AddWithValue("@RowsSkipped", (fetchCount - 1) * 10);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -1058,6 +1068,7 @@ public class Database
                             new CommentModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 Content = reader["Content"].ToString(),
@@ -1395,10 +1406,10 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(6);
-                    friend.LastName =reader.GetString(7);
+                    friend.FirstName = reader.GetString(6);
+                    friend.LastName = reader.GetString(7);
                     friend.User_ID = reader.GetInt32(5);
-                    friend.UserName =reader.GetString(9);
+                    friend.UserName = reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(8);
@@ -1410,7 +1421,7 @@ public class Database
         }
         return friends;
     }
-     public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
+    public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
     {
         List<HomeDataModel> friends = new List<HomeDataModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1440,15 +1451,15 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(6);
-                    friend.LastName =reader.GetString(7);
+                    friend.FirstName = reader.GetString(6);
+                    friend.LastName = reader.GetString(7);
                     friend.User_ID = reader.GetInt32(5);
-                    friend.UserName =reader.GetString(9);
+                    friend.UserName = reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(8);
                     }
-                    System.Console.WriteLine(friend.FirstName+" hadwgjhdgajhsd");
+                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
                     friends.Add(friend);
                 }
             }
