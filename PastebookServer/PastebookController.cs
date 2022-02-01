@@ -48,7 +48,7 @@ public class PastebookController : Controller
     [HttpGet]
     [Route("/post/{postId}")]
     public IActionResult getPostById(
-        [FromHeader(Name = "X-SessionID")] string pastebookSessionId, 
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
         int postId
         )
     {
@@ -57,16 +57,19 @@ public class PastebookController : Controller
         {
             return Unauthorized("User is not logged in");
         }
-        else {
+        else
+        {
             var post = Database.GetPostById(postId);
-            if(post != null) {
+            if (post != null)
+            {
                 return Json(post);
             }
-            else{
+            else
+            {
                 return Unauthorized("No post data found");
             }
         }
-        
+
     }
 
     [HttpGet]
@@ -225,6 +228,7 @@ public class PastebookController : Controller
     [Route("/addpost")]
     public IActionResult addPostToDatabase(
         [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromHeader(Name = "X-PostToFriendsProfile")] bool postToFriendsProfile,
         [FromBody] PostModel postDetails
     )
     {
@@ -233,7 +237,7 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        Database.AddPost(postDetails);
+        Database.AddPost(postDetails, postToFriendsProfile);
         return Ok("Post Added successfully");
     }
 
@@ -243,7 +247,7 @@ public class PastebookController : Controller
         [FromHeader(Name = "X-UserId")] int userId,
         [FromHeader(Name = "X-FetchCount")] int fetchCount)
     {
-        List<PostModel> homePosts = Database.GetHomePosts(userId)!;
+        List<PostModel> homePosts = Database.GetHomePosts(userId, fetchCount)!;
         return Json(homePosts);
     }
 
@@ -295,10 +299,11 @@ public class PastebookController : Controller
     [HttpGet]
     [Route("/profileposts/{username?}")]
     public IActionResult getProfilePosts(
+        [FromHeader(Name = "X-FetchCount")] int fetchCount,
         string username
     )
     {
-        return Json(Database.GetProfilePosts(username));
+        return Json(Database.GetProfilePosts(username, fetchCount));
     }
 
     [HttpPatch]
@@ -420,7 +425,7 @@ public class PastebookController : Controller
             return Unauthorized();
         }
         var data = Database.GetFriendsList(userId);
-        System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
+        System.Console.WriteLine(Json(data) + " jadhjwhdjawkj");
         return Json(data);
     }
     [HttpGet]
@@ -437,7 +442,7 @@ public class PastebookController : Controller
             return Unauthorized();
         }
         var data = Database.GetFriendsListProfilePage(userId);
-        System.Console.WriteLine(Json(data)+ " jadhjwhdjawkj");
+        System.Console.WriteLine(Json(data) + " jadhjwhdjawkj");
         return Json(data);
     }
 

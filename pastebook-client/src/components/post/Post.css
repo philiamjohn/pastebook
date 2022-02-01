@@ -1,11 +1,12 @@
 /* POST */
 div.post {
-    width: 35%;
+    /* width: 35%; */
     display: flex;
     flex-direction: column;
-    padding-bottom: 5px;
+    /* padding-bottom: 5px; */
     border-radius: 10px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
+    /* border: red 1px solid; */
 }
 
 div.post p, div.post h4 {
@@ -123,6 +124,7 @@ div.post-interactions-counts {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    /* border: solid greenyellow 1px; */
 }
 
 div.post-interactions-counts-like {

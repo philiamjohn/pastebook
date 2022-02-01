@@ -74,6 +74,11 @@ const NotificationsModal = (props) => {
                                 <FriendRequestAcceptedNotification key={notification.Notification_ID} notification={notification} makeNotificationRead={makeNotificationRead} />
                             )
                         }
+                        else if (notification.Type === "friendpostedonprofile") {
+                            return (
+                                <PostOnProfileNotification key={notification.Notification_ID} notification={notification} makeNotificationRead={makeNotificationRead} />
+                            )
+                        }
                     })
                 }
                 {/* <LikeNotification liker={"Jacqueline"} />
