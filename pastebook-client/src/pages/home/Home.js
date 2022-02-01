@@ -176,7 +176,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
         </div>
         <div className="home-content-right">
           <div id="home-content-create-post">
-            <CreatePost userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
+            <CreatePost fromHome userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
           </div>
           <div className='home-timeline-container'>
             <div id="home-timeline-posts" >
