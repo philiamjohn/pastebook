@@ -985,7 +985,7 @@ public class Database
         }
     }
 
-    public static List<PostModel>? GetHomePosts(int? userId)
+    public static List<PostModel>? GetHomePosts(int? userId, int fetchCount)
     {
         List<PostModel> homePosts = new List<PostModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1000,12 +1000,15 @@ public class Database
                     Posts.User_ID,
                     Posts.Content,
                     Posts.Image,
-                    Posts.Target_ID					
+                    Posts.Target_ID
                 FROM Posts 
                 LEFT JOIN FriendsPerUser ON FriendsPerUser.Friend_ID = Posts.User_ID
-                WHERE FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID
-                ORDER BY DatePosted DESC;";
+                WHERE (FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID)
+                ORDER BY DatePosted DESC
+                OFFSET @RowsSkipped ROWS 
+                FETCH NEXT 10 ROWS ONLY;";
                 command.Parameters.AddWithValue("@User_ID", userId);
+                command.Parameters.AddWithValue("@RowsSkipped", (fetchCount - 1) * 10);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -1403,10 +1406,10 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(6);
-                    friend.LastName =reader.GetString(7);
+                    friend.FirstName = reader.GetString(6);
+                    friend.LastName = reader.GetString(7);
                     friend.User_ID = reader.GetInt32(5);
-                    friend.UserName =reader.GetString(9);
+                    friend.UserName = reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(8);
@@ -1418,7 +1421,7 @@ public class Database
         }
         return friends;
     }
-     public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
+    public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
     {
         List<HomeDataModel> friends = new List<HomeDataModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1448,15 +1451,15 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(6);
-                    friend.LastName =reader.GetString(7);
+                    friend.FirstName = reader.GetString(6);
+                    friend.LastName = reader.GetString(7);
                     friend.User_ID = reader.GetInt32(5);
-                    friend.UserName =reader.GetString(9);
+                    friend.UserName = reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(8);
                     }
-                    System.Console.WriteLine(friend.FirstName+" hadwgjhdgajhsd");
+                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
                     friends.Add(friend);
                 }
             }

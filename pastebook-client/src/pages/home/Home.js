@@ -13,14 +13,12 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
-<<<<<<< HEAD
-    const searchCookie = "pastebookSessionId=";
-    //
-=======
 
-  const getHomePageData = async () => {
->>>>>>> 1888a0e08faf7b6cd37a47aaa694d6c004747c44
-    const pastebookSessionId = getSessionIdFromCookie();
+  const [intervalId, setIntervalId] = useState(null);
+  const [fetchCountState, setFetchCountState] = useState(1);
+  const [allPostsLoaded, setAllPostsLoaded] = useState(false);
+  
+  const pastebookSessionId = getSessionIdFromCookie();
   const getHomePageData = async () => {
     
     if (pastebookSessionId == null) {
@@ -57,28 +55,37 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
 
   }
 
-  const getHomePosts = async () => {
+  const getHomePosts = async (fetchCount) => {
     const homeUserId = localStorage.getItem('homeUserId');
     const response = await fetch(`${baseUrl}/homeposts`, {
       method: 'GET',
       headers: {
-        'X-UserId': homeUserId
+        'X-UserId': homeUserId,
+        'X-FetchCount': fetchCount
       },
     });
 
     if (response.status === 200) {
       const homepagePosts = await response.json();
       console.table(await homepagePosts);
-      setHomePosts(homepagePosts);
+      if (homepagePosts.length < 10) {
+        setAllPostsLoaded(true);
+      }
+      if (homePosts !== null) {
+        setHomePosts([...homePosts, ...homepagePosts]);
+      }
+      else {
+        setHomePosts(homepagePosts);
+      }
     }
     else {
       console.log(response.status);
     }
   }
 
-  const getHome = async (getHomePostsCallback) => {
+  const getHome = async (getHomePostsCallback, fetchCount) => {
     await getHomePageData();
-    await getHomePostsCallback();
+    await getHomePostsCallback(fetchCount);
   }
 
   useEffect(async () => {
@@ -104,15 +111,35 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       }
     }
 
-    await getHome(getHomePosts);
+    await getHome(getHomePosts, fetchCountState);
+    setFetchCountState(fetchCountState + 1)
 
     // refresh page content after 1 minute
-    const refreshPage = setInterval(async () => {
-      await getHome(getHomePosts);
-    }, 60000);
+    // const refreshPage = setInterval(async () => {
+    //   await getHome(getHomePosts, 1);
+    // }, 60000);
 
-    return () => clearInterval(refreshPage);
+    // setIntervalId(refreshPage);
+
+    // return () => clearInterval(refreshPage);
   }, []);
+
+  useEffect(() => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      alert("interval stopped");
+    }
+  }, [intervalId]);
+
+  useEffect(() => {
+  }, [fetchCountState]);
+
+
+  const loadMorePosts = () => {
+    getHomePosts(fetchCountState);
+    setFetchCountState(fetchCountState + 1);
+    clearInterval(intervalId);
+  }
 
   return (
     <div id="home-body">
@@ -148,6 +175,11 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                   />)
               })
               : <h5>Posts are being fetched, kindly wait...</h5>
+          }
+          {
+            homePosts && !allPostsLoaded
+              ? <button id="home-load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+              : null
           }
         </div>
       </div>
