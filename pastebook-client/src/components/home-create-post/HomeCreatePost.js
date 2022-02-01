@@ -70,7 +70,7 @@ const HomeCreatePost = (props) => {
             alert("Post successfully added.");
             onRemovePicture();
             document.getElementById("home-post-text").value = "";
-            await getHomePosts();
+            await getHomePosts(1);
         }
         else {
             alert(response.status)
