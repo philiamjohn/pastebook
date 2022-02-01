@@ -214,6 +214,7 @@ const Post = (props) => {
                              {likes.map((liker) => {
                                   return (<LikerCard
                                     key={liker.Id}
+                                    username={liker.UserName}
                                     profilePic={liker.ProfilePicture}
                                     firstName={liker.FirstName}
                                     lastName={liker.LastName}

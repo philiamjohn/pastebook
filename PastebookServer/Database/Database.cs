@@ -932,7 +932,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT Id, FirstName, LastName, ProfilePicture FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                    "SELECT LikesInPosts.Id, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -944,6 +944,7 @@ public class Database
                             new LikerModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 ProfilePicture = reader["ProfilePicture"].ToString()
@@ -956,6 +957,7 @@ public class Database
                             new LikerModel()
                             {
                                 Id = reader["Id"].ToString(),
+                                UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
                                 ProfilePicture = null
