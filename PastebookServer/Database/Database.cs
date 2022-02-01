@@ -639,6 +639,32 @@ public class Database
         }
     }
 
+    public static bool IsUserFriendsWithPostOwnerOrTarget(int loggedInUserId, int postOwnerUserId, int postTargetUserId)
+    {
+        bool isUserFriendsWithPostOwnerOrTarget = false;
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT User_ID FROM FriendsPerUser WHERE (User_ID = @User_ID AND Friend_ID = @PostOwner) OR (User_ID = @User_ID AND Friend_ID = @PostTarget);";
+                command.Parameters.AddWithValue("@User_ID", loggedInUserId);
+                command.Parameters.AddWithValue("@PostOwner", postOwnerUserId);
+                command.Parameters.AddWithValue("@PostTarget", postTargetUserId);
+
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    isUserFriendsWithPostOwnerOrTarget = true;
+                    break;
+                }
+            }
+        }
+        return isUserFriendsWithPostOwnerOrTarget;
+    }
+
     public static List<NotificationModel>? GetFriendRequests(int userId)
     {
         List<NotificationModel> friendRequests = new List<NotificationModel>();

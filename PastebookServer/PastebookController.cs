@@ -137,6 +137,24 @@ public class PastebookController : Controller
         return Json(Database.GetFriendRequests(userId));
     }
 
+    [HttpGet]
+    [Route("/arewefriends")]
+    public IActionResult isUserFriendsWithPostOwnerOrTarget(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromHeader(Name = "X-LoggedInUser")] int loggedInUserId,
+        [FromHeader(Name = "X-PostOwner")] int postOwnerUserId,
+        [FromHeader(Name = "X-PostTarget")] int postTargetUserId
+    )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        return Database.IsUserFriendsWithPostOwnerOrTarget(loggedInUserId, postOwnerUserId, postTargetUserId) ? Ok() : Unauthorized();
+    }
+
+
     [HttpPatch]
     [Route("/confirmfriendrequest/{notificationId?}")]
     public IActionResult confirmFriendRequest(
