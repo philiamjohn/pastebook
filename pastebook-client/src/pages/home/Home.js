@@ -168,52 +168,58 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
 
   return (
     <div id="home-body">
-      <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
+      <div className='home-header'>
+        <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
+
+      </div>
       <div id="home-content">
-        <div id="home-content-left">
+        <div className="home-content-left">
           <HomeProfile userData={userData} />
           <HomeFriends />
           <HomeAlbums />
         </div>
+        <div className="home-content-right">
+          <div id="home-content-create-post">
+            <HomeCreatePost userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
+          </div>
+          <div className='home-timeline-container'>
+            <div id="home-timeline-posts" >
+              {
+                homePosts
+                  ?
+                  homePosts.map((post) => {
+                    return (
 
-        <div id="home-content-create-post">
-          <HomeCreatePost userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
+                      <div className='home-post-container'>
+                        <PostComponent
+                          key={post.Post_ID}
+                          sessionIdFromCookie={pastebookSessionId}
+                          postID={post.Post_ID}
+                          authorID={post.User_ID}
+                          postTimeStamp={post.DatePosted}
+                          postContentText={post.Content}
+                          postContentImg={post.Image}
+                          userID={localStorage.getItem('homeUserId')}
+                        />
+                      </div>)
+                  })
+                  : <h5>Posts are being fetched, kindly wait...</h5>
+              }
+              {
+                homePosts
+                  ?
+                  homePosts.length >= 1 && !allPostsLoaded
+                    ? <button id="home-load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+                    : <div>All posts have been loaded.</div>
+                  : null
+              }
+            </div>
+          </div>
         </div>
+
       </div>
 
-      <div className='home-timeline-container'>
-        <div id="home-timeline-posts" >
-          {
-            homePosts
-              ?
-              homePosts.map((post) => {
-                return (
 
-                  <div className='home-post-container'>
-                  <PostComponent
-                    key={post.Post_ID}
-                    sessionIdFromCookie={pastebookSessionId}
-                    postID={post.Post_ID}
-                    authorID={post.User_ID}
-                    postTimeStamp={post.DatePosted}
-                    postContentText={post.Content}
-                    postContentImg={post.Image}
-                    userID={localStorage.getItem('homeUserId')}
-                      />
-                    </div>)
-              })
-              : <h5>Posts are being fetched, kindly wait...</h5>
-          }
-          {
-            homePosts
-              ?
-              homePosts.length >= 1 && !allPostsLoaded
-                ? <button id="home-load-more-posts" onClick={loadMorePosts}>Load more posts</button>
-                : <div>All posts have been loaded.</div>
-              : null
-          }
-        </div>
-      </div>
     </div>
   );
 };
