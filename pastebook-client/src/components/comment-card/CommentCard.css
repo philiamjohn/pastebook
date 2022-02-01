@@ -6,6 +6,7 @@
 
 div.comment-card {
     height: 100%;
+    width: 100%;
     display: flex;
 }
 
@@ -15,20 +16,32 @@ div.comment-card {
 }
 
 div.comment-card-img {
-    width: 7%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
     margin-right: 5px;
     cursor: pointer;
 }
 
+div.comment-card-img img{
+    max-height: 100%;
+    width: auto;
+}
+
 div.comment-card-content {
     background: #f7f7f7;
-    width: 90%;
+    width: calc(100% - 95px);
     border-radius: 10px;
     padding: 10px;
 }
 
 div.comment-card-content-author {
     height: 20px;
+    width: 100%;
     padding: 0 0 2px 0;
     cursor: pointer;
 }
@@ -44,7 +57,6 @@ div.comment-card-content-author h5:hover {
 
 
 div.comment-card-content-text {
-    height: 1005;
     padding: 2px 0 2px 0;
 }
 
@@ -56,11 +68,4 @@ div.comment-card-content-text {
 #seeMoreComment p {
     font-weight: bold;
     color: #23282e;
-}
-
-div.comment-card-img img{
-    max-height: auto;
-    max-width: 100%;
-    border-radius: 50%;
-    margin-right: 5px;
 }

@@ -7,7 +7,8 @@ const Comment = (props) => {
 
   const {postAuthorImg,
          postID,
-         comments} = props;
+         comments,
+         loggedInUserPic} = props;
 
   const baseUrl = `http://localhost:5000`;
         
@@ -15,8 +16,8 @@ const Comment = (props) => {
   const [commentsList, setCommentsList] = useState(comments); 
 
 
-  const addComment = () => {
-    document.getElementById('comment-box').focus();
+  const addComment = (id) => {
+    document.getElementById('comment-box'+id).focus();
   }
 
   const showMoreComments = () => {
@@ -26,7 +27,7 @@ const Comment = (props) => {
   useEffect(() => {
     
     setCommentsList(comments);
-    console.log(commentsList.UserName);
+    console.log(commentsList);
     return () => {};
     }, [comments]);  
 
@@ -36,8 +37,9 @@ const Comment = (props) => {
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
               {commentsList.length > 0 ?
-                <CommentCard uname={commentsList[0].UserName}
-                             profilePic={commentsList[0].ProfilePic} 
+                <CommentCard key={commentsList[0].Id}
+                             uname={commentsList[0].UserName}
+                             profilePic={commentsList[0].ProfilePicture} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
                              content={commentsList[0].Content}/>
@@ -63,8 +65,8 @@ const Comment = (props) => {
                                   if(index>0){
                                   return ( <div className='post-interactions-comments-list-item'>
                                   <CommentCard key={comment.Id}
-                                               uname={comment.Username}
-                                               profilePic={comment.ProfilePic} 
+                                               uname={comment.UserName}
+                                               profilePic={comment.ProfilePicture} 
                                                firstName={comment.FirstName}
                                                lastName={comment.LastName}
                                                content={comment.Content}/>
@@ -85,7 +87,7 @@ const Comment = (props) => {
         }
         <div className='post-interactions-comments-create'>
             <div className='post-interactions-comments-create-img'>
-              <img src={postAuthorImg ? postAuthorImg  : GrayStock } alt="author-img" onClick={addComment}/>
+              <img src={loggedInUserPic ? loggedInUserPic  : GrayStock } alt="author-img" onClick={() => addComment(postID)}/>
             </div>
             <div className='post-interactions-comments-create-input'>
               <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>

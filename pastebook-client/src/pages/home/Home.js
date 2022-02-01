@@ -13,9 +13,16 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
+<<<<<<< HEAD
+    const searchCookie = "pastebookSessionId=";
+    //
+=======
 
   const getHomePageData = async () => {
+>>>>>>> 1888a0e08faf7b6cd37a47aaa694d6c004747c44
     const pastebookSessionId = getSessionIdFromCookie();
+  const getHomePageData = async () => {
+    
     if (pastebookSessionId == null) {
       navigate("/login", { replace: true });
     }
@@ -131,7 +138,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                 return (
                   <PostComponent
                     key={post.Post_ID}
-                    getSessionIdFromCookie={getSessionIdFromCookie}
+                    sessionIdFromCookie={pastebookSessionId}
                     postID={post.Post_ID}
                     authorID={post.User_ID}
                     postTimeStamp={post.DatePosted}
