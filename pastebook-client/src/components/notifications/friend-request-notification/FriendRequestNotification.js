@@ -1,6 +1,5 @@
 import React from 'react';
 import { IoPersonAdd } from 'react-icons/io5';
-import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsCheckLg } from 'react-icons/bs';
 import './FriendRequestNotification.css';
 import { Link } from 'react-router-dom';

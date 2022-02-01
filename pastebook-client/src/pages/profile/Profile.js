@@ -6,7 +6,7 @@ import ProfileHeader from '../../components/profile-header/ProfileHeader';
 import PostComponent from '../../components/post/Post';
 import userphoto from '../../images/default-dp.jpg';
 import photo from '../../images/default-image.png';
-import HomeCreatePost from '../../components/home-create-post/HomeCreatePost';
+import CreatePost from '../../components/home-create-post/CreatePost';
 
 
 const Profile = () => {
@@ -14,8 +14,10 @@ const Profile = () => {
     const baseUrl = `http://localhost:5000`;
     const homeUserId = localStorage.getItem('homeUserId');
     const [profileData, setProfileData] = useState({});
-    const [profilePosts, setProfilePosts] = useState([{}, {}, {}, {}, {}]);
+    const [profilePosts, setProfilePosts] = useState([]);
     const [friendsList, setFriendsList] = useState(null);
+    const [allPostsLoaded, setAllPostsLoaded] = useState(false);
+    const [fetchCountState, setFetchCountState] = useState(2);
 
     const getSessionIdFromCookie = () => {
         const searchCookie = "pastebookSessionId=";
@@ -61,15 +63,24 @@ const Profile = () => {
         }
     }
 
-    const getProfilePosts = async () => {
+    const getProfilePosts = async (fetchCount) => {
         const response = await fetch(`${baseUrl}/profileposts/${username}`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'X-FetchCount': fetchCount
+            },
         });
 
         if (response.status === 200) {
             const profilePagePosts = await response.json();
             console.table(await profilePagePosts);
-            setProfilePosts(profilePagePosts);
+            setProfilePosts([...profilePosts, ...profilePagePosts]);
+            if (profilePagePosts.length < 10) {
+                setAllPostsLoaded(true);
+            }
+            else {
+                setAllPostsLoaded(false);
+            }
         }
         else {
             console.log(response.status);
@@ -78,8 +89,14 @@ const Profile = () => {
 
     const getProfile = async (getProfilePostsCallback) => {
         await getProfilePageData();
-        await getProfilePostsCallback();
+        await getProfilePostsCallback(1);
     }
+
+    const loadMorePosts = () => {
+        getProfilePosts(fetchCountState);
+        setFetchCountState(fetchCountState + 1);
+    }
+
     const getFriendsListProfPage = async (id) => {
         console.log(profileData);
 
@@ -166,12 +183,18 @@ const Profile = () => {
                 </div>
                 <div className='s2-c2'>
                     {
-                        profileData.OwnProfile || profileData.Friends
+                        profileData.OwnProfile
                             ?
                             <div className='s2-c2-r1-write-post block-border-shadow'>
-                                <HomeCreatePost />
+                                <CreatePost fromOwnProfile userId={homeUserId} sessionId={getSessionIdFromCookie()} />
                             </div>
-                            : <div />
+                            : profileData.Friends
+                                ?
+                                <div className='s2-c2-r1-write-post block-border-shadow'>
+                                    Post to {profileData.FirstName}'s Profile.
+                                    <CreatePost fromFriendsProfile friendUserId={profileData.User_ID} userId={homeUserId} sessionId={getSessionIdFromCookie()} />
+                                </div>
+                                : null
                     }
                     {
                         profileData.OwnProfile || profileData.Friends
@@ -181,6 +204,7 @@ const Profile = () => {
                                     <div className='s2-c2-r2-posts '>
                                         <PostComponent
                                             key={post.Post_ID}
+                                            sessionIdFromCookie={getSessionIdFromCookie()}
                                             postID={post.Post_ID}
                                             authorID={post.User_ID}
                                             postTimeStamp={post.DatePosted}
@@ -191,28 +215,18 @@ const Profile = () => {
                                     </div>
                                 )
                             })
-                            : <div />
+                            : null
+                    }
+                    {
+                        profilePosts && (profileData.OwnProfile || profileData.Friends)
+                            ?
+                            profilePosts.length >= 1 && !allPostsLoaded
+                                ? <button className="load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+                                : <div>All posts have been loaded.</div>
+                            : null
                     }
                 </div>
             </div>
-            {/* {
-                profileData.OwnProfile || profileData.Friends
-                    ?
-                    profilePosts.map((post) => {
-                        return (
-                            <PostComponent
-                                key={post.Post_ID}
-                                postID={post.Post_ID}
-                                authorID={post.User_ID}
-                                postTimeStamp={post.DatePosted}
-                                postContentText={post.Content}
-                                postContentImg={post.Image}
-                                userID={localStorage.getItem('homeUserId')}
-                            />
-                        )
-                    })
-                    : <div />
-            } */}
         </div>
     );
 };

@@ -27,7 +27,8 @@
     margin-top: 15px;
     /* margin-left: 60px; */
     width: 45vw;
-    height: 175px;
+    min-height: 175px;
+    height: auto;
     background-color: white;
     padding: 5px;
     border-radius: 6px;
@@ -63,18 +64,26 @@
     margin: 5px 0 5px 0;
     box-shadow: 1px 5px 15px -10px #000000;
 }
+
 #home-load-more-posts {
-    width: 35vw;
-    height: 40px;
+    margin-top: 10px;
+    margin-left: 3vw;
+}
+
+.load-more-posts {
+    width: 39vw;
+    height: 45px;
     background-color: white;
     border: none;
     border-radius: 20px;
-    margin-left: 80px;
+    margin-bottom: 10px;
 }
-#home-load-more-posts:hover {
+
+.load-more-posts:hover {
     background-color: whitesmoke;
 }
-#home-load-more-posts:active {
+
+.load-more-posts:active {
     background-color: white;
     border: 1px solid black;
 }

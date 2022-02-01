@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
 import HomeAlbums from '../../components/home-albums/HomeAlbums';
-import HomeCreatePost from '../../components/home-create-post/HomeCreatePost';
+import CreatePost from '../../components/home-create-post/CreatePost';
 import HomeFriends from '../../components/home-friends/HomeFriends';
 import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
@@ -13,8 +13,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
-
-  const [intervalId, setIntervalId] = useState(null);
   const [fetchCountState, setFetchCountState] = useState(2);
   const [allPostsLoaded, setAllPostsLoaded] = useState(false);
 
@@ -156,8 +154,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       await getHomePosts(1);
     }, 60000);
 
-    setIntervalId(refreshPage);
-
     return () => clearInterval(refreshPage);
   }, []);
 
@@ -180,7 +176,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
         </div>
         <div className="home-content-right">
           <div id="home-content-create-post">
-            <HomeCreatePost userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
+            <CreatePost userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
           </div>
           <div className='home-timeline-container'>
             <div id="home-timeline-posts" >
@@ -209,17 +205,14 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                 homePosts
                   ?
                   homePosts.length >= 1 && !allPostsLoaded
-                    ? <button id="home-load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+                    ? <button id="home-load-more-posts" className="load-more-posts" onClick={loadMorePosts}>Load more posts</button>
                     : <div>All posts have been loaded.</div>
                   : null
               }
             </div>
           </div>
         </div>
-
       </div>
-
-
     </div>
   );
 };
