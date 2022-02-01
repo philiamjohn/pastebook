@@ -8,6 +8,7 @@ import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
 import './Home.css';
 
+
 const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
   // const baseUrl = `http://localhost:5000`;

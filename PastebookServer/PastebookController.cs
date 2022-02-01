@@ -445,8 +445,20 @@ public class PastebookController : Controller
         System.Console.WriteLine(Json(data) + " jadhjwhdjawkj");
         return Json(data);
     }
-
-
-
+    [HttpDelete]
+    [Route("/deletePost")]
+    public IActionResult deletePostByPostId([FromBody] PostModel model){
+        Database.DeletePostByPostId(model.Post_ID);
+        return Ok();
+    }
+    [HttpPut]
+    [Route("/editPost")]
+    public IActionResult updatePost([FromBody] PostModel model)
+    {
+        System.Console.WriteLine(model.Content);
+        System.Console.WriteLine(model.Post_ID);
+        Database.UpdatePost(model);
+        return Ok();
+    }
 
 }

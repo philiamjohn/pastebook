@@ -1516,5 +1516,29 @@ public class Database
         return friends;
     }
 
-
+    public static void DeletePostByPostId(int? id){
+        using (var db= new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM Posts WHERE Post_ID=@id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+    public static void UpdatePost(PostModel model){
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = @"UPDATE Posts SET Content=@c WHERE Post_ID=@id";
+                cmd.Parameters.AddWithValue("@c",model.Content);
+                cmd.Parameters.AddWithValue("@id",model.Post_ID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
 }
