@@ -164,8 +164,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className='s2-c2'>
-
+                <div className='s2-c2'>
                     {
                         profileData.OwnProfile || profileData.Friends
                             ?
@@ -179,8 +178,7 @@ const Profile = () => {
                             ?
                             profilePosts.map((post) => {
                                 return (
-                                    <div className='s2-c2-r2-posts block-border-shadow'>
-
+                                    <div className='s2-c2-r2-posts '>
                                         <PostComponent
                                             key={post.Post_ID}
                                             postID={post.Post_ID}
@@ -191,14 +189,13 @@ const Profile = () => {
                                             userID={localStorage.getItem('homeUserId')}
                                         />
                                     </div>
-
                                 )
                             })
                             : <div />
                     }
-                </div> */}
+                </div>
             </div>
-            {
+            {/* {
                 profileData.OwnProfile || profileData.Friends
                     ?
                     profilePosts.map((post) => {
@@ -215,7 +212,7 @@ const Profile = () => {
                         )
                     })
                     : <div />
-            }
+            } */}
         </div>
     );
 };

@@ -188,6 +188,8 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
               ?
               homePosts.map((post) => {
                 return (
+
+                  <div className='home-post-container'>
                   <PostComponent
                     key={post.Post_ID}
                     sessionIdFromCookie={pastebookSessionId}
@@ -197,7 +199,8 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                     postContentText={post.Content}
                     postContentImg={post.Image}
                     userID={localStorage.getItem('homeUserId')}
-                  />)
+                      />
+                    </div>)
               })
               : <h5>Posts are being fetched, kindly wait...</h5>
           }
