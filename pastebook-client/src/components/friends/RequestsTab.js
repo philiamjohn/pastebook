@@ -47,6 +47,22 @@ const RequestsTab = ({ getSessionIdFromCookie }) => {
     }
   }
 
+  const deleteFriendRequest = async (request) => {
+    const response = await fetch(`${baseUrl}/deletefriendrequest/${request.Notification_ID}`, {
+      method: 'DELETE',
+    });
+    if (response.status === 500 || response.status === 401) {
+      alert("Friend request not deleted.");
+    }
+    else if (response.status === 200) {
+      alert(`${request.Name}'s friend request has been deleted.`);
+      await getFriendRequests();
+    }
+    else {
+      alert(response.status);
+    }
+  }
+
   useEffect(async () => {
     await getFriendRequests();
   }, []);
@@ -61,7 +77,7 @@ const RequestsTab = ({ getSessionIdFromCookie }) => {
             ? friendRequests.map((friendRequest) => {
               return (
                 <div className='friends-content-requests-list-item' key={friendRequest.Notification_ID}>
-                  <FriendRequestCard key={friendRequest.Notification_ID} friendRequestDetails={friendRequest} confirmFriendRequest={confirmFriendRequest} />
+                  <FriendRequestCard key={friendRequest.Notification_ID} friendRequestDetails={friendRequest} confirmFriendRequest={confirmFriendRequest} deleteFriendRequest={deleteFriendRequest}/>
                 </div>
               )
             })

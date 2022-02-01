@@ -1,24 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './Post.css';
 import PostComponent from '../../components/post/Post';
 import Avatar from '../../images/avatar.png';
 import MeowDrama from '../../images/meow-drama.jpg';
 
-const Post = () => {
+const Post = (props) => {
+
+    const baseUrl = `http://localhost:5000`;
+
+    const {
+            getSessionIdFromCookie
+          } = props;
+
+    const { postId } = useParams();
+    let navigate = useNavigate();
+
+    const [postData, setPostData] = useState({});
+    
+    const pastebookSessionId = getSessionIdFromCookie();
+
+    useEffect(() => {
+        console.log(pastebookSessionId)
+        if (pastebookSessionId == null) {
+            navigate("/login", { replace: true });
+        }
+
+        //fetch post info
+        if(pastebookSessionId!=null && postId!=null){
+            fetch(`${baseUrl}/post/${postId}`, {
+                method: 'GET',
+                headers: {
+                    'X-SessionID': pastebookSessionId
+                }
+            })
+            .then(response => response.json())
+            .then(data => setPostData(data));
+        }
+
+      return () => {};
+
+    }, []);
+    
     return (
         <div className='post-page'>
-            <PostComponent postID="6"
-                           authorID="10"
-                           postTimeStamp="2022-01-26 15:07:59.570" 
-                           postContentText="Test again with pic"
-                           postContentImg={null}
-            />
-            <PostComponent postID="7"
-                           authorID="10"
-                           postTimeStamp="2022-01-26 18:03:34.893" 
-                           postContentText={null} 
-                           postContentImg={MeowDrama} 
-            />              
+            <PostComponent 
+                           sessionIdFromCookie={pastebookSessionId}
+                           postID={postId}
+                           authorID={postData.User_ID}
+                           postTimeStamp={postData.DatePosted}
+                           postContentText={postData.Content}
+                           postContentImg={postData.Image}
+            />           
         </div>
     );
   };

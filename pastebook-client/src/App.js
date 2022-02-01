@@ -52,6 +52,7 @@ const App = () => {
       <Route path='/username/albums' element={<Album />} />
       <Route path='/username/albums/photos' element={<Photos />} />
       <Route path='/friends' element={<Friends getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData} />} />
+      <Route path='/posts/:postId' element={<Post getSessionIdFromCookie={getSessionIdFromCookie} />} />
       <Route path='/post' element={<Post />} />
       <Route path='/profile/:username' element={<Profile />} />
       {/* endpoint to be changed into userName = firstName+lastname+disambiguiator */}

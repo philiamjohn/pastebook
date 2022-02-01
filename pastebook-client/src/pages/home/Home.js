@@ -10,36 +10,9 @@ import './Home.css';
 
 const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
-  // const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
-
-  // const getSessionIdFromCookie = () => {
-  //   const searchCookie = "pastebookSessionId=";
-  //   if (document.cookie.length > 0) {
-  //     // Search for pastebookSessionId cookie.
-  //     let offset = document.cookie.indexOf(searchCookie)
-
-  //     if (offset != -1) {
-  //       offset += searchCookie.length
-  //       // Set index of beginning of value 
-  //       let end = document.cookie.indexOf(";", offset)
-
-  //       if (end == -1) {
-  //         end = document.cookie.length
-  //       }
-
-  //       const pastebookSessionId = document.cookie.substring(offset, end);
-  //       console.log(`pastebookSessionId: ${pastebookSessionId}`);
-  //       return pastebookSessionId;
-  //     }
-  //   }
-  //   // If no cookie stored, redirect immediately to login
-  //   else {
-  //     navigate("/login", { replace: true });
-  //   }
-  // }
 
   const getHomePageData = async () => {
     const pastebookSessionId = getSessionIdFromCookie();
@@ -128,19 +101,18 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
 
     // refresh page content after 1 minute
     const refreshPage = setInterval(async () => {
-      console.log("Hiiiiiiiiiii");
       await getHome(getHomePosts);
-
     }, 60000);
 
     return () => clearInterval(refreshPage);
   }, []);
+
   return (
     <div id="home-body">
       <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
       <div id="home-content">
         <div id="home-content-left">
-          <HomeProfile /*currentUser={`${userData.FirstName} ${userData.LastName}`} username={userData.UserName} */ userData={userData} />
+          <HomeProfile userData={userData} />
           <HomeFriends />
           <HomeAlbums />
         </div>
@@ -151,7 +123,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       </div>
 
       <div className='home-timeline-container'>
-        <div id="home-timeline-posts">
+        <div id="home-timeline-posts" >
           {
             homePosts
               ?
@@ -159,6 +131,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                 return (
                   <PostComponent
                     key={post.Post_ID}
+                    getSessionIdFromCookie={getSessionIdFromCookie}
                     postID={post.Post_ID}
                     authorID={post.User_ID}
                     postTimeStamp={post.DatePosted}

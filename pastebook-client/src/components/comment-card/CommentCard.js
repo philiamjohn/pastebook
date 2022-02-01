@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import './CommentCard.css';
 import GrayStock from '../../images/gray.jpg';
 
 const CommentCard = (props) => {
 
-  const {profilePic,
+  const {uname,
+         profilePic,
          firstName,
          lastName,
          content} = props;
@@ -29,9 +31,15 @@ const CommentCard = (props) => {
 
   return (
     <div className='comment-card'>
-        <div className='comment-card-img'>{profilePic ? <img src={profilePic}/> : <img src={GrayStock}/>}</div>
+        
+          <div className='comment-card-img'>{profilePic ? <img src={profilePic}/> 
+            : 
+            <Link id="" target="_blank" to={`/profile/${uname}`}><img src={GrayStock}/></Link>}
+          </div>
         <div className='comment-card-content'>
-            <div className='comment-card-content-author'><h5>{firstName} {lastName}</h5></div>
+            <Link className="post-component-link" target="_blank" to={`/profile/${uname}`}>
+              <div className='comment-card-content-author'><h5>{firstName} {lastName}</h5></div>
+            </Link>  
             <div className='comment-card-content-text' id='contentText'>
               <p>{content}</p>
             </div>

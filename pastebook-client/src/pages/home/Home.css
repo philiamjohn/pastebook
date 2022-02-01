@@ -1,5 +1,6 @@
 #home-body {
     background-color: #f0f2f5;
+    overflow-y: scroll;
 }
 #home-content {
     display: flex;

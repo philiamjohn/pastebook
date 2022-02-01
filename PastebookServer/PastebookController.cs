@@ -46,6 +46,30 @@ public class PastebookController : Controller
     }
 
     [HttpGet]
+    [Route("/post/{postId}")]
+    public IActionResult getPostById(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId, 
+        int postId
+        )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId);
+        if (session == null)
+        {
+            return Unauthorized("User is not logged in");
+        }
+        else {
+            var post = Database.GetPostById(postId);
+            if(post != null) {
+                return Json(post);
+            }
+            else{
+                return Unauthorized("No post data found");
+            }
+        }
+        
+    }
+
+    [HttpGet]
     [Route("/searchusers")]
     public IActionResult searchUsers(
         [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
@@ -122,9 +146,19 @@ public class PastebookController : Controller
         return Ok("Friend Request Confirmed");
     }
 
+    [HttpDelete]
+    [Route("/deletefriendrequest/{notificationId?}")]
+    public IActionResult deleteFriendRequest(
+        int notificationId
+    )
+    {
+        Database.DeleteFriendRequest(notificationId);
+        return Ok("Friend Request Deleted");
+    }
+
     [HttpGet]
     [Route("/users")]
-    public IActionResult getUserData([FromHeader(Name = "UserID")] string userID)
+    public IActionResult getUserData([FromHeader(Name = "UserID")] int userID)
     {
         HomeDataModel user = Database.GetUserById(userID);
         if (user == null)
@@ -205,7 +239,9 @@ public class PastebookController : Controller
 
     [HttpGet]
     [Route("/homeposts")]
-    public IActionResult getHomePosts([FromHeader(Name = "X-UserId")] int userId)
+    public IActionResult getHomePosts(
+        [FromHeader(Name = "X-UserId")] int userId,
+        [FromHeader(Name = "X-FetchCount")] int fetchCount)
     {
         List<PostModel> homePosts = Database.GetHomePosts(userId)!;
         return Json(homePosts);
