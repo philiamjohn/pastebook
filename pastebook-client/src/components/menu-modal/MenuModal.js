@@ -50,6 +50,7 @@ const MenuModal = (props) => {
             document.cookie = `${searchCookie}; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
             localStorage.removeItem("homeUserId");
             localStorage.removeItem("profileUsername");
+            localStorage.removeItem("homePosts");
 
             navigate("/login", { replace: true });
         }

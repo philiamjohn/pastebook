@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
 import HomeAlbums from '../../components/home-albums/HomeAlbums';
-import HomeCreatePost from '../../components/home-create-post/HomeCreatePost';
+import CreatePost from '../../components/home-create-post/CreatePost';
 import HomeFriends from '../../components/home-friends/HomeFriends';
 import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
@@ -14,11 +14,12 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
-    const searchCookie = "pastebookSessionId=";
-    //
+  const [fetchCountState, setFetchCountState] = useState(2);
+  const [allPostsLoaded, setAllPostsLoaded] = useState(false);
+
   const pastebookSessionId = getSessionIdFromCookie();
   const getHomePageData = async () => {
-    
+
     if (pastebookSessionId == null) {
       navigate("/login", { replace: true });
     }
@@ -53,32 +54,79 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
 
   }
 
-  const getHomePosts = async () => {
+  const getHomePosts = async (fetchCount) => {
     const homeUserId = localStorage.getItem('homeUserId');
     const response = await fetch(`${baseUrl}/homeposts`, {
       method: 'GET',
       headers: {
-        'X-UserId': homeUserId
+        'X-UserId': homeUserId,
+        'X-FetchCount': fetchCount
       },
     });
 
     if (response.status === 200) {
       const homepagePosts = await response.json();
       console.table(await homepagePosts);
-      setHomePosts(homepagePosts);
+
+      if (fetchCount === 1) {
+        // fetchCount === 1 means the homePosts array is being updated with new posts
+        // thus the newly fetched data should be put in the beginning of the array
+        // to avoid duplicate posts, we filter them out using their Post_IDs
+        console.log("homePosts current value");
+        console.table(homePosts);
+        const homePostsFromLocalStorage = JSON.parse(localStorage.getItem("homePosts"));
+
+        const posts = homePosts
+          ? [...homepagePosts, ...homePosts]
+          :
+          homePostsFromLocalStorage
+            ? [...homepagePosts, ...homePostsFromLocalStorage]
+            : [...homepagePosts];
+
+        const uniquePosts = Array.from(new Set(posts.map(post => post.Post_ID)))
+          .map(postId => {
+            return posts.find(post => post.Post_ID === postId)
+          });
+
+        console.table(uniquePosts);
+        setHomePosts(uniquePosts);
+        localStorage.setItem("homePosts", JSON.stringify(uniquePosts));
+      }
+      else {
+        /// if fetchCount !== 1 means the posts being fetched are from earlier dates
+        // thus the newly fetched data should be put in the end of the array
+        const posts = [...homePosts, ...homepagePosts];
+        const uniquePosts = Array.from(new Set(posts.map(post => post.Post_ID)))
+          .map(postId => {
+            return posts.find(post => post.Post_ID === postId)
+          })
+        console.table(uniquePosts);
+        setHomePosts(uniquePosts);
+        localStorage.setItem("homePosts", JSON.stringify(uniquePosts));
+      }
+
+      if (homepagePosts.length < 10) {
+        setAllPostsLoaded(true);
+      }
+      else {
+        setAllPostsLoaded(false);
+      }
     }
     else {
       console.log(response.status);
     }
   }
 
-  const getHome = async (getHomePostsCallback) => {
+  const getHome = async (getHomePostsCallback, fetchCount) => {
     await getHomePageData();
-    await getHomePostsCallback();
+    await getHomePostsCallback(fetchCount);
   }
 
   useEffect(async () => {
     getUserData();
+    // empty homePosts from localStorage
+    localStorage.setItem("homePosts", JSON.stringify([]));
+
     //clear all setIntervals
     for (let id = 0; id <= 1000; id++) {
       window.clearInterval(id);
@@ -100,52 +148,70 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       }
     }
 
-    await getHome(getHomePosts);
+    await getHome(getHomePosts, 1);
 
     // refresh page content after 1 minute
     const refreshPage = setInterval(async () => {
-      console.log("Hiiiiiiiiiii");
-      await getHome(getHomePosts);
-
+      await getHomePosts(1);
     }, 60000);
 
     return () => clearInterval(refreshPage);
   }, []);
+
+  const loadMorePosts = () => {
+    getHomePosts(fetchCountState);
+    setFetchCountState(fetchCountState + 1);
+  }
+
   return (
     <div id="home-body">
-      <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
+      <div className='home-header'>
+        <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
+
+      </div>
       <div id="home-content">
-        <div id="home-content-left">
-          <HomeProfile /*currentUser={`${userData.FirstName} ${userData.LastName}`} username={userData.UserName} */ userData={userData} />
+        <div className="home-content-left">
+          <HomeProfile userData={userData} />
           <HomeFriends />
           <HomeAlbums />
         </div>
+        <div className="home-content-right">
+          <div id="home-content-create-post">
+            <CreatePost fromHome userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
+          </div>
+          <div className='home-timeline-container'>
+            <div id="home-timeline-posts" >
+              {
+                homePosts
+                  ?
+                  homePosts.map((post) => {
+                    return (
 
-        <div id="home-content-create-post">
-          <HomeCreatePost userId={homeData.User_ID} sessionId={currentSessionId} getHomePosts={getHomePosts} />
-        </div>
-      </div>
-
-      <div className='home-timeline-container'>
-        <div id="home-timeline-posts">
-          {
-            homePosts
-              ?
-              homePosts.map((post) => {
-                return (
-                  <PostComponent
-                    key={post.Post_ID}
-                    sessionIdFromCookie={pastebookSessionId}
-                    postID={post.Post_ID}
-                    authorID={post.User_ID}
-                    postTimeStamp={post.DatePosted}
-                    postContentText={post.Content}
-                    postContentImg={post.Image}
-                    userID={localStorage.getItem('homeUserId')}
-                  />)
-              })
-              : <h5>Posts are being fetched, kindly wait...</h5>
-          }
+                      <div className='home-post-container'>
+                        <PostComponent
+                          key={post.Post_ID}
+                          sessionIdFromCookie={pastebookSessionId}
+                          postID={post.Post_ID}
+                          authorID={post.User_ID}
+                          postTimeStamp={post.DatePosted}
+                          postContentText={post.Content}
+                          postContentImg={post.Image}
+                          userID={localStorage.getItem('homeUserId')}
+                        />
+                      </div>)
+                  })
+                  : <h5>Posts are being fetched, kindly wait...</h5>
+              }
+              {
+                homePosts
+                  ?
+                  homePosts.length >= 1 && !allPostsLoaded
+                    ? <button id="home-load-more-posts" className="load-more-posts" onClick={loadMorePosts}>Load more posts</button>
+                    : <div>All posts have been loaded.</div>
+                  : null
+              }
+            </div>
+          </div>
         </div>
       </div>
     </div>

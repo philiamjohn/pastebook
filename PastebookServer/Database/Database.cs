@@ -355,10 +355,12 @@ public class Database
                     post.DatePosted = $"{reader.GetDateTime(1).ToString("f")}";
                     post.User_ID = reader.GetInt32(2);
                     post.Content = reader.GetString(3);
-                    if (!reader.IsDBNull(reader.GetOrdinal("Image"))){
+                    if (!reader.IsDBNull(reader.GetOrdinal("Image")))
+                    {
                         post.Image = reader.GetString(4);
                     }
-                    else {
+                    else
+                    {
                         post.Image = null;
                     }
                     post.Target_ID = reader.GetInt32(5);
@@ -613,7 +615,7 @@ public class Database
                 }
             }
         }
-
+        // notify user that a friend request has been sent by adding an entry to the notifications table
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
@@ -635,6 +637,32 @@ public class Database
                 command.ExecuteNonQuery();
             }
         }
+    }
+
+    public static bool IsUserFriendsWithPostOwnerOrTarget(int loggedInUserId, int postOwnerUserId, int postTargetUserId)
+    {
+        bool isUserFriendsWithPostOwnerOrTarget = false;
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT User_ID FROM FriendsPerUser WHERE (User_ID = @User_ID AND Friend_ID = @PostOwner) OR (User_ID = @User_ID AND Friend_ID = @PostTarget);";
+                command.Parameters.AddWithValue("@User_ID", loggedInUserId);
+                command.Parameters.AddWithValue("@PostOwner", postOwnerUserId);
+                command.Parameters.AddWithValue("@PostTarget", postTargetUserId);
+
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    isUserFriendsWithPostOwnerOrTarget = true;
+                    break;
+                }
+            }
+        }
+        return isUserFriendsWithPostOwnerOrTarget;
     }
 
     public static List<NotificationModel>? GetFriendRequests(int userId)
@@ -781,7 +809,7 @@ public class Database
         }
     }
 
-    public static List<PostModel>? GetProfilePosts(string username)
+    public static List<PostModel>? GetProfilePosts(string username, int fetchCount)
     {
         //get the userId of username
         int targetId = -1;
@@ -810,8 +838,12 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT * FROM Posts WHERE Target_ID = @Target_ID ORDER BY DatePosted DESC;";
+                    @"SELECT * FROM Posts WHERE Target_ID = @Target_ID OR User_ID = @Target_ID 
+                    ORDER BY DatePosted DESC
+                    OFFSET @RowsSkipped ROWS 
+                    FETCH NEXT 10 ROWS ONLY;";
                 command.Parameters.AddWithValue("@Target_ID", targetId);
+                command.Parameters.AddWithValue("@RowsSkipped", (fetchCount - 1) * 10);
                 command.CommandTimeout = 120;
 
                 var reader = command.ExecuteReader();
@@ -986,7 +1018,7 @@ public class Database
         }
     }
 
-    public static List<PostModel>? GetHomePosts(int? userId)
+    public static List<PostModel>? GetHomePosts(int? userId, int fetchCount)
     {
         List<PostModel> homePosts = new List<PostModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1001,12 +1033,15 @@ public class Database
                     Posts.User_ID,
                     Posts.Content,
                     Posts.Image,
-                    Posts.Target_ID					
+                    Posts.Target_ID
                 FROM Posts 
                 LEFT JOIN FriendsPerUser ON FriendsPerUser.Friend_ID = Posts.User_ID
-                WHERE FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID
-                ORDER BY DatePosted DESC;";
+                WHERE (FriendsPerUser.User_ID = @User_ID OR Posts.User_ID = @User_ID)
+                ORDER BY DatePosted DESC
+                OFFSET @RowsSkipped ROWS 
+                FETCH NEXT 10 ROWS ONLY;";
                 command.Parameters.AddWithValue("@User_ID", userId);
+                command.Parameters.AddWithValue("@RowsSkipped", (fetchCount - 1) * 10);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -1080,7 +1115,7 @@ public class Database
         }
     }
 
-    public static void AddPost(PostModel postDetails)
+    public static void AddPost(PostModel postDetails, bool postToFriendsProfile)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
@@ -1109,6 +1144,49 @@ public class Database
                 command.CommandTimeout = 120;
 
                 command.ExecuteNonQuery();
+            }
+        }
+        // notify user if a friend posted to his profile
+        if (postToFriendsProfile == true)
+        {
+            //determine the post_ID of the recently added post
+            using (var db = new SqlConnection(DB_CONNECTION_STRING))
+            {
+                db.Open();
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = "SELECT TOP 1 Post_ID FROM Posts WHERE Target_ID = @Target_ID AND User_ID = @User_ID ORDER BY DatePosted DESC";
+                    command.Parameters.AddWithValue("@Target_ID", postDetails.Target_ID);
+                    command.Parameters.AddWithValue("@User_ID", postDetails.User_ID);
+                    command.CommandTimeout = 120;
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        postDetails.Post_ID = reader.GetInt32(0);
+                    }
+                }
+            }
+            // add notification
+            using (var db = new SqlConnection(DB_CONNECTION_STRING))
+            {
+                db.Open();
+                using (var command = db.CreateCommand())
+                {
+
+                    command.CommandText =
+                        @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@DateTriggered, @Target_ID, @User_ID, @Type, @Content, @ReadStatus);";
+
+                    command.Parameters.AddWithValue("@DateTriggered", DateTime.Now);
+                    command.Parameters.AddWithValue("@Target_ID", postDetails.Target_ID);
+                    command.Parameters.AddWithValue("@User_ID", postDetails.User_ID);
+                    command.Parameters.AddWithValue("@Type", "friendpostedonprofile");
+                    command.Parameters.AddWithValue("@Content", $"{postDetails.Post_ID}");
+                    command.Parameters.AddWithValue("@ReadStatus", "unread");
+                    command.CommandTimeout = 120;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
@@ -1404,10 +1482,10 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(6);
-                    friend.LastName =reader.GetString(7);
+                    friend.FirstName = reader.GetString(6);
+                    friend.LastName = reader.GetString(7);
                     friend.User_ID = reader.GetInt32(5);
-                    friend.UserName =reader.GetString(9);
+                    friend.UserName = reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(8);
@@ -1419,7 +1497,7 @@ public class Database
         }
         return friends;
     }
-     public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
+    public static List<HomeDataModel>? GetFriendsListProfilePage(int userId)
     {
         List<HomeDataModel> friends = new List<HomeDataModel>();
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1449,15 +1527,15 @@ public class Database
                 while (reader.Read())
                 {
                     HomeDataModel friend = new HomeDataModel();
-                    friend.FirstName =reader.GetString(6);
-                    friend.LastName =reader.GetString(7);
+                    friend.FirstName = reader.GetString(6);
+                    friend.LastName = reader.GetString(7);
                     friend.User_ID = reader.GetInt32(5);
-                    friend.UserName =reader.GetString(9);
+                    friend.UserName = reader.GetString(9);
                     if (!reader.IsDBNull(reader.GetOrdinal("Friend_ProfilePicture")))
                     {
                         friend.ProfilePicture = reader.GetString(8);
                     }
-                    System.Console.WriteLine(friend.FirstName+" hadwgjhdgajhsd");
+                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
                     friends.Add(friend);
                 }
             }
