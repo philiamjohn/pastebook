@@ -1305,7 +1305,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    @"SELECT Albums.AlbumName, Albums.DateCreated
+                    @"SELECT AlbUser.Album_ID, Albums.AlbumName, Albums.DateCreated
                     FROM AlbumPerUser AS AlbUser
                     LEFT JOIN Users ON AlbUser.User_ID = Users.User_ID
                     LEFT JOIN Albums ON AlbUser.Album_ID = Albums.Album_ID
@@ -1318,8 +1318,9 @@ public class Database
                 while (reader.Read())
                 {
                     AlbumModel album = new AlbumModel();
-                    album.AlbumName = reader.GetString(0);
-                    album.AlbumDate = reader.GetDateTime(1);
+                    album.Album_ID = reader.GetInt32(0);
+                    album.AlbumName = reader.GetString(1);
+                    album.AlbumDate = reader.GetDateTime(2);
                     albumDetails.Add(album);
                 }
             }
@@ -1704,4 +1705,182 @@ public class Database
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public static List<AlbumModel>? GetPhotos(int albumId)
+{
+    List<AlbumModel> photoDetails = new List<AlbumModel>();
+    using (var db = new SqlConnection(DB_CONNECTION_STRING))
+    {
+        db.Open();
+        using (var command = db.CreateCommand())
+        {
+            command.CommandText =
+                @"SELECT 
+                PhAlb.Album_ID,
+                Albums.AlbumName,
+                Albums.DateCreated AS AlbumDate,
+                Albums.Caption AS AlbumCaption,
+                PhAlb.Photo_ID,
+                Photos.Image,
+                Photos.DateUploaded,
+                Photos.Caption AS PhotoCaption
+                FROM PhotosPerAlbum AS PhAlb
+                LEFT JOIN Albums ON PhAlb.Album_ID = Albums.Album_ID
+                LEFT JOIN Photos ON PhAlb.Photo_ID = Photos.Photo_ID
+                WHERE PhAlb.Album_ID = @Album_ID;";
+            command.Parameters.AddWithValue("@Album_ID", albumId);
+
+            command.CommandTimeout = 120;
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                AlbumModel album = new AlbumModel();
+                album.Album_ID = reader.GetInt32(0);
+                album.AlbumName = reader.GetString(1);
+                album.AlbumDate = reader.GetDateTime(2);
+                if (!reader.IsDBNull(reader.GetOrdinal("AlbumCaption")))
+                {
+                    album.AlbumCaption = reader.GetString(3);
+                }
+                album.Photo_ID = reader.GetInt32(4);
+                album.ImageFile = reader.GetString(5);
+                album.PhotoDate = reader.GetDateTime(6);
+                if (!reader.IsDBNull(reader.GetOrdinal("PhotoCaption")))
+                {
+                    album.PhotoCaption = reader.GetString(7);
+                }
+                photoDetails.Add(album);
+            }
+        }
+    }
+    return photoDetails;
+}
+
+public static void AddPhotos(AlbumModel photoDetails)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"INSERT INTO Photos (Image, DateUploaded) 
+                    VALUES (@Image, @DateUploaded);";
+
+                command.Parameters.AddWithValue("@Image", photoDetails.ImageFile);
+                command.Parameters.AddWithValue("@DateUploaded", DateTime.Now);
+                // command.Parameters.AddWithValue("@Caption", photoDetails.PhotoCaption);
+
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"SELECT MAX(Photo_ID) 
+                    FROM Photos;
+                    ";
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    photoDetails.Photo_ID = reader.GetInt32(0);
+                }
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"INSERT INTO PhotosPerAlbum (Photo_ID, Album_ID) 
+                    VALUES (@Photo_ID, @Album_ID);
+                    ";
+
+                command.Parameters.AddWithValue("@Photo_ID", photoDetails.Photo_ID);
+                command.Parameters.AddWithValue("@Album_ID", photoDetails.Album_ID);
+
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static AlbumModel GetPhoto(int photoId)
+    {
+        AlbumModel photo = new AlbumModel();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"SELECT *
+                    FROM Photos
+                    WHERE Photo_ID = @Photo_ID;";
+                command.Parameters.AddWithValue("@Photo_ID", photoId);
+
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    
+                    photo.Photo_ID = reader.GetInt32(0);
+                    photo.ImageFile = reader.GetString(1);
+                    photo.PhotoDate = reader.GetDateTime(2);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Caption")))
+                    {
+                        photo.PhotoCaption = reader.GetString(3);
+                    }
+                }
+            }
+        }
+        return photo;
+    }
 }

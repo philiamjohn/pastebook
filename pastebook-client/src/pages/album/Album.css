@@ -8,6 +8,7 @@
 }
 .body button:hover {
     background-color: #dfe3ee;
+    cursor: pointer;
 }
 .text {
     font-size: 15px;
@@ -58,8 +59,9 @@
 }
 .s2-album-content div > p {
     float: left;
-    width: auto;
+    width: 152.19px;
     margin: 5px 5px;
+    overflow: auto;
 }
 .s2-album-create-btn {
     width: 162.2px;
