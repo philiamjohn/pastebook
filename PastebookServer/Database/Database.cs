@@ -1776,12 +1776,20 @@ public static List<AlbumModel>? GetPhotos(int albumId)
             while (reader.Read())
             {
                 AlbumModel album = new AlbumModel();
+                album.Album_ID = reader.GetInt32(0);
                 album.AlbumName = reader.GetString(1);
                 album.AlbumDate = reader.GetDateTime(2);
-                album.AlbumCaption = reader.GetString(3);
+                if (!reader.IsDBNull(reader.GetOrdinal("AlbumCaption")))
+                {
+                    album.AlbumCaption = reader.GetString(3);
+                }
+                album.Photo_ID = reader.GetInt32(4);
                 album.ImageFile = reader.GetString(5);
                 album.PhotoDate = reader.GetDateTime(6);
-                album.PhotoCaption = reader.GetString(7);
+                if (!reader.IsDBNull(reader.GetOrdinal("PhotoCaption")))
+                {
+                    album.PhotoCaption = reader.GetString(7);
+                }
                 photoDetails.Add(album);
             }
         }
@@ -1797,7 +1805,7 @@ public static void AddPhotos(AlbumModel photoDetails)
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    @"INSERT INTO Albums (Image, DateUploaded) 
+                    @"INSERT INTO Photos (Image, DateUploaded) 
                     VALUES (@Image, @DateUploaded);";
 
                 command.Parameters.AddWithValue("@Image", photoDetails.ImageFile);
@@ -1842,5 +1850,37 @@ public static void AddPhotos(AlbumModel photoDetails)
                 command.ExecuteNonQuery();
             }
         }
+    }
+
+    public static AlbumModel GetPhoto(int photoId)
+    {
+        AlbumModel photo = new AlbumModel();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"SELECT *
+                    FROM Photos
+                    WHERE Photo_ID = @Photo_ID;";
+                command.Parameters.AddWithValue("@Photo_ID", photoId);
+
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    
+                    photo.Photo_ID = reader.GetInt32(0);
+                    photo.ImageFile = reader.GetString(1);
+                    photo.PhotoDate = reader.GetDateTime(2);
+                    if (!reader.IsDBNull(reader.GetOrdinal("Caption")))
+                    {
+                        photo.PhotoCaption = reader.GetString(3);
+                    }
+                }
+            }
+        }
+        return photo;
     }
 }

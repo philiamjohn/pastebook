@@ -10,15 +10,16 @@ import Header from '../../components/header/Header';
 import PhotoThumbnail from '../../components/photo-thumbnail/PhotoThumbnail';
 
 
-const Photos = () => {
-    const [ albumFolder, setAlbumFolder ] = useState([{},{},{}]);
+const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
+    const [ albumFolder, setAlbumFolder ] = useState([]);
     const [profileData, setProfileData] = useState({});
     const [imageSource, setImageSource] = useState(null)
     const { albumId } = useParams();
     const username = localStorage.getItem('profileUsername');
     const userId = localStorage.getItem('homeUserId');
-    const baseUrl = `http://localhost:5000`;
 
+    getSessionIdFromCookie();
+    
     const getProfilePageData = async () => {
         
         const response = await fetch(`${baseUrl}/profile/${username}`, {
@@ -59,13 +60,7 @@ const Photos = () => {
         }
     }
 
-    const sendPhotoToServer = async (event) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const base64 = await convertImageToBase64(file);
-            setImageSource(await base64);
-        }
-
+    const sendPhotoToServer = async () => {
         const photoDetails = {
             Album_ID: albumId,
             ImageFile: imageSource
@@ -93,6 +88,14 @@ const Photos = () => {
             alert(response.status)
         }
         
+    }
+
+    const onImageChange = async (event) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const base64 = await convertImageToBase64(file);
+            setImageSource(await base64);
+        }
     }
 
     const convertImageToBase64 = (file) => {
@@ -130,7 +133,7 @@ const Photos = () => {
 
     return (
         <div className='body'>
-            <Header username={username} />
+            <Header username={username} getSessionIdFromCookie={getSessionIdFromCookie} />
             <ProfileHeader profileData={profileData} />
             <div className='s2-photos .block-border-shadow'>
                 <div className='s2-photos-title block-title-1'>
@@ -166,7 +169,8 @@ const Photos = () => {
                     <div className='photos-modal-content'>
                         <div className="photos-modal-back">< MdArrowBack /></div>
                         <div className='photos-modal-title block-title-1'>Upload Photos</div>
-                        <input className='photos-modal-add-file-btn' type="file" accept="image/*"/>
+                        <input className='photos-modal-add-file-btn' type="file" accept="image/*" onChange={onImageChange}/>
+                        {/* <input className='photos-modal-add-caption' type="textarea"/> */}
                         <button className='photos-modal-submit' onClick={sendPhotoToServer} >Upload</button>                      
                     </div>
                 </div>            

@@ -539,4 +539,14 @@ public class PastebookController : Controller
         return Ok();
     }
 
+    // fetch photo after clicking thumbnail in photos page
+    [HttpGet]
+    [Route("/photo/{photoId?}")]
+    public IActionResult getOnePhotoFromDatabase(int photoId)
+    {
+        System.Console.WriteLine(photoId);
+        var photoDetails = Database.GetPhoto(photoId);
+        return Json(photoDetails);
+    }
+
 }

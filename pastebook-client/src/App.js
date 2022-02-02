@@ -9,6 +9,7 @@ import Profile from './pages/profile/Profile';
 import Settings from './pages/settings/Settings';
 import Register from './pages/register/Register';
 import Photos from './pages/photos/Photos';
+import Photo from './components/photo/Photo';
 import { useState } from 'react';
 
 const App = () => {
@@ -49,9 +50,9 @@ const App = () => {
     <Routes>
       <Route path='/' element={<Home getSessionIdFromCookie={getSessionIdFromCookie} baseUrl={baseUrl} getUserData={getUserData} userData={userData}  />} />
       <Route path='/login' element={<Login />} />
-      <Route path='/albums' element={<Album />} />
-      <Route path='/albums/:albumId' element={<Photos />} />
-      <Route path='/albums/:albumId/:photoId' element={<Photos />} />
+      <Route path='/profile/:username/albums' element={<Album getSessionIdFromCookie={getSessionIdFromCookie} baseUrl={baseUrl} getUserData={getUserData} userData={userData}/>} />
+      <Route path='/profile/:username/albums/:albumId' element={<Photos getSessionIdFromCookie={getSessionIdFromCookie} baseUrl={baseUrl} getUserData={getUserData} userData={userData}/>} />
+      <Route path='/profile/:username/albums/:albumId/photos/:photoId' element={<Photo />} />
       <Route path='/friends' element={<Friends getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData} />} />
       <Route path='/posts/:postId' element={<Post getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData}/>} />
       <Route path='/post' element={<Post />} />

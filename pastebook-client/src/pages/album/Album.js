@@ -9,12 +9,13 @@ import AlbumCreateModal from '../../components/album-create-modal/AlbumCreateMod
 import AlbumFolder from '../../components/album/Album';
 
 
-const Album = () => {
+const Album = ({ getSessionIdFromCookie, baseUrl}) => {
     const [ albumFolder, setAlbumFolder ] = useState([{},{},{}]);
     const [profileData, setProfileData] = useState({});
     const username = localStorage.getItem('profileUsername');
     const userId = localStorage.getItem('homeUserId');
-    const baseUrl = `http://localhost:5000`;
+
+    getSessionIdFromCookie();
 
     useEffect(() => {
         // Get the modal
@@ -82,7 +83,7 @@ const Album = () => {
 
     return (
         <div className='body'>
-            <Header username={username} />
+            <Header username={username} getSessionIdFromCookie={getSessionIdFromCookie}/>
             <ProfileHeader profileData={profileData} />
             <div className='s2-album .block-border-shadow'>
                 <div className='s2-album-title block-title-1'>Albums</div>
