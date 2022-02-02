@@ -1543,14 +1543,13 @@ public class Database
         return friends;
     }
 
-    public static System.Exception AddComment(string postID, string content, string userID)
+    public static void AddComment(string postID, string authorID, string content, string userID)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var command = db.CreateCommand())
             {
-                try {
                 command.CommandText = @"INSERT INTO CommentsInPosts (Content, User_ID, Post_ID, Date) 
                     VALUES (@content, @userId, @postId, @date);";
 
@@ -1559,59 +1558,67 @@ public class Database
                 command.Parameters.AddWithValue("@postId", postID);
                 command.Parameters.AddWithValue("@date", DateTime.Now);
                 command.ExecuteNonQuery();
-                return null;
-                }
-                catch(System.Exception e) {
-                    Console.WriteLine(e.ToString());
-                    return e;
-                }
+            }
+            //add notification
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@date, @target, @source, @type, @content, @status);";
+
+                command.Parameters.AddWithValue("@date",  DateTime.Now);
+                command.Parameters.AddWithValue("@target", authorID);
+                command.Parameters.AddWithValue("@source", userID);
+                command.Parameters.AddWithValue("@type", "comment");
+                command.Parameters.AddWithValue("@content", postID);
+                command.Parameters.AddWithValue("@status", "unread");
+                command.ExecuteNonQuery();
             }
         }
     }
 
-    public static System.Exception AddLike(string postID, string userID)
+    public static void AddLike(string postID, string authorID, string userID)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var command = db.CreateCommand())
             {
-                try {
                 command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
                     VALUES (@userId, @postId);";
 
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
                 command.ExecuteNonQuery();
-                return null;
-                }
-                catch(System.Exception e) {
-                    Console.WriteLine(e.ToString());
-                    return e;
-                }
+            }
+            //notif
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@date, @target, @source, @type, @content, @status);";
+
+                command.Parameters.AddWithValue("@date",  DateTime.Now);
+                command.Parameters.AddWithValue("@target", authorID);
+                command.Parameters.AddWithValue("@source", userID);
+                command.Parameters.AddWithValue("@type", "like");
+                command.Parameters.AddWithValue("@content", postID);
+                command.Parameters.AddWithValue("@status", "unread");
+                command.ExecuteNonQuery();
             }
         }
     }
 
-    public static System.Exception RemoveLike(string postID, string userID)
+    public static void RemoveLike(string postID, string userID)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var command = db.CreateCommand())
             {
-                try {
                 command.CommandText = @"DELETE FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);";
 
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
                 command.ExecuteNonQuery();
-                return null;
-                }
-                catch(System.Exception e) {
-                    Console.WriteLine(e.ToString());
-                    return e;
-                }
             }
         }
     }

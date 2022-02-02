@@ -263,18 +263,13 @@ public class PastebookController : Controller
     [Route("/comment")]
     public IActionResult addComment(
         [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "PostID")] string authorID,
         [FromHeader(Name = "Content")] string content,
         [FromHeader(Name = "UserID")] string userID
     )
     {
-        var result = Database.AddComment(postID, content, userID);
-        if (result == null)
-        {
-            return Ok("Comment added successfully");
-        }
-        else{
-            return Unauthorized("Failed to add comment");
-        }
+        Database.AddComment(postID, authorID, content, userID);
+        return Ok("Comment added successfully");
         
     }
 
@@ -282,17 +277,12 @@ public class PastebookController : Controller
     [Route("/like")]
     public IActionResult addLike(
         [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "AuthorID")] string authorID,
         [FromHeader(Name = "UserID")] string userID
     )
     {
-        var result = Database.AddLike(postID, userID);
-        if (result == null)
-        {
-            return Ok("Like added successfully");
-        }
-        else{
-            return Unauthorized("Failed to add like");
-        }
+        Database.AddLike(postID, authorID, userID);
+        return Ok("Like added successfully");
         
     }
 
@@ -303,14 +293,8 @@ public class PastebookController : Controller
         [FromHeader(Name = "UserID")] string userID
     )
     {
-        var result = Database.RemoveLike(postID, userID);
-        if (result == null)
-        {
-            return Ok("Like removed successfully");
-        }
-        else{
-            return Unauthorized("Failed to remove like");
-        }
+        Database.RemoveLike(postID, userID);
+        return Ok("Like removed successfully");
         
     }
 

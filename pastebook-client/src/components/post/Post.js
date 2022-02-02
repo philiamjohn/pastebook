@@ -107,6 +107,7 @@ const Post = (props) => {
                 method: 'POST',
                 headers: {
                   'PostID': postID,
+                  'AuthorID': authorData.User_ID,
                   'UserID': loggedInId,
                 }
             });
@@ -166,7 +167,11 @@ const Post = (props) => {
 
         likes.forEach(element => {
             if(element.UserId==loggedInId){
+                console.log("hmm");
                 setLikeStatus(true);
+            }
+            else{
+                console.log("ack");
             }
         });
 
@@ -197,7 +202,7 @@ const Post = (props) => {
         
         
         return () => {};
-    }, [authorID]);   
+    }, []);   
     
     return (
         <div className='post'>
@@ -275,7 +280,7 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture}/> : null }
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture} postAuthorId={authorData.User_ID} /> : null }
             </div>   
             {/* Likes Modal */}
             <div id={"likesModal"+postID} className="modal">

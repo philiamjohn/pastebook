@@ -5,7 +5,7 @@ import GrayStock from '../../images/gray.jpg';
 
 const Comment = (props) => {
 
-  const {postAuthorImg,
+  const {postAuthorId,
          postID,
          comments,
          loggedInUserPic} = props;
@@ -35,6 +35,7 @@ const Comment = (props) => {
           method: 'POST',
           headers: {
             'PostID': id,
+            'AuthorID': postAuthorId,
             'Content': val,
             'UserID': loggedInId,
           }
