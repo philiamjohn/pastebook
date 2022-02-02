@@ -10,18 +10,18 @@ import Header from '../../components/header/Header';
 import PhotoThumbnail from '../../components/photo-thumbnail/PhotoThumbnail';
 
 
-const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
-    const [ albumFolder, setAlbumFolder ] = useState([]);
+const Photos = ({ getSessionIdFromCookie, baseUrl }) => {
+    const [albumFolder, setAlbumFolder] = useState([]);
     const [profileData, setProfileData] = useState({});
     const [imageSource, setImageSource] = useState(null)
-    const { albumId } = useParams();
-    const username = localStorage.getItem('profileUsername');
+    const { username, albumId } = useParams();
+    const usernameCurrentlyLoggedIn = localStorage.getItem('profileUsername');
     const userId = localStorage.getItem('homeUserId');
 
     getSessionIdFromCookie();
-    
+
     const getProfilePageData = async () => {
-        
+
         const response = await fetch(`${baseUrl}/profile/${username}`, {
             method: 'GET',
             headers: {
@@ -53,7 +53,7 @@ const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
         else if (response.status === 200) {
             const albumData = await response.json();
             setAlbumFolder(albumData);
-            console.log(albumData);
+            console.table(albumData);
         }
         else {
             alert(response.status)
@@ -76,7 +76,7 @@ const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
             },
             body: JSON.stringify(photoDetails)
         });
-        
+
         if (response.status === 500 || response.status === 401) {
             alert("Photo upload failed.");
         }
@@ -87,7 +87,7 @@ const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
         else {
             alert(response.status)
         }
-        
+
     }
 
     const onImageChange = async (event) => {
@@ -121,7 +121,7 @@ const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
 
         // Get the <div> element that closes the modal
         var closeUploadPhotosModal = document.getElementsByClassName("photos-modal-back")[0];
-        
+
         // When the user clicks on <div> (<), close the modal
         closeUploadPhotosModal.onclick = () => {
             uploadPhotosModal.style.display = "none";
@@ -133,47 +133,56 @@ const Photos = ({ getSessionIdFromCookie, baseUrl}) => {
 
     return (
         <div className='body'>
-            <Header username={username} getSessionIdFromCookie={getSessionIdFromCookie} />
-            <ProfileHeader profileData={profileData} />
+            <Header username={usernameCurrentlyLoggedIn} getSessionIdFromCookie={getSessionIdFromCookie} />
+            <ProfileHeader profileData={profileData} username={username} />
             <div className='s2-photos .block-border-shadow'>
                 <div className='s2-photos-title block-title-1'>
-                    Album Name
-                     
+                    { albumFolder.length >= 1 ? albumFolder[0].AlbumName : null}
                 </div>
                 <div className='s2-photos-content'>
-                    <div className='s2-photos-create'>
-                        <button className='s2-photos-create-btn'onClick={showUploadPhotoModal}><BsPlusLg size={30}/></button>
-                        <p className='text'>Add Photos</p>
-                    </div>
-                    <div>
-                        <img src={photo} alt='Default'></img>
-                        <button className='s2-photos-btn' title='Edit Photo Caption'>< MdModeEditOutline size={15} /></button>
-                        <button className='s2-photos-btn' title='Delete Photo'>< MdDeleteForever size={15} /></button>                      
-                    </div>
+                    {
+                        profileData.OwnProfile
+                            ?
+                            <div className='s2-photos-create'>
+                                <button className='s2-photos-create-btn' onClick={showUploadPhotoModal}><BsPlusLg size={30} /></button>
+                                <p className='text'>Add Photos</p>
+                            </div>
+                            : null
+                    }
+                    {
+                        profileData.OwnProfile
+                            ? <div>
+                                <img src={photo} alt='Default'></img>
+                                <button className='s2-photos-btn' title='Edit Photo Caption'>< MdModeEditOutline size={15} /></button>
+                                <button className='s2-photos-btn' title='Delete Photo'>< MdDeleteForever size={15} /></button>
+                            </div>
+                            : null
+                    }
                     {
                         albumFolder
-                        ?                        
+                            ?
                             albumFolder.map((album) => {
                                 return (
                                     <div className='s2-album-folders'>
-                                    <PhotoThumbnail
-                                        albumFolder={album}
-                                    />
+                                        <PhotoThumbnail
+                                            albumFolder={album}
+                                            profileData={profileData}
+                                        />
                                     </div>
                                 )
                             })
-                        : <div></div>
+                            : <div></div>
                     }
                 </div>
                 <div id='photos-modal' >
                     <div className='photos-modal-content'>
                         <div className="photos-modal-back">< MdArrowBack /></div>
                         <div className='photos-modal-title block-title-1'>Upload Photos</div>
-                        <input className='photos-modal-add-file-btn' type="file" accept="image/*" onChange={onImageChange}/>
+                        <input className='photos-modal-add-file-btn' type="file" accept="image/*" onChange={onImageChange} />
                         {/* <input className='photos-modal-add-caption' type="textarea"/> */}
-                        <button className='photos-modal-submit' onClick={sendPhotoToServer} >Upload</button>                      
+                        <button className='photos-modal-submit' onClick={sendPhotoToServer} >Upload</button>
                     </div>
-                </div>            
+                </div>
             </div>
         </div>
     );

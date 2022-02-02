@@ -210,7 +210,6 @@ const Profile = () => {
                                             postTimeStamp={post.DatePosted}
                                             postContentText={post.Content}
                                             postContentImg={post.Image}
-                                            targetID={post.Target_ID}
                                             userID={localStorage.getItem('homeUserId')}
                                         />
                                     </div>

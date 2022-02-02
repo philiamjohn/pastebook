@@ -20,7 +20,7 @@ const ProfileHeader = (props) => {
     useEffect(() => {
         setProfilePictureSource(profileData.ProfilePicture);
     }, [props]);
-   
+
 
     const getSessionIdFromCookie = () => {
         const searchCookie = "pastebookSessionId=";
@@ -189,10 +189,9 @@ const ProfileHeader = (props) => {
                         }
                     </div>
                     <div className='s1-r3-tabs'>
-                        <button className='text'><Link to='/username' style={{ textDecoration: 'none', color: 'inherit' }}>Posts</Link></button>
-                        <button className='text'><Link to='/about' style={{ textDecoration: 'none', color: 'inherit' }}>About</Link></button>
-                        <button className='text'><Link to='/friends' style={{ textDecoration: 'none', color: 'inherit' }}>Friends</Link></button>
-                        <button className='text'><Link to='/photos' style={{ textDecoration: 'none', color: 'inherit' }}>Photos</Link></button>
+                        {profileData.OwnProfile || profileData.Friends ? <button className='text'><Link to={`/profile/${username}`} style={{ textDecoration: 'none', color: 'inherit' }}>Posts</Link></button> : null}
+                        {profileData.OwnProfile ? <button className='text'><Link to='/friends' style={{ textDecoration: 'none', color: 'inherit' }}>Friends</Link></button> : null}
+                        {profileData.OwnProfile || profileData.Friends ? <button className='text'><Link to={`/profile/${username}/albums`} style={{ textDecoration: 'none', color: 'inherit' }}>Photos</Link></button> : null}
                     </div>
                     <EditProfileModal profileData={profileData} getSessionIdFromCookie={getSessionIdFromCookie} />
                 </div>
