@@ -639,6 +639,38 @@ public class Database
         }
     }
 
+    public static bool IsUserFriendsWithPostOwnerOrTarget(int loggedInUserId, int postOwnerUserId, int postTargetUserId)
+    {
+        bool isUserFriendsWithPostOwnerOrTarget = false;
+        //if the currently logged in user is the post owner or target, they could view the post
+        if (loggedInUserId == postOwnerUserId || loggedInUserId == postTargetUserId)
+        {
+            isUserFriendsWithPostOwnerOrTarget = true;
+            return isUserFriendsWithPostOwnerOrTarget;
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "SELECT User_ID FROM FriendsPerUser WHERE (User_ID = @User_ID AND Friend_ID = @PostOwner) OR (User_ID = @User_ID AND Friend_ID = @PostTarget);";
+                command.Parameters.AddWithValue("@User_ID", loggedInUserId);
+                command.Parameters.AddWithValue("@PostOwner", postOwnerUserId);
+                command.Parameters.AddWithValue("@PostTarget", postTargetUserId);
+
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    isUserFriendsWithPostOwnerOrTarget = true;
+                    break;
+                }
+            }
+        }
+        return isUserFriendsWithPostOwnerOrTarget;
+    }
+
     public static List<NotificationModel>? GetFriendRequests(int userId)
     {
         List<NotificationModel> friendRequests = new List<NotificationModel>();
@@ -953,7 +985,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT LikesInPosts.Id, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                    "SELECT LikesInPosts.Like_ID, LikesInPosts.User_ID, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -964,7 +996,8 @@ public class Database
                         likers.Add(
                             new LikerModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Like_ID = reader["Like_ID"].ToString(),
+                                UserId = reader["User_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -977,7 +1010,7 @@ public class Database
                         likers.Add(
                             new LikerModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Like_ID = reader["Like_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1048,7 +1081,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT CommentsInPosts.Id, Users.UserName, Users.FirstName, Users.LastName, Users.ProfilePicture, CommentsInPosts.Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
+                    "SELECT CommentsInPosts.Comment_ID, Users.UserName, Users.FirstName, Users.LastName, Users.ProfilePicture, CommentsInPosts.Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -1059,7 +1092,7 @@ public class Database
                         comments.Add(
                             new CommentModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Comment_ID = reader["Comment_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1073,7 +1106,7 @@ public class Database
                         comments.Add(
                             new CommentModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Comment_ID = reader["Comment_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1541,4 +1574,99 @@ public class Database
             }
         }
     }
+    public static void AddComment(string postID, string authorID, string content, string userID)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"INSERT INTO CommentsInPosts (Content, User_ID, Post_ID, Date) 
+                    VALUES (@content, @userId, @postId, @date);";
+
+                command.Parameters.AddWithValue("@content", content);
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.Parameters.AddWithValue("@date", DateTime.Now);
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {    
+            //add notification
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@date, @target, @source, @type, @content, @status);";
+
+                command.Parameters.AddWithValue("@date",  DateTime.Now);
+                command.Parameters.AddWithValue("@target", authorID);
+                command.Parameters.AddWithValue("@source", userID);
+                command.Parameters.AddWithValue("@type", "comment");
+                command.Parameters.AddWithValue("@content", postID);
+                command.Parameters.AddWithValue("@status", "unread");
+                command.CommandTimeout = 120;
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void AddLike(string postID, string authorID, string userID)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
+                    VALUES (@userId, @postId);";
+
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.ExecuteNonQuery();
+            }
+            //notif
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                    VALUES (@date, @target, @source, @type, @content, @status);";
+
+                command.Parameters.AddWithValue("@date",  DateTime.Now);
+                command.Parameters.AddWithValue("@target", authorID);
+                command.Parameters.AddWithValue("@source", userID);
+                command.Parameters.AddWithValue("@type", "like");
+                command.Parameters.AddWithValue("@content", postID);
+                command.Parameters.AddWithValue("@status", "unread");
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void RemoveLike(string postID, string userID)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"DELETE FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);";
+
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.ExecuteNonQuery();
+            }
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"DELETE FROM Notifications WHERE (Type=@type AND User_ID=@userId AND Content=@postId);";
+
+                command.Parameters.AddWithValue("@type", "like");
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
 }

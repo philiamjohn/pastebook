@@ -137,6 +137,24 @@ public class PastebookController : Controller
         return Json(Database.GetFriendRequests(userId));
     }
 
+    [HttpGet]
+    [Route("/arewefriends")]
+    public IActionResult isUserFriendsWithPostOwnerOrTarget(
+        [FromHeader(Name = "X-SessionID")] string pastebookSessionId,
+        [FromHeader(Name = "X-LoggedInUser")] int loggedInUserId,
+        [FromHeader(Name = "X-PostOwner")] int postOwnerUserId,
+        [FromHeader(Name = "X-PostTarget")] int postTargetUserId
+    )
+    {
+        SessionModel session = Database.GetSessionById(pastebookSessionId)!;
+        if (session == null)
+        {
+            return Unauthorized();
+        }
+        return Database.IsUserFriendsWithPostOwnerOrTarget(loggedInUserId, postOwnerUserId, postTargetUserId) ? Ok(true) : Ok(false);
+    }
+
+
     [HttpPatch]
     [Route("/confirmfriendrequest/{notificationId?}")]
     public IActionResult confirmFriendRequest(
@@ -240,6 +258,46 @@ public class PastebookController : Controller
         Database.AddPost(postDetails, postToFriendsProfile);
         return Ok("Post Added successfully");
     }
+
+    [HttpPost]
+    [Route("/comment")]
+    public IActionResult addComment(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "AuthorID")] string authorID,
+        [FromHeader(Name = "Content")] string content,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        Database.AddComment(postID, authorID, content, userID);
+        return Ok("Comment added successfully");
+        
+    }
+
+    [HttpPost]
+    [Route("/like")]
+    public IActionResult addLike(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "AuthorID")] string authorID,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        Database.AddLike(postID, authorID, userID);
+        return Ok("Like added successfully");
+        
+    }
+
+    [HttpDelete]
+    [Route("/like")]
+    public IActionResult removeLike(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        Database.RemoveLike(postID, userID);
+        return Ok("Like removed successfully");
+        
+    }
+
 
     [HttpGet]
     [Route("/homeposts")]

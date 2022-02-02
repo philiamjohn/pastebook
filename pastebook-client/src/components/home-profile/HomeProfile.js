@@ -11,12 +11,11 @@ const HomeProfile = ({ userData }) => {
     return (
         <div id="home-profile">
             <Link id="home-profile-anchor" to={`/profile/${userData.UserName}`}>
-                {/* <CgProfile id="current-user-profile-picture" size={45} /> */}
                 <div id="current-user-profile-picture">
                     <img src={userData.ProfilePicture ? userData.ProfilePicture : GrayStock} />
                 </div>
                 <div id="current-user-name">
-                    <h3 >{currentUser}</h3>
+                    <h3 >{userData.FirstName ? currentUser : ""}</h3>
                 </div>
             </Link>
         </div>);
