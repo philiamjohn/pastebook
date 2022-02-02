@@ -191,53 +191,57 @@ div.modal-content-list-item {
 }
 
 div.edit-post-modal-content {
-    max-height: 70vh;
-    width: auto;
+    max-height: 90vh;
+    height: auto;
+    width: 30vw;
     padding: 15px;
     overflow: hidden;
 }
 
 div.post-content-edit-text {
     max-height: 10vh;
+    height: 300px;
+    /* border: red 1px solid; */
+
 }
 
-div.post-content-edit-text input {
+div.post-content-edit-text textarea {
     border: none;
     font-size: large;
+    width: 96%;
+    height: 100%;
+
 }
 
-div.post-content-edit-text input:focus {
+div.post-content-edit-text textarea:focus {
     outline: none;
 }
 
 div.post-content-edit-img {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    margin-top:10px ;
+    justify-content: center;
 }
 
 div.post-content-edit-img img{
     max-height: 50vh;
-    width: auto;
+    width: 80%;
     border-radius: 10px;
 }
 
-div.post-edit-save {
+#post-edit-save {
     max-height: 10vh;
+    margin-top: 10px;
     background: #1b74e4;
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    margin-top: 15px;
-    border-radius: 10px;
+    width: 98%;
+    padding: 8px;
+    border-radius: 20px;
+    border: none;
+    line-height: 25px;
 }
-
-div.post-edit-save p {
+#post-edit-save:active{
     color: white;
-    font-weight: bold;
-    font-size: large;
 }
-
 .close {
     color: #aaaaaa;
     float: right;
@@ -300,13 +304,25 @@ div.post-interactions-btns-like img, div.post-interactions-btns-comment img {
 .post-manage{
     display: flex;
 }
-.post-manage p{
-    margin: 0 50px 0 50px;
+.post-manage button{
+    margin: 0 3px 0 3px;
     cursor: pointer;
+    border: none;
+    background-color: white;
 }
-.post-manage p:hover{
+.post-manage #edit-post-button{
+    /* border: 1px red solid; */
+    height: 25px;
+}
+.post-manage #del-post-button{
+    /* border: 1px red solid; */
+    height: 25px;
+}
+.post-manage button:hover{
     color: blue;
+
+
 }
-.post-manage p:active{
+.post-manage button:active{
     color: rgb(122, 122, 192);
 }
