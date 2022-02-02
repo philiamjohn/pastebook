@@ -215,6 +215,20 @@ const Post = (props) => {
         }
     }
 
+    useEffect(() => {
+      
+        likes.forEach(element => {
+            if (element.UserId == loggedInId) {       
+                setLikeStatus(true);
+            }
+            else {
+                console.log("assck");
+            }
+        });
+    
+    }, [likes]);
+    
+
     
 
     useEffect(() => {
@@ -230,9 +244,10 @@ const Post = (props) => {
                     'UserID': authorID
                 }
             })
-                .then(response => response.json())
-                .then(data => setAuthorData(data.Value));
-        }
+             .then(response => response.json())
+             .then(data => setAuthorData(data.Value));
+        }     
+         
 
         //fetch target user info
         if (authorID != null) {
@@ -245,17 +260,8 @@ const Post = (props) => {
                 .then(response => response.json())
                 .then(data => setTargetUserData(data.Value));
         }
-
         //determine if the currently logged in user has liked a this post
-        likes.forEach(element => {
-            if (element.UserId == loggedInId) {
-                console.log("hmm");
-                setLikeStatus(true);
-            }
-            else {
-                console.log("assck");
-            }
-        });
+        
 
 
         //fetch currently logged in user info
@@ -285,20 +291,31 @@ const Post = (props) => {
                     </div>
                 </Link>
                 <div className='post-author-details'>
-                    <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
-                        <div className='post-author-details-name'>
-                            {targetID==authorData.User_ID
-                                ?
-                                <h4> 
-                                    {authorData.FirstName} {authorData.LastName}
-                                </h4>
-                                :
-                                <h4>
-                                    {authorData.FirstName} {authorData.LastName} &#9654; {targetUserData.FirstName} {targetUserData.LastName}
-                                </h4>
-                            }
-                        </div>
-                    </Link>
+                        {targetID!=null&&authorData.User_ID!=null 
+                            ? 
+                            <div className='post-author-details-name'>  
+                                {targetID==authorData.User_ID
+                                    ?
+                                    <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                                        <h4> 
+                                            {authorData.FirstName} {authorData.LastName}
+                                        </h4>
+                                    </Link>
+                                    :
+                                    <h4>
+                                        <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                                            {authorData.FirstName} {authorData.LastName} 
+                                        </Link>    
+                                        {` `}&#9654;{` `}
+                                        <Link className="post-component-link" target="_blank" to={`/profile/${targetUserData.UserName}`}>
+                                            {targetUserData.FirstName} {targetUserData.LastName}
+                                        </Link> 
+                                    </h4>
+                                }
+                            </div>
+                            :
+                            <div className='post-author-details-name'></div>
+                        }    
                     <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
                         <div className='post-timestamp'>{postTimeStamp}</div>
                     </Link>
@@ -390,20 +407,6 @@ const Post = (props) => {
                             })
                         }
                     </div>
-
-                </div>
-                {/* </div> */}
-                <div className='like-modal-content-list'>
-                    {likes.map((liker) => {
-                        return (<LikerCard
-                            key={liker.Id}
-                            username={liker.UserName}
-                            profilePic={liker.ProfilePicture}
-                            firstName={liker.FirstName}
-                            lastName={liker.LastName}
-                        />)
-                    })
-                    }
                 </div>
             </div>
             {/* </div> */}

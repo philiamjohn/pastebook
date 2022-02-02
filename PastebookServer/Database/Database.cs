@@ -1626,35 +1626,56 @@ public class Database
 
     public static void AddLike(string postID, string authorID, string userID)
     {
+        var alreadyLiked = false;
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
-                    VALUES (@userId, @postId);";
-
+                command.CommandText = @"SELECT User_ID FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);"; 
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
-                command.ExecuteNonQuery();
+                command.CommandTimeout = 120;
+
+                var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    alreadyLiked = true;
+                }
             }
-            //add notif if like is not to own post
-            if (authorID != userID)
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {   
+            db.Open();
+            if(!alreadyLiked)
             {
                 using (var command = db.CreateCommand())
                 {
-                    command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
-                    VALUES (@date, @target, @source, @type, @content, @status);";
+                    command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
+                        VALUES (@userId, @postId);";
 
-                    command.Parameters.AddWithValue("@date", DateTime.Now);
-                    command.Parameters.AddWithValue("@target", authorID);
-                    command.Parameters.AddWithValue("@source", userID);
-                    command.Parameters.AddWithValue("@type", "like");
-                    command.Parameters.AddWithValue("@content", postID);
-                    command.Parameters.AddWithValue("@status", "unread");
+                    command.Parameters.AddWithValue("@userId", userID);
+                    command.Parameters.AddWithValue("@postId", postID);
                     command.ExecuteNonQuery();
                 }
-            }
+                //add notif if like is not to own post
+                if (authorID != userID)
+                {
+                    using (var command = db.CreateCommand())
+                    {
+                        command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                        VALUES (@date, @target, @source, @type, @content, @status);";
+
+                        command.Parameters.AddWithValue("@date", DateTime.Now);
+                        command.Parameters.AddWithValue("@target", authorID);
+                        command.Parameters.AddWithValue("@source", userID);
+                        command.Parameters.AddWithValue("@type", "like");
+                        command.Parameters.AddWithValue("@content", postID);
+                        command.Parameters.AddWithValue("@status", "unread");
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }    
         }
     }
 

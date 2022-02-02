@@ -106,19 +106,20 @@ const Comment = (props) => {
 
   return (
     <div className='post-interactions-comments' id='comments'>
-        {commentsList.length > 1 ?
+        {commentsList.length >= 1 ?
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
-              {commentsList.length > 0 ?
+              {commentsList.length > 0 
+                ?
                 <CommentCard key={commentsList[0].Comment_ID}
                              uname={commentsList[0].UserName}
                              profilePic={commentsList[0].ProfilePicture} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
                              content={commentsList[0].Content}/>
-                             :
+                :
                 null
-               }
+              }
              </div>
              {allCommentsShown ?
                                   null
