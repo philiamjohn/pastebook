@@ -293,7 +293,7 @@ const Post = (props) => {
     return (
         <div className='post'>
             <div className='post-author'>
-                <Link id="" target="_blank" to={`/profile/${authorData.UserName}`}>
+                <Link id=""  to={`/profile/${authorData.UserName}`}>
                     <div className='post-author-img'>
                         <img src={authorData.ProfilePicture ? authorData.ProfilePicture : GrayStock} alt="author-img" />
                     </div>
@@ -304,18 +304,18 @@ const Post = (props) => {
                             <div className='post-author-details-name'>  
                                 {targetID==authorData.User_ID
                                     ?
-                                    <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                                    <Link className="post-component-link"  to={`/profile/${authorData.UserName}`}>
                                         <h4> 
                                             {authorData.FirstName} {authorData.LastName}
                                         </h4>
                                     </Link>
                                     :
                                     <h4>
-                                        <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                                        <Link className="post-component-link"  to={`/profile/${authorData.UserName}`}>
                                             {authorData.FirstName} {authorData.LastName} 
                                         </Link>    
                                         {` `}&#9654;{` `}
-                                        <Link className="post-component-link" target="_blank" to={`/profile/${targetUserData.UserName}`}>
+                                        <Link className="post-component-link"  to={`/profile/${targetUserData.UserName}`}>
                                             {targetUserData.FirstName} {targetUserData.LastName}
                                         </Link> 
                                     </h4>
@@ -324,7 +324,7 @@ const Post = (props) => {
                             :
                             <div className='post-author-details-name'></div>
                         }    
-                    <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
+                    <Link className="post-component-link"  to={`/posts/${postID}`}>
                         <div className='post-timestamp'>{postTimeStamp}</div>
                     </Link>
                 </div>

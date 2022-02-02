@@ -34,11 +34,11 @@ const CommentCard = (props) => {
         
           <div className='comment-card-img'>{profilePic ? <img src={profilePic}/> 
             : 
-            <Link id="" target="_blank" to={`/profile/${uname}`}><img src={GrayStock}/></Link>}
+            <Link id=""  to={`/profile/${uname}`}><img src={GrayStock}/></Link>}
           </div>
         <div className='comment-card-content'>
               <div className='comment-card-content-author'>
-                <Link className="post-component-link" target="_blank" to={`/profile/${uname}`}>
+                <Link className="post-component-link"  to={`/profile/${uname}`}>
                   <h5>{firstName} {lastName}</h5>
                   </Link>
               </div>   
