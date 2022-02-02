@@ -8,13 +8,9 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionIdFrom
         var email = document.getElementById('new-email');
         const res = await fetch(`${baseurl}/register/` + email.value, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
         if (res.status === 200) {
-            // alert("already taken ")
-            // setDisableButton(true);
             email.className = 'active';
 
         } else if (res.status === 401) {
-            // alert("available");
-            // setDisableButton(false);
             email.className = 'test';
         }
 
@@ -35,7 +31,6 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionIdFrom
             })
         });
         if (response.status === 200) {
-            // alert("yeye");
             refreshPage();
         }
 
@@ -51,7 +46,6 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionIdFrom
             })
         });
         if (response.status === 200) {
-            // alert("yey");
             updateEmailInSessions(e);
         }
     }
@@ -65,15 +59,11 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionIdFrom
             })
         });
         if (res.status === 200) {
-            console.log("true");
             password.className = 'test';
             setDisableButton(false);
 
         } else {
-            console.log("false");
             password.className = 'active';
-            // alert("old password incorrect")
-            // setDisableButton(true);
         }
     }
     const changeColor = (e) => {
