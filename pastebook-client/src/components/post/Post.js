@@ -309,20 +309,24 @@ const Post = (props) => {
                                 {targetID==authorData.User_ID
                                     ?
                                     <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
-                                        <h4> 
+                                        <h4 className='post.component-link'> 
                                             {authorData.FirstName} {authorData.LastName}
                                         </h4>
                                     </Link>
                                     :
+                                    <div className='post-component-link-targeted'>
                                     <h4>
                                         <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
                                             {authorData.FirstName} {authorData.LastName} 
-                                        </Link>    
-                                        {` `}&#9654;{` `}
+                                        </Link>
+                                    </h4>
+                                    <div>&#9654;</div>
+                                    <h4>
                                         <Link className="post-component-link" target="_blank" to={`/profile/${targetUserData.UserName}`}>
                                             {targetUserData.FirstName} {targetUserData.LastName}
                                         </Link> 
                                     </h4>
+                                    </div>
                                 }
                             </div>
                             :
@@ -442,16 +446,15 @@ const Post = (props) => {
                         {postContentImg
                             ?
                             <div className='post-content-edit-img'>
-                                <p className="close" onClick={() => { removeEditPostPhoto(postID) }}>&times;</p>
                                 <img src={postContentImg} alt="content-img" />
                             </div>
                             :
                             null
                         }
-                        <div className='post-edit-save' >
-                            <button onClick={() => saveEditPost(postID)}>
+                        <div className='post-edit-save' onClick={() => saveEditPost(postID)}>
+                            <p>
                                 Save
-                            </button>
+                            </p>
                         </div>
                     </div>
 

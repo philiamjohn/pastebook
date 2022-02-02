@@ -1,10 +1,18 @@
-/* div.post-page {
+div.post-page {
     min-height: 100vh;
     display: flex;
-    background: black;
+    background: whitesmoke;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
     padding-bottom: 20px;
     
-} */
+}
+
+div.post-page-header {
+    width: 100%;
+}
+
+div.post-page-content {
+    margin-top: 20px;
+    width: 40vw;
+}

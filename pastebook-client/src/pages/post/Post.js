@@ -46,6 +46,7 @@ const Post = (props) => {
     }
 
     useEffect(() => {
+
         getUserData();
 
         //clear all setIntervals
@@ -87,22 +88,24 @@ const Post = (props) => {
 
     return (
         <div className='post-page'>
-            <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
+            <div className='post-page-header'><Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} /></div>
             {
                 userData && postData.Post_ID && !isFetching
                     ?
                     isAuthorizedToViewPost
                         ?
-                        <PostComponent
-                            sessionIdFromCookie={pastebookSessionId}
-                            postID={postId}
-                            authorID={postData.User_ID}
-                            postTimeStamp={postData.DatePosted}
-                            postContentText={postData.Content}
-                            postContentImg={postData.Image}
-                            targetID={postData.Target_ID}
-                            userID={localStorage.getItem('homeUserId')}
-                        />
+                        <div className='post-page-content'>
+                            <PostComponent
+                                sessionIdFromCookie={pastebookSessionId}
+                                postID={postId}
+                                authorID={postData.User_ID}
+                                postTimeStamp={postData.DatePosted}
+                                postContentText={postData.Content}
+                                postContentImg={postData.Image}
+                                targetID={postData.Target_ID}
+                                userID={localStorage.getItem('homeUserId')}
+                            />
+                        </div>
                         : <div>You are not allowed to view this post.</div>
                     : <div>Loading</div>
             }

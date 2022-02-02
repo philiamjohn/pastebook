@@ -65,8 +65,9 @@ const Comment = (props) => {
         });
         if (response.status === 200) {
             alert("Comment sent!");
+            document.getElementById('comment-box'+id).value="";
             fetchComments();
-            setAllCommentsShown(true);
+            setAllCommentsShown(true);     
         }
         else {
           alert("Failed to like post "+postID);
@@ -166,7 +167,9 @@ const Comment = (props) => {
             <div className='post-interactions-comments-create-input'>
               <input type='text' placeholder="Write a comment" className='commentBoxes' id={"comment-box"+postID}/>      
             </div>
-            <div onClick={addAComment}><a>Send</a></div>
+            <div onClick={addAComment} className='post-interactions-comments-create-send'>
+              <p>Send</p>
+            </div>
         </div>
     </div>
   );
