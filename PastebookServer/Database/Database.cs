@@ -199,11 +199,18 @@ public class Database
                 command.Parameters.AddWithValue("@Email", userCredentials.Email);
 
                 var passwordInDb = command.ExecuteScalar();
-                var result = BCrypt.Net.BCrypt.Verify(
+                if (passwordInDb != null)
+                {
+                    var result = BCrypt.Net.BCrypt.Verify(
                     userCredentials.Password,
                     passwordInDb.ToString()
                 );
-                return result ? AddSessionForUser(userCredentials) : null;
+                    return result ? AddSessionForUser(userCredentials) : null;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }
@@ -1592,23 +1599,27 @@ public class Database
                 command.ExecuteNonQuery();
             }
         }
-        using (var db = new SqlConnection(DB_CONNECTION_STRING))
-        {    
-            //add notification
-            db.Open();
-            using (var command = db.CreateCommand())
+        // send notif if comment is not to own post
+        if (authorID != userID)
+        {
+            using (var db = new SqlConnection(DB_CONNECTION_STRING))
             {
-                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                //add notification
+                db.Open();
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
                     VALUES (@date, @target, @source, @type, @content, @status);";
 
-                command.Parameters.AddWithValue("@date",  DateTime.Now);
-                command.Parameters.AddWithValue("@target", authorID);
-                command.Parameters.AddWithValue("@source", userID);
-                command.Parameters.AddWithValue("@type", "comment");
-                command.Parameters.AddWithValue("@content", postID);
-                command.Parameters.AddWithValue("@status", "unread");
-                command.CommandTimeout = 120;
-                command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@date", DateTime.Now);
+                    command.Parameters.AddWithValue("@target", authorID);
+                    command.Parameters.AddWithValue("@source", userID);
+                    command.Parameters.AddWithValue("@type", "comment");
+                    command.Parameters.AddWithValue("@content", postID);
+                    command.Parameters.AddWithValue("@status", "unread");
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
@@ -1627,19 +1638,22 @@ public class Database
                 command.Parameters.AddWithValue("@postId", postID);
                 command.ExecuteNonQuery();
             }
-            //notif
-            using (var command = db.CreateCommand())
+            //add notif if like is not to own post
+            if (authorID != userID)
             {
-                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
                     VALUES (@date, @target, @source, @type, @content, @status);";
 
-                command.Parameters.AddWithValue("@date",  DateTime.Now);
-                command.Parameters.AddWithValue("@target", authorID);
-                command.Parameters.AddWithValue("@source", userID);
-                command.Parameters.AddWithValue("@type", "like");
-                command.Parameters.AddWithValue("@content", postID);
-                command.Parameters.AddWithValue("@status", "unread");
-                command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@date", DateTime.Now);
+                    command.Parameters.AddWithValue("@target", authorID);
+                    command.Parameters.AddWithValue("@source", userID);
+                    command.Parameters.AddWithValue("@type", "like");
+                    command.Parameters.AddWithValue("@content", postID);
+                    command.Parameters.AddWithValue("@status", "unread");
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
