@@ -196,11 +196,27 @@ const Post = (props) => {
                 .then(data => setLikes(data.Value));
         }
     }
+   
+    //fetch comment info
+    const fetchComments = () => {
+        if (postID != null) {
+            fetch(`${baseUrl}/postComments`, {
+                method: 'GET',
+                headers: {
+                    'PostID': postID
+                }
+            })
+                .then(response => response.json())
+                .then(data => setComments(data.Value));
+        }
+    }
 
+    
 
     useEffect(() => {
 
         fetchLikes();
+        fetchComments();
 
         //fetch author info
         if (authorID != null) {
@@ -224,17 +240,6 @@ const Post = (props) => {
             }
         });
 
-        //fetch comment info
-        if (postID != null) {
-            fetch(`${baseUrl}/postComments`, {
-                method: 'GET',
-                headers: {
-                    'PostID': postID
-                }
-            })
-                .then(response => response.json())
-                .then(data => setComments(data.Value));
-        }
 
         //fetch currently logged in user info
         if (pastebookSessionId != null) {
@@ -334,7 +339,7 @@ const Post = (props) => {
                         Comment
                     </div>
                 </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture} postAuthorId={authorData.User_ID} /> : null}
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture} postAuthorId={authorData.User_ID} fetchComments={fetchComments}/> : null}
             </div>
             {/* Likes Modal */}
             <div id={"likesModal" + postID} className="modal">

@@ -8,6 +8,7 @@ const Comment = (props) => {
   const {postAuthorId,
          postID,
          comments,
+         fetchComments,
          loggedInUserPic} = props;
 
   const baseUrl = `http://localhost:5000`;
@@ -64,6 +65,8 @@ const Comment = (props) => {
         });
         if (response.status === 200) {
             alert("Comment sent!");
+            fetchComments();
+            setAllCommentsShown(true);
         }
         else {
           alert("Failed to like post "+postID);
