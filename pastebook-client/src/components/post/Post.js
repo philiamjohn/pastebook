@@ -171,7 +171,7 @@ const Post = (props) => {
         .then(data => setAuthorData(data.Value));
         }
 
-        
+        console.log(authorData);
 
         likes.forEach(element => {
             if(element.UserId==loggedInId){

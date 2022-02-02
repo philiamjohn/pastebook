@@ -1563,9 +1563,14 @@ public class Database
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
                 command.Parameters.AddWithValue("@date", DateTime.Now);
+                command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {    
             //add notification
+            db.Open();
             using (var command = db.CreateCommand())
             {
                 command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
@@ -1577,6 +1582,7 @@ public class Database
                 command.Parameters.AddWithValue("@type", "comment");
                 command.Parameters.AddWithValue("@content", postID);
                 command.Parameters.AddWithValue("@status", "unread");
+                command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
         }

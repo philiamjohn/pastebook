@@ -263,7 +263,7 @@ public class PastebookController : Controller
     [Route("/comment")]
     public IActionResult addComment(
         [FromHeader(Name = "PostID")] string postID,
-        [FromHeader(Name = "PostID")] string authorID,
+        [FromHeader(Name = "AuthorID")] string authorID,
         [FromHeader(Name = "Content")] string content,
         [FromHeader(Name = "UserID")] string userID
     )
