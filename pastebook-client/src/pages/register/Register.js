@@ -3,7 +3,7 @@ import '../register/Register.css';
 import { useNavigate } from 'react-router-dom';
 
 
-const Register = ({baseUrl}) => {
+const Register = ({ baseUrl }) => {
   let navigate = useNavigate();
   const checkEmailIfExist = async (e) => {
     e.preventDefault();
@@ -61,6 +61,19 @@ const Register = ({baseUrl}) => {
     }
 
   }
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1; 
+  var yyyy = today.getFullYear();
+
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+  today = yyyy + '-' + mm + '-' + dd;
   return <div className='reg-page'>
     <div className='register'>
       <div className='reg-title'>
@@ -80,7 +93,7 @@ const Register = ({baseUrl}) => {
           </div>
           <div className='date'>
             <label htmlFor='birthday'>Birthday:</label>
-            <input type='date' name='birthday' id='birthday' required='required' />
+            <input type='date' name='birthday' id='birthday' required='required' max={today} />
           </div>
           <div className='gender'>
             <select id='genderChoice'>
