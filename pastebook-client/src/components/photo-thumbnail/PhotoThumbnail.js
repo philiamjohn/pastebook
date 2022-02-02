@@ -5,8 +5,6 @@ import { MdModeEditOutline, MdDeleteForever } from 'react-icons/md';
 
 const PhotoThumbnail = (props) => {
     const { albumFolder, profileData } = props;
-    console.table(albumFolder);
-
     return (
         <div>
             <Link to={`/albums/${albumFolder.Album_ID}/photos/${albumFolder.Photo_ID}`}>

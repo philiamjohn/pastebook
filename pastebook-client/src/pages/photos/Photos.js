@@ -31,11 +31,7 @@ const Photos = ({ getSessionIdFromCookie, baseUrl }) => {
 
         if (response.status === 200) {
             const profilePageData = await response.json();
-            console.table(await profilePageData);
             setProfileData(profilePageData);
-        }
-        else {
-            console.log(response.status);
         }
     }
 
@@ -53,7 +49,6 @@ const Photos = ({ getSessionIdFromCookie, baseUrl }) => {
         else if (response.status === 200) {
             const albumData = await response.json();
             setAlbumFolder(albumData);
-            console.table(albumData);
         }
         else {
             alert(response.status)
@@ -66,8 +61,6 @@ const Photos = ({ getSessionIdFromCookie, baseUrl }) => {
             ImageFile: imageSource
             // PhotoCaption: photoCaption
         }
-
-        console.table(photoDetails);
 
         const response = await fetch(`${baseUrl}/albums/${albumId}`, {
             method: 'POST',

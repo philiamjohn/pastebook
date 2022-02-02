@@ -229,9 +229,6 @@ const Post = (props) => {
             if (element.UserId == loggedInId) {       
                 setLikeStatus(true);
             }
-            else {
-                console.log("assck");
-            }
         });
     
     }, [likes]);
@@ -283,10 +280,6 @@ const Post = (props) => {
                 .then(response => response.json())
                 .then(data => setLoggedInUserData(data.Value));
         }
-
-        console.log("target"+targetID);
-        console.log("author"+authorData.User_ID);
-
         return () => { };
     }, []);
 

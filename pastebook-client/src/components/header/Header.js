@@ -31,11 +31,7 @@ const Header = (props) => {
 
     if (response.status === 200) {
       const profileSearchResults = await response.json();
-      console.table(await profileSearchResults);
       setSearchResults(profileSearchResults);
-    }
-    else {
-      console.log(response.status);
     }
   }
 
@@ -50,11 +46,7 @@ const Header = (props) => {
 
     if (response.status === 200) {
       const notificationList = await response.json();
-      console.table(await notificationList);
       setNotifications(notificationList);
-    }
-    else {
-      console.log(response.status);
     }
   }
 

@@ -17,7 +17,6 @@ const SettingEditSecTab = ({ userData, getSessionIdFromCookie, baseUrl }) => {
     const changePass = async (e) => {
         e.preventDefault();
         var newPass = document.getElementById('new-password').value;
-        console.log(newPass + " helllllo");
         const response = await fetch(`${baseUrl}/changepass`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -54,10 +53,8 @@ const SettingEditSecTab = ({ userData, getSessionIdFromCookie, baseUrl }) => {
             })
         });
         if (res.status === 200) {
-            console.log("true");
             password.className = 'green';
         } else {
-            console.log("false");
             password.className = 'red';
         }
     }

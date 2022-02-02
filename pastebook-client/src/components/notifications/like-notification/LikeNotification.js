@@ -11,7 +11,7 @@ const LikeNotification = (props) => {
                 id="like-icon"
                 size={15}
                 color='black' />
-            <Link to={`/posts/${notification.Content}`} className='notification-link'>{notification.Name} liked your post.</Link>
+            <a href={`/posts/${notification.Content}`} className='notification-link'>{notification.Name} liked your post.</a>
             {
                 notification.ReadStatus === "unread"
                     ?

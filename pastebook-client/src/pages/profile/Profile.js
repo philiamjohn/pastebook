@@ -35,7 +35,6 @@ const Profile = () => {
                 }
 
                 const pastebookSessionId = document.cookie.substring(offset, end);
-                console.log(`pastebookSessionId: ${pastebookSessionId}`);
                 return pastebookSessionId;
             }
         }
@@ -52,14 +51,9 @@ const Profile = () => {
 
         if (response.status === 200) {
             const profilePageData = await response.json();
-            console.table(await profilePageData);
-            console.log(profilePageData.User_ID);
             setProfileData(profilePageData);
             getFriendsListProfPage(profilePageData.User_ID);
 
-        }
-        else {
-            console.log(response.status);
         }
     }
 
@@ -73,7 +67,6 @@ const Profile = () => {
 
         if (response.status === 200) {
             const profilePagePosts = await response.json();
-            console.table(await profilePagePosts);
             setProfilePosts([...profilePosts, ...profilePagePosts]);
             if (profilePagePosts.length < 10) {
                 setAllPostsLoaded(true);
@@ -81,9 +74,6 @@ const Profile = () => {
             else {
                 setAllPostsLoaded(false);
             }
-        }
-        else {
-            console.log(response.status);
         }
     }
 
@@ -98,8 +88,6 @@ const Profile = () => {
     }
 
     const getFriendsListProfPage = async (id) => {
-        console.log(profileData);
-
         const sessionId = getSessionIdFromCookie();
         // const homeUserId = localStorage.getItem('homeUserId');
 
@@ -112,11 +100,7 @@ const Profile = () => {
 
         if (response.status === 200) {
             const friendRequestList = await response.json();
-            console.table(friendRequestList);
             setFriendsList(friendRequestList);
-        }
-        else {
-            console.log(response.status);
         }
     }
 
@@ -210,6 +194,7 @@ const Profile = () => {
                                             postTimeStamp={post.DatePosted}
                                             postContentText={post.Content}
                                             postContentImg={post.Image}
+                                            targetID={post.Target_ID}
                                             userID={localStorage.getItem('homeUserId')}
                                         />
                                     </div>

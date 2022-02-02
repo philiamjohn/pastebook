@@ -10,7 +10,6 @@ const Friends = ({ getSessionIdFromCookie,userData  }) => {
 
     // On page load
     useEffect(() => {
-        console.log(userData.User_ID);
         var list = document.getElementById('friends-list');
         var listOuter = document.getElementById('friends-list-outer');
         var requests = document.getElementById('friend-requests');

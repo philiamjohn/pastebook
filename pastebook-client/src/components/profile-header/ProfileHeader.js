@@ -38,7 +38,6 @@ const ProfileHeader = (props) => {
                 }
 
                 const pastebookSessionId = document.cookie.substring(offset, end);
-                console.log(`pastebookSessionId: ${pastebookSessionId}`);
                 return pastebookSessionId;
             }
         }
@@ -62,8 +61,6 @@ const ProfileHeader = (props) => {
         const profilePictureDetails = {
             ProfilePicture: profilePictureSource
         };
-
-        console.table(profilePictureDetails);
 
         const response = await fetch(`${baseUrl}/editprofilepicture`, {
             method: 'PATCH',

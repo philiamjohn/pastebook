@@ -6,14 +6,6 @@ public class PastebookController : Controller
     [Route("/register")]
     public IActionResult newRegister([FromBody] RegisterModel regmodel)
     {
-        System.Console.WriteLine(regmodel.FirstName + "hello");
-        System.Console.WriteLine(regmodel.LastName + "hello");
-        System.Console.WriteLine(regmodel.Email + "emailhello");
-        System.Console.WriteLine(regmodel.Password + "hello");
-        System.Console.WriteLine(regmodel.Birthday + "hello");
-        System.Console.WriteLine(regmodel.Gender + "hello");
-        System.Console.WriteLine(regmodel.Username + " 123123hello");
-        System.Console.WriteLine(regmodel.Phone + " wewewewewe");
         Database.NewRegister(regmodel);
         Database.CheckAddUserName(regmodel);
         Database.SendConfirmationEmail(regmodel.Email, regmodel.LastName);
@@ -154,7 +146,6 @@ public class PastebookController : Controller
         return Database.IsUserFriendsWithPostOwnerOrTarget(loggedInUserId, postOwnerUserId, postTargetUserId) ? Ok(true) : Ok(false);
     }
 
-
     [HttpPatch]
     [Route("/confirmfriendrequest/{notificationId?}")]
     public IActionResult confirmFriendRequest(
@@ -270,7 +261,7 @@ public class PastebookController : Controller
     {
         Database.AddComment(postID, authorID, content, userID);
         return Ok("Comment added successfully");
-        
+
     }
 
     [HttpPost]
@@ -283,7 +274,7 @@ public class PastebookController : Controller
     {
         Database.AddLike(postID, authorID, userID);
         return Ok("Like added successfully");
-        
+
     }
 
     [HttpDelete]
@@ -295,7 +286,7 @@ public class PastebookController : Controller
     {
         Database.RemoveLike(postID, userID);
         return Ok("Like removed successfully");
-        
+
     }
 
 
@@ -330,11 +321,6 @@ public class PastebookController : Controller
     [Route("/userUpdate")]
     public IActionResult userCredentialUpdate([FromBody] HomeDataModel model)
     {
-        System.Console.WriteLine(model.FirstName + "hello");
-        System.Console.WriteLine(model.LastName + "hello");
-        System.Console.WriteLine(model.Birthday + "hello");
-        System.Console.WriteLine(model.Gender + "hello");
-        System.Console.WriteLine(model.Phone + " wewewewewe");
         Database.UserCredentialUpdate(model);
         return Ok();
     }
@@ -409,14 +395,6 @@ public class PastebookController : Controller
         Database.EditProfileDescription(userId, profileData.ProfileDesc!);
         return Ok("Post Added successfully");
     }
-    // [HttpPost]
-    // [Route("/albums/photos/add")]
-    // public IActionResult addPhotosToAlbumDatabase(
-    //     [FromBody] AlbumModel albumDetails
-    // )
-    // {
-
-    // }
 
     [HttpPost]
     [Route("/userUpdate")]
@@ -430,32 +408,10 @@ public class PastebookController : Controller
         return Ok();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     [HttpPut]
     [Route("/changepass")]
     public IActionResult changePassBaseOnID([FromBody] HomeDataModel model)
     {
-        System.Console.WriteLine(model.Password + " passsss");
         Database.ChangePassBaseOnID(model);
         return Ok();
     }
@@ -464,8 +420,6 @@ public class PastebookController : Controller
     [Route("/updateEmailSessions")]
     public IActionResult updateUserEmailSessions([FromBody] SessionModel model)
     {
-        System.Console.WriteLine(model.SessionId + " sesid");
-        System.Console.WriteLine(model.Email + " EMail");
         Database.UpdateUserEmailSessions(model);
         return Ok();
     }
@@ -476,14 +430,12 @@ public class PastebookController : Controller
         int userId
     )
     {
-        System.Console.WriteLine($"{userId} hhehehe {pastebookSessionId} hehehehe");
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
         if (session == null)
         {
             return Unauthorized();
         }
         var data = Database.GetFriendsList(userId);
-        System.Console.WriteLine(Json(data) + " jadhjwhdjawkj");
         return Json(data);
     }
     [HttpGet]
@@ -493,14 +445,12 @@ public class PastebookController : Controller
         int userId
     )
     {
-        System.Console.WriteLine($"{userId} hhehehe {pastebookSessionId} hehehehe");
         SessionModel session = Database.GetSessionById(pastebookSessionId)!;
         if (session == null)
         {
             return Unauthorized();
         }
         var data = Database.GetFriendsListProfilePage(userId);
-        System.Console.WriteLine(Json(data) + " jadhjwhdjawkj");
         return Json(data);
     }
 
@@ -509,7 +459,6 @@ public class PastebookController : Controller
     [Route("/albums/{albumId?}")]
     public IActionResult getPhotoFromDatabase(int albumId)
     {
-        System.Console.WriteLine(albumId);
         var photoDetails = Database.GetPhotos(albumId);
         return Json(photoDetails);
     }
@@ -525,7 +474,8 @@ public class PastebookController : Controller
 
     [HttpDelete]
     [Route("/deletePost")]
-    public IActionResult deletePostByPostId([FromBody] PostModel model){
+    public IActionResult deletePostByPostId([FromBody] PostModel model)
+    {
         Database.DeletePostByPostId(model.Post_ID);
         return Ok();
     }
@@ -533,8 +483,6 @@ public class PastebookController : Controller
     [Route("/editPost")]
     public IActionResult updatePost([FromBody] PostModel model)
     {
-        System.Console.WriteLine(model.Content);
-        System.Console.WriteLine(model.Post_ID);
         Database.UpdatePost(model);
         return Ok();
     }
@@ -544,7 +492,6 @@ public class PastebookController : Controller
     [Route("/photo/{photoId?}")]
     public IActionResult getOnePhotoFromDatabase(int photoId)
     {
-        System.Console.WriteLine(photoId);
         var photoDetails = Database.GetPhoto(photoId);
         return Json(photoDetails);
     }

@@ -61,11 +61,9 @@ const Album = ({ getSessionIdFromCookie, baseUrl }) => {
 
         if (response.status === 200) {
             const profilePageData = await response.json();
-            console.table(await profilePageData);
             setProfileData(profilePageData);
         }
         else {
-            console.log(response.status);
         }
     }
 
@@ -84,7 +82,6 @@ const Album = ({ getSessionIdFromCookie, baseUrl }) => {
         else if (response.status === 200) {
             const albumData = await response.json();
             setAlbumFolder(albumData);
-            console.table(albumData);
         }
         else {
             alert(response.status)

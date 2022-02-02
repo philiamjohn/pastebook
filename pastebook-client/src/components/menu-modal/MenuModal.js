@@ -27,22 +27,15 @@ const MenuModal = (props) => {
         const searchCookie = "pastebookSessionId=";
         var coockieValue = "";
         if (document.cookie.length > 0) {
-            console.log("hello");
             let getCookieValueTest = document.cookie.indexOf(searchCookie);
-            console.log(getCookieValueTest + "hello2");
             if (getCookieValueTest != -1) {
-                console.log("hello3");
                 getCookieValueTest += searchCookie.length;
-                console.log(getCookieValueTest + " hello4");
                 let end = document.cookie.indexOf(";", getCookieValueTest)
-                console.log(end + " hello5");
 
                 if (end == -1) {
                     end = document.cookie.length;
-                    console.log(end + " hello6");
                 }
                 coockieValue = document.cookie.substring(getCookieValueTest, end);
-                console.log(coockieValue + " hello7");
             }
         }
         const response = await fetch(`${baseUrl}/session/` + coockieValue, { method: 'DELETE' });
