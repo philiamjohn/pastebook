@@ -34,7 +34,7 @@ const Post = (props) => {
    
     const baseUrl = `http://localhost:5000`;
 
-    const [likeStatus, setLike] = useState(/* likeStatus */true);
+    const [likeStatus, setLikeStatus] = useState(false);
     const [isCommentShown, setIsCommentShown] = useState(true); // the comments portion is shown by default
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
@@ -47,12 +47,12 @@ const Post = (props) => {
     // like/unlike  toggle
     const toggleLike = () => {
         if(likeStatus){
-            window.alert("Like has been undone!");
+            deleteLike();
         }
         else{
-            window.alert("Liked!");
+            sendLike();
         }
-        setLike(v => !v);
+            
     };
 
     // show/hide comment toggle
@@ -80,7 +80,84 @@ const Post = (props) => {
         document.getElementById(`likesModal${id}`).style.display = "none";
     }
 
+    //show edit post modal 
+    const showEditPostModal = (id) => {
+        document.getElementById(`editPostModal${id}`).style.display = "flex";
+        setTimeout(function(){
+            document.getElementById(`edit-post-input${postID}`).focus();
+        });   
+    }
+
+    //close Likes modal on close-button click
+    const closeEditPostModal = (id) => {
+        document.getElementById(`editPostModal${id}`).style.display = "none";
+    }
+    
+    const removeEditPostPhoto = (id) => {
+        
+    }
+
+    const saveEditPost = () => {
+        
+    }
+
+    const sendLike = async () => {
+        if(loggedInId != null && postID != null){
+            var response = await fetch(`${baseUrl}/like`, {
+                method: 'POST',
+                headers: {
+                  'PostID': postID,
+                  'AuthorID': authorData.User_ID,
+                  'UserID': loggedInId,
+                }
+            });
+            if (response.status === 200) {
+                setLikeStatus(v => !v);
+                fetchLikes();
+            }
+            else {
+              alert("Failed to like post "+postID);
+            }
+          }
+    }
+
+    const deleteLike = async () => {
+        if(loggedInId != null && postID != null){
+            var response = await fetch(`${baseUrl}/like`, {
+                method: 'DELETE',
+                headers: {
+                  'PostID': postID,
+                  'UserID': loggedInId,
+                }
+            });
+            if (response.status === 200) {
+                setLikeStatus(v => !v);  
+                fetchLikes();
+            }
+            else {
+              alert("Failed unlike post "+postID);
+            }
+          }
+    }
+
+    const fetchLikes = () => {
+        //fetch likes info
+        if(postID!=null){
+            fetch(`${baseUrl}/postLikes`, {
+                method: 'GET',
+                headers: {
+                  'PostID': postID
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLikes(data.Value));
+        }
+    }
+    
+
     useEffect(() => {
+
+        fetchLikes();
         
         //fetch author info
         if(authorID != null){
@@ -94,17 +171,17 @@ const Post = (props) => {
         .then(data => setAuthorData(data.Value));
         }
 
-        //fetch likes info
-        if(postID!=null){
-            fetch(`${baseUrl}/postLikes`, {
-                method: 'GET',
-                headers: {
-                  'PostID': postID
-                }
-            })
-            .then(response => response.json())
-            .then(data => setLikes(data.Value));
-        }
+        
+
+        likes.forEach(element => {
+            if(element.UserId==loggedInId){
+                console.log("hmm");
+                setLikeStatus(true);
+            }
+            else{
+                console.log("assck");
+            }
+        });
 
         //fetch comment info
         if(postID!=null) {
@@ -117,7 +194,6 @@ const Post = (props) => {
             .then(response => response.json())
             .then(data => setComments(data.Value));
         }
-
         
         //fetch currently logged in user info
         if(pastebookSessionId!=null){
@@ -131,10 +207,10 @@ const Post = (props) => {
             .then(data => setLoggedInUserData(data.Value));
         }
 
-        console.log(comments);
+        
         
         return () => {};
-    }, [authorID]);   
+    }, []);   
     
     return (
         <div className='post'>
@@ -151,6 +227,10 @@ const Post = (props) => {
                     <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
                         <div className='post-timestamp'>{postTimeStamp}</div>
                     </Link> 
+                </div>
+                <div className='post-manage'>
+                    <p onClick={() => { showEditPostModal(postID) }}>Edit</p>
+                    <p>Delete</p>
                 </div>
             </div>
             <div className='post-content'>
@@ -203,17 +283,24 @@ const Post = (props) => {
                         <img src={likeStatus? LikedIcon : LikeIcon} alt='like-icon'/>
                         Like
                     </div>
-                    {/* Likes Modal */}
-                    <div id={"likesModal"+postID} className="modal">
+                    <div className='post-interactions-btns-comment' onClick={addComment}>
+                        <img src={CommentIcon} alt='comment-icon'/>
+                        Comment
+                    </div>
+                </div>
+                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture} postAuthorId={authorData.User_ID} /> : null }
+            </div>   
+            {/* Likes Modal */}
+            <div id={"likesModal"+postID} className="modal">
                         <div className="modal-content">
                             <div className='modal-content-title'>
                                 <h4>Likes</h4>
                                 <p className="close" onClick={() => { closeLikesModal(postID) }}>&times;</p>
                             </div>
-                            <div className='modal-content-list'>
+                            <div className='like-modal-content-list'>
                              {likes.map((liker) => {
                                   return (<LikerCard
-                                    key={liker.Id}
+                                    key={liker.Liker_ID}
                                     username={liker.UserName}
                                     profilePic={liker.ProfilePicture}
                                     firstName={liker.FirstName}
@@ -224,14 +311,42 @@ const Post = (props) => {
                             </div> 
                         </div>
                     </div>
-                    {/* Likes Modal */}
-                    <div className='post-interactions-btns-comment' onClick={addComment}>
-                        <img src={CommentIcon} alt='comment-icon'/>
-                        Comment
+            {/* Likes Modal */}
+            {/* Edit post Modal */}
+            <div id={"editPostModal"+postID} className="modal">
+                        <div className="modal-content">
+                            <div className='modal-content-title'>
+                                <h4>Edit Post</h4>
+                                <p className="close" onClick={() => { closeEditPostModal(postID) }}>&times;</p>
+                            </div>
+                            <div className='edit-post-modal-content'>
+                                {postContentText
+                                    ?
+                                    <div className='post-content-edit-text'>
+                                        <input type="text" id={"edit-post-input"+postID} defaultValue={postContentText} />
+                                    </div>       
+                                    :
+                                    null
+                                }  
+                                {postContentImg 
+                                    ?
+                                    <div className='post-content-edit-img'>
+                                        <p className="close" onClick={() => { removeEditPostPhoto(postID) }}>&times;</p>
+                                        <img src={postContentImg} alt="content-img"/>
+                                    </div>
+                                   :
+                                    null
+                                }
+                                <div className='post-edit-save' onClick={saveEditPost}>
+                                    <p>
+                                        Save
+                                    </p>    
+                                </div>  
+                            </div> 
+                            
+                        </div>
                     </div>
-                </div>
-                {isCommentShown ? <Comment comments={comments} postAuthorImg={authorData.ProfilePicture} postID={postID} loggedInUserPic={loggedInUserData.ProfilePicture}/> : null }
-            </div>     
+            {/* Edit post Modal */}  
         </div>     
     );
   };

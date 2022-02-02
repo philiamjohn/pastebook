@@ -259,6 +259,46 @@ public class PastebookController : Controller
         return Ok("Post Added successfully");
     }
 
+    [HttpPost]
+    [Route("/comment")]
+    public IActionResult addComment(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "PostID")] string authorID,
+        [FromHeader(Name = "Content")] string content,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        Database.AddComment(postID, authorID, content, userID);
+        return Ok("Comment added successfully");
+        
+    }
+
+    [HttpPost]
+    [Route("/like")]
+    public IActionResult addLike(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "AuthorID")] string authorID,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        Database.AddLike(postID, authorID, userID);
+        return Ok("Like added successfully");
+        
+    }
+
+    [HttpDelete]
+    [Route("/like")]
+    public IActionResult removeLike(
+        [FromHeader(Name = "PostID")] string postID,
+        [FromHeader(Name = "UserID")] string userID
+    )
+    {
+        Database.RemoveLike(postID, userID);
+        return Ok("Like removed successfully");
+        
+    }
+
+
     [HttpGet]
     [Route("/homeposts")]
     public IActionResult getHomePosts(
@@ -464,77 +504,6 @@ public class PastebookController : Controller
         return Json(data);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // fetch photos of specific album from database for photos page
     [HttpGet]
     [Route("/albums/{albumId?}")]
@@ -553,17 +522,5 @@ public class PastebookController : Controller
         Database.AddPhotos(photoDetails);
         return Ok("Album created successfully.");
     }
-
-    
-
-
-
-
-
-
-
-
-
-
 
 }

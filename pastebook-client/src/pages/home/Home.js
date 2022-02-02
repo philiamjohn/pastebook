@@ -10,6 +10,7 @@ import './Home.css';
 
 const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
+  // const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
