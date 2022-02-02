@@ -51,6 +51,7 @@ const App = () => {
       <Route path='/login' element={<Login />} />
       <Route path='/albums' element={<Album />} />
       <Route path='/albums/:albumId' element={<Photos />} />
+      <Route path='/albums/:albumId/:photoId' element={<Photos />} />
       <Route path='/friends' element={<Friends getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData} />} />
       <Route path='/posts/:postId' element={<Post getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData}/>} />
       <Route path='/post' element={<Post />} />
