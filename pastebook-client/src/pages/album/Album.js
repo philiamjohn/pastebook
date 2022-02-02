@@ -30,16 +30,16 @@ const Album = ({ getSessionIdFromCookie, baseUrl }) => {
             createAlbumModal.style.display = "none";
         }
 
-        // Get the modal
-        var renameAlbumModal = document.getElementById("rename-album-modal");
+        // // Get the modal
+        // var renameAlbumModal = document.getElementById("rename-album-modal");
 
-        // Get the <div> element that closes the modal
-        var closeRenameModal = document.getElementsByClassName("rename-album-modal-back")[0];
+        // // Get the <div> element that closes the modal
+        // var closeRenameModal = document.getElementsByClassName("rename-album-modal-back")[0];
         
-        // When the user clicks on <div> (<), close the modal
-        closeRenameModal.onclick = () => {
-            renameAlbumModal.style.display = "none";
-        }
+        // // When the user clicks on <div> (<), close the modal
+        // closeRenameModal.onclick = () => {
+        //     renameAlbumModal.style.display = "none";
+        // }
 
 
         getProfilePageData();

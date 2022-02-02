@@ -54,6 +54,9 @@ const Album = (props) => {
     const openRenameAlbumModal = async () => {
         document.getElementById('rename-album-modal' + albumFolder.Album_ID).style.display = "block";
     }
+    const closeRenameAlbumModal = async () => {
+        document.getElementById('rename-album-modal' + albumFolder.Album_ID).style.display = "none";
+    }
 
     return (
         <div>
@@ -76,7 +79,7 @@ const Album = (props) => {
             </div>
             <div id={'rename-album-modal' + albumFolder.Album_ID} style={{display: 'none'}} >
                 <div className='rename-album-modal-content'>
-                    <div className="rename-album-modal-back">< MdArrowBack /></div>
+                    <div className="rename-album-modal-back" onClick={closeRenameAlbumModal}>< MdArrowBack /></div>
                     <div className='rename-album-modal-title block-title-1'>Rename Album</div>
                     <input className='rename-album-modal-edit-name' id={'rename-album-modal-edit-name'+ albumFolder.Album_ID} type="text" defaultValue={albumFolder.AlbumName}/>
                     <button className='rename-album-modal-submit' onClick={renameAlbum}>Rename</button>                      
