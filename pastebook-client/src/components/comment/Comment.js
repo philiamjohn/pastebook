@@ -5,7 +5,7 @@ import GrayStock from '../../images/gray.jpg';
 
 const Comment = (props) => {
 
-  const {postAuthorImg,
+  const {postAuthorId,
          postID,
          comments,
          loggedInUserPic} = props;
@@ -13,8 +13,9 @@ const Comment = (props) => {
   const baseUrl = `http://localhost:5000`;
         
   const [allCommentsShown, setAllCommentsShown] = useState(false);
-  const [commentsList, setCommentsList] = useState(comments); 
-
+  const [commentsList, setCommentsList] = useState(comments);
+  
+  const loggedInId = localStorage.getItem('homeUserId');
 
   const addComment = (id) => {
     document.getElementById('comment-box'+id).focus();
@@ -24,8 +25,49 @@ const Comment = (props) => {
     setAllCommentsShown(v => !v);
   }
 
-  useEffect(() => {
+  const sendComment = async (id, val) => {
     
+    console.log(id);
+    console.log(val);
+
+    if(loggedInId != null){
+      var response = await fetch(`${baseUrl}/comment`, {
+          method: 'POST',
+          headers: {
+            'PostID': id,
+            'AuthorID': postAuthorId,
+            'Content': val,
+            'UserID': loggedInId,
+          }
+      });
+      if (response.status === 200) {
+          alert("Comment sent!");
+      }
+      else {
+        alert("Failed to send comment");
+      }
+    }
+
+  }
+
+  const addAComment = (event) => {
+    var el = document.getElementById('comment-box'+postID)
+    if (event.key === 'Enter') {
+      if(el.value!="") {
+        var val = el.value;
+        var id = el.id.replace('comment-box','');
+        sendComment(id,val);
+      }
+      else {
+        console.log("emptyshit");
+      }
+    }
+  }
+
+  useEffect(() => {
+
+    document.getElementById('comment-box'+postID).addEventListener("keyup", addAComment);
+     
     setCommentsList(comments);
     console.log(commentsList);
     return () => {};
@@ -90,7 +132,7 @@ const Comment = (props) => {
               <img src={loggedInUserPic ? loggedInUserPic  : GrayStock } alt="author-img" onClick={() => addComment(postID)}/>
             </div>
             <div className='post-interactions-comments-create-input'>
-              <input type='text' placeholder="Write a comment" id={"comment-box"+postID}/>
+              <input type='text' placeholder="Write a comment" className='commentBoxes' id={"comment-box"+postID}/>
             </div>
         </div>
     </div>
