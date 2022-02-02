@@ -196,6 +196,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                           postTimeStamp={post.DatePosted}
                           postContentText={post.Content}
                           postContentImg={post.Image}
+                          postTargetId={post.Target_ID}
                           userID={localStorage.getItem('homeUserId')}
                         />
                       </div>)
