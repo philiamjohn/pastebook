@@ -15,8 +15,6 @@ const AlbumCreateModal = () => {
             AlbumName: albumName
         }
 
-        console.table(albumDetails);
-
         const response = await fetch(`${baseUrl}/albums/create`, {
             method: 'POST',
             headers: {

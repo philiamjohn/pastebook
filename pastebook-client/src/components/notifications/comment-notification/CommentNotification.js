@@ -11,7 +11,7 @@ const CommentNotification = (props) => {
                 id="comment-icon"
                 size={15}
                 color='black' />
-            <Link to={`/posts/${notification.Content}`} className='notification-link'>{notification.Name} commented your post.</Link>
+            <a href={`/posts/${notification.Content}`} className='notification-link'>{notification.Name} commented your post.</a>
             {
                 notification.ReadStatus === "unread"
                     ?

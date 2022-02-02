@@ -57,7 +57,6 @@ const Album = (props) => {
     const closeRenameAlbumModal = async () => {
         document.getElementById('rename-album-modal' + albumFolder.Album_ID).style.display = "none";
     }
-
     return (
         <div>
             <div>

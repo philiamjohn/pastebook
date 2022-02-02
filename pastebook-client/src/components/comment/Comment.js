@@ -27,31 +27,6 @@ const Comment = (props) => {
     setAllCommentsShown(v => !v);
   }
 
-  /* const sendComment = async (id, val) => {
-    
-    console.log(id);
-    console.log(val);
-
-    if(loggedInId != null && (postAuthorId != null || postAuthorId != undefined) ){
-      var response = await fetch(`${baseUrl}/comment`, {
-          method: 'POST',
-          headers: {
-            'PostID': id,
-            'AuthorID': postAuthorId,
-            'Content': val,
-            'UserID': loggedInId,
-          }
-      });
-      if (response.status === 200) {
-          alert("Comment sent!");
-      }
-      else {
-        alert("Failed to send comment");
-      }
-    }
-
-  } */
-
   const sendComment = async (id, val) => {
     if(loggedInId != null && postAuthorId != null){
         var response = await fetch(`${baseUrl}/comment`, {
@@ -83,16 +58,11 @@ const Comment = (props) => {
       var id = el.id.replace('comment-box','');
       sendComment(id,val);
     }
-    else {
-      console.log("emptyshit");
-    }
   }
 
   useEffect(() => {
 
     setAuthorID(postAuthorId);
-    console.log("authIDPOST"+postAuthorId);
-    console.log("authID"+authorID);
     
     return () => {};
     }, [postAuthorId]); 
@@ -101,7 +71,6 @@ const Comment = (props) => {
 
     setAuthorID(postAuthorId);
     setCommentsList(comments);
-    console.log(postAuthorId+"ughhhh");
     return () => {};
     }, [comments]);  
 

@@ -15,7 +15,6 @@ const Friends = ({ getSessionIdFromCookie, getUserData, userData }) => {
         }
         getSessionIdFromCookie();
         getUserData();
-        console.log(userData+" iyagduW");
     }, []);
 
     return (

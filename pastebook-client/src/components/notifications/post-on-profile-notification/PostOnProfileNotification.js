@@ -10,7 +10,7 @@ const PostOnProfileNotification = (props) => {
                 id="post-on-profile-icon"
                 size={15}
                 color='black' />
-            <Link to={`/posts/${notification.Content}`} className='notification-link'>{notification.Name} posted on your profile.</Link>
+            <a href={`/posts/${notification.Content}`} className='notification-link'>{notification.Name} posted on your profile.</a>
             {
                 notification.ReadStatus === "unread"
                     ?

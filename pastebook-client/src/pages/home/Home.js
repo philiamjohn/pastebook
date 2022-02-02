@@ -39,7 +39,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       // If it exists populate homepage data
       else if (response.status === 200) {
         const homepageData = await response.json();
-        console.table(await homepageData);
         localStorage.setItem('homeUserId', homepageData.User_ID);
         localStorage.setItem('profileUsername', homepageData.UserName);
         setHomeData(homepageData);
@@ -66,14 +65,11 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
 
     if (response.status === 200) {
       const homepagePosts = await response.json();
-      console.table(await homepagePosts);
 
       if (fetchCount === 1) {
         // fetchCount === 1 means the homePosts array is being updated with new posts
         // thus the newly fetched data should be put in the beginning of the array
         // to avoid duplicate posts, we filter them out using their Post_IDs
-        console.log("homePosts current value");
-        console.table(homePosts);
         const homePostsFromLocalStorage = JSON.parse(localStorage.getItem("homePosts"));
 
         const posts = homePosts
@@ -88,7 +84,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
             return posts.find(post => post.Post_ID === postId)
           });
 
-        console.table(uniquePosts);
         setHomePosts(uniquePosts);
         localStorage.setItem("homePosts", JSON.stringify(uniquePosts));
       }
@@ -100,7 +95,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
           .map(postId => {
             return posts.find(post => post.Post_ID === postId)
           })
-        console.table(uniquePosts);
         setHomePosts(uniquePosts);
         localStorage.setItem("homePosts", JSON.stringify(uniquePosts));
       }
@@ -111,9 +105,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
       else {
         setAllPostsLoaded(false);
       }
-    }
-    else {
-      console.log(response.status);
     }
   }
 
@@ -174,7 +165,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
         <div className="home-content-left">
           <HomeProfile userData={userData} />
           <HomeFriends />
-          <HomeAlbums />
+          <HomeAlbums username={userData.UserName}/>
         </div>
         <div className="home-content-right">
           <div id="home-content-create-post">

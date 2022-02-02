@@ -25,11 +25,7 @@ const ListTab = ({ getSessionIdFromCookie, userData }) => {
 
     if (response.status === 200) {
       const friendRequestList = await response.json();
-      // console.table(friendRequestList);
       setFriendsList(friendRequestList);
-    }
-    else {
-      console.log(response.status);
     }
   }
   return (

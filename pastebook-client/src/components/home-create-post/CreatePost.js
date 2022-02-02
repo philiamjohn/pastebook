@@ -37,8 +37,6 @@ const CreatePost = (props) => {
         setImageSource(null);
     }
 
-    console.log(imageSource);
-
     const sendPostToServer = async () => {
         const postContent = document.getElementById("home-post-text").value;
         if (!postContent && !imageSource) {
@@ -65,8 +63,6 @@ const CreatePost = (props) => {
             }
             postToFriendsProfile = true;
         }
-
-        console.table(postDetails);
 
         const response = await fetch(`${baseUrl}/addpost`, {
             method: 'POST',

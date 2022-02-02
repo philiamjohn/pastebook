@@ -21,9 +21,7 @@ const EditSettingsSec = ({ handeleCancelEditSecClick, userData, getSessionIdFrom
     const updateEmailInSessions = async (e) => {
         e.preventDefault();
         var id = getSessionIdFromCookie();
-        console.log(id.toString());
         var email = document.getElementById('new-email');
-        console.log(email.value + " Email");
         const response = await fetch(`${baseurl}/updateEmailSessions`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
                 SessionId: `${id}`,

@@ -31,16 +31,12 @@ const Post = (props) => {
 
         if (response.status === 200) {
             const result = await response.text();
-            console.log(result, "@@@@@@@@@@@@@@!")
             if (result === "true") {
                 setIsAuthorizedToViewPost(true);
             }
             setIsFetching(false);
         }
         else {
-            // alert("we're not friends");
-            // setIsAuthorizedToViewPost(false);
-            console.log(response.status);
             setIsFetching(false);
         }
     }
@@ -54,7 +50,6 @@ const Post = (props) => {
             window.clearInterval(id);
         }
 
-        console.log(pastebookSessionId)
         if (pastebookSessionId == null) {
             navigate("/login", { replace: true });
         }

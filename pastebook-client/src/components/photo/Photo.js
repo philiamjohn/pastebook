@@ -25,7 +25,6 @@ const Photo = (props) => {
         else if (response.status === 200) {
             const photoData = await response.json();
             setPhotoDetails(photoData);
-            console.table(photoData);
         }
         else {
             alert(response.status)

@@ -18,45 +18,6 @@ public class Database
         return DB_CONNECTION_STRING;
     }
 
-    public static void CreateTables()
-    {
-        using (var db = new SqlConnection(DB_CONNECTION_STRING))
-        {
-            db.Open();
-            using (var cmd = db.CreateCommand())
-            {
-                cmd.CommandText =
-                    @"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' and xtype='U')
-               CREATE TABLE Users ( User_ID INT IDENTITY (1,1) NOT NULL,
-                                      FirstName VARCHAR(255) NOT NULL,
-                                      LastName VARCHAR(255) NOT NULL,
-                                      Email VARCHAR(255) ,
-                                      Password VARCHAR(255) NOT NULL,
-                                      Birthday VARCHAR(255) NOT NULL,
-                                      Gender VARCHAR(255),
-                                      Phone VARCHAR(255) ,
-                                      UserName VARCHAR(255) NOT NULL,
-                                      ProfilePicture VARCHAR(MAX) ,
-                                      ProfileDesc VARCHAR(2000),
-                                      PRIMARY KEY (User_ID) );";
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
-
-    public static void DropTables()
-    {
-        using (var db = new SqlConnection(DB_CONNECTION_STRING))
-        {
-            db.Open();
-            using (var cmd = db.CreateCommand())
-            {
-                cmd.CommandText = "DROP TABLE IF EXISTS Users";
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
-
     //add the users details to the database
     public static void NewRegister(RegisterModel regmodel)
     {
@@ -80,7 +41,6 @@ public class Database
             }
         }
     }
-
     public static void AddSession(SessionModel session)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -134,7 +94,6 @@ public class Database
             db.Open();
             using (var cmd = db.CreateCommand())
             {
-                System.Console.WriteLine(rmodel);
                 cmd.CommandText = @"SELECT * FROM Users WHERE UserName=@un";
                 cmd.Parameters.AddWithValue("@un", rmodel.Username);
                 // cmd.Parameters.AddWithValue("@ln", rmodel.LastName);
@@ -145,7 +104,7 @@ public class Database
                     if (rmodel.Username == checkValue)
                     {
                         //if the username exist generate the new username with disambiguator
-                        var returnValues = CreateUniqueUsername(rmodel.FirstName, rmodel.LastName);
+                        var returnValues = CreateUniqueUsername(rmodel.FirstName!, rmodel.LastName);
                         // SendConfirmationEmail(rmodel.Email, rmodel.LastName);
                         AddUsername(rmodel.FirstName, rmodel.LastName, returnValues);
                     }
@@ -1426,31 +1385,7 @@ public class Database
         }
         return profiles;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     public static void UpdateUserEmailSessions(SessionModel model)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1504,7 +1439,6 @@ public class Database
                     {
                         friend.ProfilePicture = reader.GetString(8);
                     }
-                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
                     friends.Add(friend);
                 }
             }
@@ -1549,7 +1483,6 @@ public class Database
                     {
                         friend.ProfilePicture = reader.GetString(8);
                     }
-                    System.Console.WriteLine(friend.FirstName + " hadwgjhdgajhsd");
                     friends.Add(friend);
                 }
             }
@@ -1557,8 +1490,9 @@ public class Database
         return friends;
     }
 
-    public static void DeletePostByPostId(int? id){
-        using (var db= new SqlConnection(DB_CONNECTION_STRING))
+    public static void DeletePostByPostId(int? id)
+    {
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var cmd = db.CreateCommand())
@@ -1569,15 +1503,16 @@ public class Database
             }
         }
     }
-    public static void UpdatePost(PostModel model){
+    public static void UpdatePost(PostModel model)
+    {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var cmd = db.CreateCommand())
             {
                 cmd.CommandText = @"UPDATE Posts SET Content=@c WHERE Post_ID=@id";
-                cmd.Parameters.AddWithValue("@c",model.Content);
-                cmd.Parameters.AddWithValue("@id",model.Post_ID);
+                cmd.Parameters.AddWithValue("@c", model.Content);
+                cmd.Parameters.AddWithValue("@id", model.Post_ID);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -1633,7 +1568,7 @@ public class Database
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = @"SELECT User_ID FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);"; 
+                command.CommandText = @"SELECT User_ID FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);";
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
                 command.CommandTimeout = 120;
@@ -1646,9 +1581,9 @@ public class Database
             }
         }
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
-        {   
+        {
             db.Open();
-            if(!alreadyLiked)
+            if (!alreadyLiked)
             {
                 using (var command = db.CreateCommand())
                 {
@@ -1676,7 +1611,7 @@ public class Database
                         command.ExecuteNonQuery();
                     }
                 }
-            }    
+            }
         }
     }
 
@@ -1705,58 +1640,16 @@ public class Database
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-public static List<AlbumModel>? GetPhotos(int albumId)
-{
-    List<AlbumModel> photoDetails = new List<AlbumModel>();
-    using (var db = new SqlConnection(DB_CONNECTION_STRING))
+    public static List<AlbumModel>? GetPhotos(int albumId)
     {
-        db.Open();
-        using (var command = db.CreateCommand())
+        List<AlbumModel> photoDetails = new List<AlbumModel>();
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
-            command.CommandText =
-                @"SELECT 
+            db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText =
+                    @"SELECT 
                 PhAlb.Album_ID,
                 Albums.AlbumName,
                 Albums.DateCreated AS AlbumDate,
@@ -1769,35 +1662,35 @@ public static List<AlbumModel>? GetPhotos(int albumId)
                 LEFT JOIN Albums ON PhAlb.Album_ID = Albums.Album_ID
                 LEFT JOIN Photos ON PhAlb.Photo_ID = Photos.Photo_ID
                 WHERE PhAlb.Album_ID = @Album_ID;";
-            command.Parameters.AddWithValue("@Album_ID", albumId);
+                command.Parameters.AddWithValue("@Album_ID", albumId);
 
-            command.CommandTimeout = 120;
-            var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                AlbumModel album = new AlbumModel();
-                album.Album_ID = reader.GetInt32(0);
-                album.AlbumName = reader.GetString(1);
-                album.AlbumDate = reader.GetDateTime(2);
-                if (!reader.IsDBNull(reader.GetOrdinal("AlbumCaption")))
+                command.CommandTimeout = 120;
+                var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    album.AlbumCaption = reader.GetString(3);
+                    AlbumModel album = new AlbumModel();
+                    album.Album_ID = reader.GetInt32(0);
+                    album.AlbumName = reader.GetString(1);
+                    album.AlbumDate = reader.GetDateTime(2);
+                    if (!reader.IsDBNull(reader.GetOrdinal("AlbumCaption")))
+                    {
+                        album.AlbumCaption = reader.GetString(3);
+                    }
+                    album.Photo_ID = reader.GetInt32(4);
+                    album.ImageFile = reader.GetString(5);
+                    album.PhotoDate = reader.GetDateTime(6);
+                    if (!reader.IsDBNull(reader.GetOrdinal("PhotoCaption")))
+                    {
+                        album.PhotoCaption = reader.GetString(7);
+                    }
+                    photoDetails.Add(album);
                 }
-                album.Photo_ID = reader.GetInt32(4);
-                album.ImageFile = reader.GetString(5);
-                album.PhotoDate = reader.GetDateTime(6);
-                if (!reader.IsDBNull(reader.GetOrdinal("PhotoCaption")))
-                {
-                    album.PhotoCaption = reader.GetString(7);
-                }
-                photoDetails.Add(album);
             }
         }
+        return photoDetails;
     }
-    return photoDetails;
-}
 
-public static void AddPhotos(AlbumModel photoDetails)
+    public static void AddPhotos(AlbumModel photoDetails)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
@@ -1870,7 +1763,7 @@ public static void AddPhotos(AlbumModel photoDetails)
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    
+
                     photo.Photo_ID = reader.GetInt32(0);
                     photo.ImageFile = reader.GetString(1);
                     photo.PhotoDate = reader.GetDateTime(2);
@@ -1884,35 +1777,37 @@ public static void AddPhotos(AlbumModel photoDetails)
         return photo;
     }
 
-    public static void UpdateAlbum(AlbumModel album){
+    public static void UpdateAlbum(AlbumModel album)
+    {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var cmd = db.CreateCommand())
             {
-                cmd.CommandText = 
+                cmd.CommandText =
                     @$"UPDATE Albums 
                     SET AlbumName = @AlbumName 
                     WHERE Album_ID = @Album_ID;
                     ";
-                cmd.Parameters.AddWithValue("@AlbumName",album.AlbumName);
-                cmd.Parameters.AddWithValue("@Album_ID",album.Album_ID);
+                cmd.Parameters.AddWithValue("@AlbumName", album.AlbumName);
+                cmd.Parameters.AddWithValue("@Album_ID", album.Album_ID);
                 cmd.ExecuteNonQuery();
             }
         }
     }
 
-    public static void DeleteAlbum(int albumId){
+    public static void DeleteAlbum(int albumId)
+    {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var cmd = db.CreateCommand())
             {
-                cmd.CommandText = 
+                cmd.CommandText =
                     @$"DELETE FROM Albums 
                     WHERE Album_ID = @Album_ID;
                     ";
-                cmd.Parameters.AddWithValue("@Album_ID",albumId);
+                cmd.Parameters.AddWithValue("@Album_ID", albumId);
                 cmd.ExecuteNonQuery();
             }
         }
