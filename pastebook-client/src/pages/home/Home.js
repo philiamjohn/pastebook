@@ -11,7 +11,6 @@ import './Home.css';
 
 const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
-  // const baseUrl = `http://localhost:5000`;
   const [homeData, setHomeData] = useState({});
   const [homePosts, setHomePosts] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState("");
@@ -123,6 +122,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
     await getHomePostsCallback(fetchCount);
   }
 
+  // this useeffect is triggered after the first render
   useEffect(async () => {
     getUserData();
     // empty homePosts from localStorage
@@ -187,7 +187,6 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                   ?
                   homePosts.map((post) => {
                     return (
-
                       <div className='home-post-container'>
                         <PostComponent
                           key={post.Post_ID}
