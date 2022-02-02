@@ -34,7 +34,7 @@ const Post = (props) => {
    
     const baseUrl = `http://localhost:5000`;
 
-    const [likeStatus, setLikeStatus] = useState();
+    const [likeStatus, setLikeStatus] = useState(false);
     const [isCommentShown, setIsCommentShown] = useState(true); // the comments portion is shown by default
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
@@ -112,7 +112,8 @@ const Post = (props) => {
                 }
             });
             if (response.status === 200) {
-                setLikeStatus(v => !v);  
+                setLikeStatus(v => !v);
+                fetchLikes();
             }
             else {
               alert("Failed to like post "+postID);
@@ -131,15 +132,32 @@ const Post = (props) => {
             });
             if (response.status === 200) {
                 setLikeStatus(v => !v);  
+                fetchLikes();
             }
             else {
               alert("Failed unlike post "+postID);
             }
           }
     }
+
+    const fetchLikes = () => {
+        //fetch likes info
+        if(postID!=null){
+            fetch(`${baseUrl}/postLikes`, {
+                method: 'GET',
+                headers: {
+                  'PostID': postID
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLikes(data.Value));
+        }
+    }
     
 
     useEffect(() => {
+
+        fetchLikes();
         
         //fetch author info
         if(authorID != null){
@@ -153,17 +171,7 @@ const Post = (props) => {
         .then(data => setAuthorData(data.Value));
         }
 
-        //fetch likes info
-        if(postID!=null){
-            fetch(`${baseUrl}/postLikes`, {
-                method: 'GET',
-                headers: {
-                  'PostID': postID
-                }
-            })
-            .then(response => response.json())
-            .then(data => setLikes(data.Value));
-        }
+        
 
         likes.forEach(element => {
             if(element.UserId==loggedInId){
@@ -171,7 +179,7 @@ const Post = (props) => {
                 setLikeStatus(true);
             }
             else{
-                console.log("ack");
+                console.log("assck");
             }
         });
 
@@ -292,7 +300,7 @@ const Post = (props) => {
                             <div className='like-modal-content-list'>
                              {likes.map((liker) => {
                                   return (<LikerCard
-                                    key={liker.Id}
+                                    key={liker.Liker_ID}
                                     username={liker.UserName}
                                     profilePic={liker.ProfilePicture}
                                     firstName={liker.FirstName}

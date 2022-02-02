@@ -79,7 +79,7 @@ const Comment = (props) => {
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
               {commentsList.length > 0 ?
-                <CommentCard key={commentsList[0].Id}
+                <CommentCard key={commentsList[0].Comment_ID}
                              uname={commentsList[0].UserName}
                              profilePic={commentsList[0].ProfilePicture} 
                              firstName={commentsList[0].FirstName}
@@ -106,7 +106,7 @@ const Comment = (props) => {
                                 commentsList.map((comment, index) => {
                                   if(index>0){
                                   return ( <div className='post-interactions-comments-list-item'>
-                                  <CommentCard key={comment.Id}
+                                  <CommentCard key={comment.Comment_ID}
                                                uname={comment.UserName}
                                                profilePic={comment.ProfilePicture} 
                                                firstName={comment.FirstName}

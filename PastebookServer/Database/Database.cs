@@ -985,7 +985,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT LikesInPosts.Id, LikesInPosts.User_ID, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
+                    "SELECT LikesInPosts.Like_ID, LikesInPosts.User_ID, Users.FirstName, Users.LastName, Users.ProfilePicture, Users.UserName FROM Users INNER JOIN LikesInPosts ON Users.User_ID = LikesInPosts.User_ID WHERE LikesInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -996,7 +996,7 @@ public class Database
                         likers.Add(
                             new LikerModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Like_ID = reader["Like_ID"].ToString(),
                                 UserId = reader["User_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
@@ -1010,7 +1010,7 @@ public class Database
                         likers.Add(
                             new LikerModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Like_ID = reader["Like_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1081,7 +1081,7 @@ public class Database
             using (var command = db.CreateCommand())
             {
                 command.CommandText =
-                    "SELECT CommentsInPosts.Id, Users.UserName, Users.FirstName, Users.LastName, Users.ProfilePicture, CommentsInPosts.Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
+                    "SELECT CommentsInPosts.Comment_ID, Users.UserName, Users.FirstName, Users.LastName, Users.ProfilePicture, CommentsInPosts.Content FROM Users INNER JOIN CommentsInPosts ON Users.User_ID = CommentsInPosts.User_ID WHERE CommentsInPosts.Post_ID=@id;";
                 command.Parameters.AddWithValue("@id", id);
                 command.CommandTimeout = 120;
                 var reader = command.ExecuteReader();
@@ -1092,7 +1092,7 @@ public class Database
                         comments.Add(
                             new CommentModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Comment_ID = reader["Comment_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1106,7 +1106,7 @@ public class Database
                         comments.Add(
                             new CommentModel()
                             {
-                                Id = reader["Id"].ToString(),
+                                Comment_ID = reader["Comment_ID"].ToString(),
                                 UserName = reader["UserName"].ToString(),
                                 FirstName = reader["FirstName"].ToString(),
                                 LastName = reader["LastName"].ToString(),
@@ -1622,6 +1622,15 @@ public class Database
             {
                 command.CommandText = @"DELETE FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);";
 
+                command.Parameters.AddWithValue("@userId", userID);
+                command.Parameters.AddWithValue("@postId", postID);
+                command.ExecuteNonQuery();
+            }
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = @"DELETE FROM Notifications WHERE (Type=@type AND User_ID=@userId AND Content=@postId);";
+
+                command.Parameters.AddWithValue("@type", "like");
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
                 command.ExecuteNonQuery();
