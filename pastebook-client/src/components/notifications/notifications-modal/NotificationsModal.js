@@ -79,13 +79,18 @@ const NotificationsModal = (props) => {
                                 <PostOnProfileNotification key={notification.Notification_ID} notification={notification} makeNotificationRead={makeNotificationRead} />
                             )
                         }
+                        else if (notification.Type === "like") {
+                            return (
+                                <LikeNotification key={notification.Notification_ID} notification={notification} makeNotificationRead={makeNotificationRead} />
+                            )
+                        }
+                        else if (notification.Type === "comment") {
+                            return (
+                                <CommentNotification key={notification.Notification_ID} notification={notification} makeNotificationRead={makeNotificationRead} />
+                            )
+                        }
                     })
                 }
-                {/* <LikeNotification liker={"Jacqueline"} />
-                <FriendRequestAcceptedNotification newFriend={"Philiam"} />
-                <CommentNotification commenter={"Gavin"} />
-                <FriendRequestNotification requestSender={"Arhon"} />
-                <PostOnProfileNotification friendWhoPosted={"Nigel"} /> */}
             </div>
         </div>
     );

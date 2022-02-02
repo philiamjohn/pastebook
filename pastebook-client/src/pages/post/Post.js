@@ -50,7 +50,7 @@ const Post = (props) => {
 
         //clear all setIntervals
         for (let id = 0; id <= 1000; id++) {
-        window.clearInterval(id);
+            window.clearInterval(id);
         }
 
         console.log(pastebookSessionId)
