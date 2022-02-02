@@ -76,6 +76,20 @@ div.post-interactions-comments-create-input  input{
     border: none;
 }
 
+div.post-interactions-comments-create-send {
+    margin-left: 30px;
+}
+
+div.post-interactions-comments-create-send p:hover {
+    cursor: pointer;
+    color: #1b74e4;
+    font-weight: bold;
+}
+
+div.post-interactions-comments-create-send p:active {
+    transform: translateY(1px);
+}
+
 div.post-interactions-comments-create  input:focus {
     outline: none;
 }
