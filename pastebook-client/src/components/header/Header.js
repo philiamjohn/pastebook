@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import pastebookLogo from '../../images/pastebook-logo.png';
+import pastebookLogo from '../../images/logo.png';
 import { AiFillHome } from 'react-icons/ai';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdNotifications } from 'react-icons/io';
