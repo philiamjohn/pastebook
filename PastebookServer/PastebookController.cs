@@ -522,7 +522,7 @@ public class PastebookController : Controller
         Database.AddPhotos(photoDetails);
         return Ok("Album created successfully.");
     }
-        
+
     [HttpDelete]
     [Route("/deletePost")]
     public IActionResult deletePostByPostId([FromBody] PostModel model){
@@ -549,4 +549,19 @@ public class PastebookController : Controller
         return Json(photoDetails);
     }
 
+    [HttpPatch]
+    [Route("/editAlbumName")]
+    public IActionResult updateAlbum([FromBody] AlbumModel model)
+    {
+        Database.UpdateAlbum(model);
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("/deleteAlbum")]
+    public IActionResult deleteAlbum([FromHeader(Name = "Album_ID")] int albumId)
+    {
+        Database.DeleteAlbum(albumId);
+        return Ok();
+    }
 }

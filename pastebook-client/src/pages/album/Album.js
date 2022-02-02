@@ -30,6 +30,18 @@ const Album = ({ getSessionIdFromCookie, baseUrl }) => {
             createAlbumModal.style.display = "none";
         }
 
+        // // Get the modal
+        // var renameAlbumModal = document.getElementById("rename-album-modal");
+
+        // // Get the <div> element that closes the modal
+        // var closeRenameModal = document.getElementsByClassName("rename-album-modal-back")[0];
+        
+        // // When the user clicks on <div> (<), close the modal
+        // closeRenameModal.onclick = () => {
+        //     renameAlbumModal.style.display = "none";
+        // }
+
+
         getProfilePageData();
     }, []);
 
@@ -70,7 +82,6 @@ const Album = ({ getSessionIdFromCookie, baseUrl }) => {
             alert("Error");
         }
         else if (response.status === 200) {
-            // alert("");
             const albumData = await response.json();
             setAlbumFolder(albumData);
             console.table(albumData);
@@ -121,7 +132,6 @@ const Album = ({ getSessionIdFromCookie, baseUrl }) => {
                                 : <div></div>
                             : null
                     }
-
                 </div>
             </div>
             <AlbumCreateModal sendAlbumToServer={setAlbumFolder} />

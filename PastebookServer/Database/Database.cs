@@ -1883,4 +1883,38 @@ public static void AddPhotos(AlbumModel photoDetails)
         }
         return photo;
     }
+
+    public static void UpdateAlbum(AlbumModel album){
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = 
+                    @$"UPDATE Albums 
+                    SET AlbumName = @AlbumName 
+                    WHERE Album_ID = @Album_ID;
+                    ";
+                cmd.Parameters.AddWithValue("@AlbumName",album.AlbumName);
+                cmd.Parameters.AddWithValue("@Album_ID",album.Album_ID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+
+    public static void DeleteAlbum(int albumId){
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = 
+                    @$"DELETE FROM Albums 
+                    WHERE Album_ID = @Album_ID;
+                    ";
+                cmd.Parameters.AddWithValue("@Album_ID",albumId);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
 }

@@ -83,6 +83,7 @@ const Photos = ({ getSessionIdFromCookie, baseUrl }) => {
         else if (response.status === 200) {
             alert("Photo uploaded successfully.");
             await getPhotos();
+            document.getElementById('photos-modal').style.display = "none";
         }
         else {
             alert(response.status)
@@ -146,15 +147,6 @@ const Photos = ({ getSessionIdFromCookie, baseUrl }) => {
                             <div className='s2-photos-create'>
                                 <button className='s2-photos-create-btn' onClick={showUploadPhotoModal}><BsPlusLg size={30} /></button>
                                 <p className='text'>Add Photos</p>
-                            </div>
-                            : null
-                    }
-                    {
-                        profileData.OwnProfile
-                            ? <div>
-                                <img src={photo} alt='Default'></img>
-                                <button className='s2-photos-btn' title='Edit Photo Caption'>< MdModeEditOutline size={15} /></button>
-                                <button className='s2-photos-btn' title='Delete Photo'>< MdDeleteForever size={15} /></button>
                             </div>
                             : null
                     }
