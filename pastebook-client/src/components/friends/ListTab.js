@@ -6,17 +6,13 @@ import FriendPhotoMock from '../../images/logo.svg';
 const ListTab = ({ getSessionIdFromCookie, userData }) => {
   const baseUrl = `http://localhost:5000`;
 
-  const friendName1 = "Juan dela Cruz"
   useEffect(() => {
-
-    console.log(getSessionIdFromCookie() + " kkkkkkkkkkk");
-
-    console.log(localStorage.getItem('homeUserId') + " uyghjmk");
     getFriendsList();
   }, []);
 
   const [friendsList, setFriendsList] = useState(null);
   const getFriendsList = async () => {
+    //get the session and userId from cookie and localStorage
     const sessionId = getSessionIdFromCookie();
     const homeUserId = localStorage.getItem('homeUserId');
 
@@ -29,7 +25,7 @@ const ListTab = ({ getSessionIdFromCookie, userData }) => {
 
     if (response.status === 200) {
       const friendRequestList = await response.json();
-      console.table(friendRequestList);
+      // console.table(friendRequestList);
       setFriendsList(friendRequestList);
     }
     else {
@@ -45,7 +41,7 @@ const ListTab = ({ getSessionIdFromCookie, userData }) => {
           </div>
         )
       })
-      : <div>Fetching Friends, kindly wait...</div>
+      : <div>Fetching Friends, kindly wait...</div>//will show if fetching and no friends retrieve
     }
     </div>
   );
