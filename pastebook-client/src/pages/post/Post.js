@@ -15,7 +15,8 @@ const Post = (props) => {
     const loggedInId = localStorage.getItem('homeUserId');
 
     const [postData, setPostData] = useState({});
-    const [isAuthorizedToViewPost, setIsAuthorizedToViewPost] = useState(null);
+    const [isAuthorizedToViewPost, setIsAuthorizedToViewPost] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
 
     const isLoggedInUserFriendsWithPostOwnerOrTarget = async () => {
         const response = await fetch(`${baseUrl}/arewefriends`, {
@@ -29,13 +30,18 @@ const Post = (props) => {
         });
 
         if (response.status === 200) {
-            // alert("we're friends");
-            setIsAuthorizedToViewPost(true);
+            const result = await response.text();
+            console.log(result, "@@@@@@@@@@@@@@!")
+            if (result === "true") {
+                setIsAuthorizedToViewPost(true);
+            }
+            setIsFetching(false);
         }
         else {
             // alert("we're not friends");
-            setIsAuthorizedToViewPost(false);
+            // setIsAuthorizedToViewPost(false);
             console.log(response.status);
+            setIsFetching(false);
         }
     }
 
@@ -66,21 +72,10 @@ const Post = (props) => {
     useEffect(() => {
         if (!postData.User_ID || !userData.User_ID) { }
         else {
-            //currently logged in user is the post owner, or the target of the post
+            //if currently logged in user is the post owner, or the target of the post
             //therefore, they can view their own post
-            // console.table({
-            //     currentUserId: userData.User_ID,
-            //     postOwnerUserId: postData.User_ID,
-            //     postTargetUserId: postData.Target_ID
-            // });
-            if (userData.User_ID === postData.User_ID || userData.User_ID === postData.Target_ID) {
-                // alert("ha?");
-                setIsAuthorizedToViewPost(true);
-            }
             //if not, check if they're friends with the post owner or target of the post
-            else {
-                isLoggedInUserFriendsWithPostOwnerOrTarget();
-            }
+            isLoggedInUserFriendsWithPostOwnerOrTarget();
         }
     }, [postData, userData]);
 
@@ -89,7 +84,7 @@ const Post = (props) => {
         <div className='post-page'>
             <Header username={userData.UserName} getSessionIdFromCookie={getSessionIdFromCookie} />
             {
-                userData && postData.Post_ID
+                userData && postData.Post_ID && !isFetching
                     ?
                     isAuthorizedToViewPost
                         ?
