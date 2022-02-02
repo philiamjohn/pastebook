@@ -118,6 +118,7 @@ const Post = (props) => {
             if (response.status == 200) {
                 alert("hhhehehehe");
                 window.location.reload();
+                // closeLikesModal(id);
 
             }
         }
@@ -136,7 +137,7 @@ const Post = (props) => {
                 //
                 alert("Post Deleted");
                 window.location.reload();
-
+                
             }
             else {
                 alert(response.status, "hellllllo");
@@ -272,8 +273,8 @@ const Post = (props) => {
                 {
                     userID == authorID ?
                         <div className='post-manage'>
-                            <button onClick={() => { showEditPostModal(postID) }}><FaRegEdit size={15} /></button>
-                            <button onClick={() => { testDeleteFunction(postID) }}><AiOutlineDelete size={20} /></button>
+                            <button id='edit-post-button' onClick={() => { showEditPostModal(postID) }}><FaRegEdit size={18} /></button>
+                            <button id='del-post-button' onClick={() => { testDeleteFunction(postID) }}><AiOutlineDelete size={20} /></button>
                         </div>
                         : <div></div>
                 }
@@ -385,7 +386,8 @@ const Post = (props) => {
                         {postContentText
                             ?
                             <div className='post-content-edit-text'>
-                                <input type="text" id={"edit-post-input" + postID} defaultValue={postContentText} />
+                                <textarea id={"edit-post-input" + postID} defaultValue={postContentText} maxLength={1000} />
+                              
                             </div>
                             :
                             null
@@ -393,14 +395,14 @@ const Post = (props) => {
                         {postContentImg
                             ?
                             <div className='post-content-edit-img'>
-                                <p className="close" onClick={() => { removeEditPostPhoto(postID) }}>&times;</p>
+                                {/* <p className="close" onClick={() => { removeEditPostPhoto(postID) }}>&times;</p> */}
                                 <img src={postContentImg} alt="content-img" />
                             </div>
                             :
                             null
                         }
-                        <div className='post-edit-save' >
-                            <button onClick={() => saveEditPost(postID)}>
+                        <div>
+                            <button id='post-edit-save' onClick={() => saveEditPost(postID)}>
                                 Save
                             </button>
                         </div>

@@ -69,7 +69,7 @@ const Login = () => {
       <div className='login'>
         <div className='loginCredentials'>
           {/* pattern for email and phone number */}
-          <input type='text' name='email' id='email' placeholder='Email or Phone' pattern="^([0-9]{11})|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$" />
+          <input type='text' name='email' id='email' placeholder='Email' pattern="^([0-9]{11})|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$" />
           <input type='password' name='password' id='password' placeholder='Password' />
         </div>
         <div className='loginPageButtonsLoginPage'>
