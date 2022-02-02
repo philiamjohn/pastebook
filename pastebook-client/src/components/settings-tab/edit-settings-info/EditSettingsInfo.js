@@ -46,6 +46,19 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
             window.location.reload();
         }
     }
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    today = yyyy + '-' + mm + '-' + dd;
     return <div className='edit-settings'>
         <form onSubmit={(e) => sendEditedInfo(e)}>
             <label htmlFor='first-name-setiings'>First Name:</label>
@@ -53,7 +66,7 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
             <label htmlFor='last-name-setiings'>Last Name:</label>
             <input type='text' name='last-name-settings' id='last-name-settings' defaultValue={userData.LastName} />
             <label htmlFor='birthday-setiings'>Birthday:</label>
-            <input type='date' name='birthday-settings' id='birthday-settings' defaultValue={date} />
+            <input type='date' name='birthday-settings' id='birthday-settings' defaultValue={date} max={today} />
             <label htmlFor='genderChoice'>Gender:</label>
             <select id='genderChoice' name='genderChoice'>
                 <option value='not specified'>Rather not say...</option>
@@ -64,7 +77,7 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
             <input type='text' name='phone' id='phone' placeholder={userData.Phone} pattern="[0]{1}[9]{1}[0-9]{9}" />
             <div className='button-change-info'>
                 <button onClick={(e) => handleEditCancelClick(e)}>Cancel</button>
-                <button  type='submit' id='save'>Save</button>
+                <button type='submit' id='save'>Save</button>
             </div>
         </form>
     </div>;

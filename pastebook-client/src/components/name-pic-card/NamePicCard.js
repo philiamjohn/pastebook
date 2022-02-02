@@ -17,7 +17,7 @@ const NamePicCard = (props) => {
 
     return (
         <div className='NamePicCard'>
-            <Link to={`/profile/${username}`} target="_blank" >
+            <Link to={`/profile/${username}`}  >
                 <div className='namePicCard-img'>
                     <img src={profilePic ? profilePic : userPhoto} alt="user-img" />
                 </div>
