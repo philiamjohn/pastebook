@@ -48,12 +48,13 @@
     position: relative;
     width: 851px;
     display: grid;
-    grid:  repeat(9, min-content)/ repeat(auto-fill, 162.2px);
+    grid:  repeat(9, 162.2px)/ repeat(auto-fill, 162.2px);
     grid-auto-flow: row;
     gap: 10px;
 }
-.s2-photos-content div > img {
+.s2-photos-content div > div > a > img {
     border-radius: 7px;
+    height: 162.2px;
     width: 162.2px;
 }
 .s2-photos-content div > p {

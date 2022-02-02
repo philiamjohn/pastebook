@@ -12,7 +12,7 @@ const PhotoThumbnail = (props) => {
             <Link to={`/albums/${albumFolder.Album_ID}/photos/${albumFolder.Photo_ID}`}>
                 <img src={albumFolder.ImageFile} alt='Album Content'></img>
             </Link>
-            {
+            {/* {
                 profileData.OwnProfile
                     ?
                     <>
@@ -20,7 +20,7 @@ const PhotoThumbnail = (props) => {
                         <button className='s2-photos-btn' title='Delete Photo'>< MdDeleteForever size={15} /></button>
                     </>
                     : null
-            }
+            } */}
         </div>
     );
 };
