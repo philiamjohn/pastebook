@@ -105,8 +105,7 @@ const Post = (props) => {
 
     const saveEditPost = async (id) => {
 
-        alert(id);
-        const confirmAction = window.confirm("Adwasdw?");
+        const confirmAction = window.confirm("Save Edit Post?");
         if (!confirmAction) {
             //
         } else {
@@ -120,7 +119,6 @@ const Post = (props) => {
                 })
             });
             if (response.status == 200) {
-                alert("hhhehehehe");
                 window.location.reload();
                 // closeLikesModal(id);
 
@@ -142,9 +140,6 @@ const Post = (props) => {
                 alert("Post Deleted");
                 window.location.reload();
                 
-            }
-            else {
-                alert(response.status, "hellllllo");
             }
         }
     }
