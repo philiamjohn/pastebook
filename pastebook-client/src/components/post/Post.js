@@ -214,8 +214,6 @@ const Post = (props) => {
                 .then(data => setAuthorData(data.Value));
         }
 
-
-
         likes.forEach(element => {
             if (element.UserId == loggedInId) {
                 console.log("hmm");

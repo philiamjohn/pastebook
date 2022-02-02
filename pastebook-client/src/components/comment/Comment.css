@@ -63,7 +63,7 @@ div.post-interactions-comments-create  img:hover {
 
 div.post-interactions-comments-create-input {   
     height: 40px;
-    width: calc(100% - 95px);
+    width: calc(100% - 145px);
 }
 
 div.post-interactions-comments-create-input  input{  
