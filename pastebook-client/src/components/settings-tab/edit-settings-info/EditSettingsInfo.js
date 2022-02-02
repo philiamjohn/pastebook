@@ -5,24 +5,17 @@ import './EditSettingsInfo.css'
 const EditSettings = ({ handleEditCancelClick, userData }) => {
     const [date, setDate] = useState(null);
     const baseurl = "http://localhost:5000";
-    // let navigate = useNavigate();
     useEffect(() => {
+        //convert the timestamp(stringDate) to Date
         var stringDate = userData.Birthday;
-        // console.log(stringDate);
         var convertToRealDate = new Date(Date.parse(stringDate));
-        // console.log(convertToRealDate + " real");
         var parts = convertToRealDate.toString().split(" ");
         var months = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06", Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
         var newDefaultDateVal = parts[3] + "-" + months[parts[1]] + "-" + parts[2];
-        // console.log(newDefaultDateVal + " zzzzz");
         setDate(newDefaultDateVal);
-        // console.log(userData);
 
     }, []);
-    const refreshPage = () => {
-        window.location.reload();
-    }
-    const testAgain = async (e) => {
+    const sendEditedInfo = async (e) => {
         e.preventDefault();
         var fname = document.getElementById('first-name-settings').value;
         var lname = document.getElementById('last-name-settings').value;
@@ -49,19 +42,31 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
             })
         });
         if (response.status === 200) {
-            alert("yey");
-            refreshPage();
-            // navigate("/settings", { replace: true });
+            alert("Done");
+            window.location.reload();
         }
     }
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    today = yyyy + '-' + mm + '-' + dd;
     return <div className='edit-settings'>
-        <form onSubmit={(e) => testAgain(e)}>
+        <form onSubmit={(e) => sendEditedInfo(e)}>
             <label htmlFor='first-name-setiings'>First Name:</label>
             <input type='text' name='first-name-settings' id='first-name-settings' defaultValue={userData.FirstName} />
             <label htmlFor='last-name-setiings'>Last Name:</label>
             <input type='text' name='last-name-settings' id='last-name-settings' defaultValue={userData.LastName} />
             <label htmlFor='birthday-setiings'>Birthday:</label>
-            <input type='date' name='birthday-settings' id='birthday-settings' defaultValue={date} />
+            <input type='date' name='birthday-settings' id='birthday-settings' defaultValue={date} max={today} />
             <label htmlFor='genderChoice'>Gender:</label>
             <select id='genderChoice' name='genderChoice'>
                 <option value='not specified'>Rather not say...</option>
@@ -69,11 +74,10 @@ const EditSettings = ({ handleEditCancelClick, userData }) => {
                 <option value='Female'>Female</option>
             </select>
             <label htmlFor='phone'>Phone:</label>
-            <input type='text' name='phone' id='phone' /*defaultValue={userData.Phone}*/ placeholder={userData.Phone} pattern="[0]{1}[9]{1}[0-9]{9}" />
+            <input type='text' name='phone' id='phone' placeholder={userData.Phone} pattern="[0]{1}[9]{1}[0-9]{9}" />
             <div className='button-change-info'>
                 <button onClick={(e) => handleEditCancelClick(e)}>Cancel</button>
-                <button /*onClick={(e) => testAgain(e)}*/ type='submit' id='save'>Save</button>
-
+                <button type='submit' id='save'>Save</button>
             </div>
         </form>
     </div>;

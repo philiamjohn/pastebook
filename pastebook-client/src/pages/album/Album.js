@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import './Album.css';
 import { BsPlusLg } from 'react-icons/bs';
 
@@ -9,9 +9,14 @@ import AlbumCreateModal from '../../components/album-create-modal/AlbumCreateMod
 import AlbumFolder from '../../components/album/Album';
 
 
-const Album = () => {
-    const [ albumFolder, setAlbumFolder ] = useState([{},{},{}]);
-    const baseUrl = `http://localhost:5000`;
+const Album = ({ getSessionIdFromCookie, baseUrl }) => {
+    const { username } = useParams();
+    const [albumFolder, setAlbumFolder] = useState([]);
+    const [profileData, setProfileData] = useState({});
+    const usernameCurrentlyLoggedIn = localStorage.getItem('profileUsername');
+    const userId = localStorage.getItem('homeUserId');
+
+    getSessionIdFromCookie();
 
     useEffect(() => {
         // Get the modal
@@ -21,29 +26,43 @@ const Album = () => {
         var closeModal = document.getElementsByClassName("create-album-modal-back")[0];
 
         // When the user clicks on <div> (<), close the modal
-        closeModal.onclick = function() {
+        closeModal.onclick = () => {
             createAlbumModal.style.display = "none";
-        }
-    
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = (event) => {
-          if (event.target === createAlbumModal) {
-            createAlbumModal.style.display = "none";
-          }
         }
 
+        getProfilePageData();
+    }, []);
+
+    useEffect(() => {
         getAlbum();
-        
-      }, []);
+    }, [profileData]);
     
+
+    const getProfilePageData = async () => {
+
+        const response = await fetch(`${baseUrl}/profile/${username}`, {
+            method: 'GET',
+            headers: {
+                'X-UserId': userId
+            },
+        });
+
+        if (response.status === 200) {
+            const profilePageData = await response.json();
+            console.table(await profilePageData);
+            setProfileData(profilePageData);
+        }
+        else {
+            console.log(response.status);
+        }
+    }
+
     const getAlbum = async () => {
-        const userId = localStorage.getItem('homeUserId');
-        console.log("\n\n\n\n\n" + userId);
         const response = await fetch(`${baseUrl}/username/albums`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'User_ID' : userId
+                'User_ID': profileData.User_ID
             }
         });
 
@@ -54,42 +73,56 @@ const Album = () => {
             // alert("");
             const albumData = await response.json();
             setAlbumFolder(albumData);
-            console.log(albumData);
+            console.table(albumData);
         }
         else {
             alert(response.status)
         }
     }
 
+    // When the user clicks the button, the modal opens 
+    const openModal = () => {
+        document.getElementById("create-album-modal").style.display = "block";
+    }
+
     return (
         <div className='body'>
-            <Header />
-            <ProfileHeader />
+            <Header username={usernameCurrentlyLoggedIn} getSessionIdFromCookie={getSessionIdFromCookie} />
+            <ProfileHeader profileData={profileData} username={username}/>
             <div className='s2-album .block-border-shadow'>
                 <div className='s2-album-title block-title-1'>Albums</div>
                 <div className='s2-album-content'>
-                    <div className='s2-album-create'>
-                        <button className='s2-album-create-btn' id='s2-album-create-btn'><BsPlusLg size={30}/></button>
-                        <p className='text'>Create Album</p>
-                    </div>
                     {
-                        albumFolder
-                        ?
-                        <div className='s2-album-folders'>
-                            {
-                            albumFolder.map((album) => {
-                                return (
-                                    <AlbumFolder
-                                        albumFolder={album}
-                                    />
-                                )
-                            })
-                            }
-                        </div>
-                        : <div></div>
+                        profileData.OwnProfile
+                            ?
+                            <div className='s2-album-create'>
+                                <button className='s2-album-create-btn' id='s2-album-create-btn' onClick={openModal}>
+                                    <BsPlusLg size={30} />
+                                </button>
+                                <p className='text'>Create Album</p>
+                            </div>
+                            : null
                     }
-                    
-                </div>            
+                    {
+                        profileData.OwnProfile || profileData.Friends
+                            ?
+                            albumFolder
+                                ?
+                                albumFolder.map((album) => {
+                                    return (
+                                        <div className='s2-album-folders'>
+                                            <AlbumFolder
+                                                albumFolder={album}
+                                                profileData={profileData}
+                                            />
+                                        </div>
+                                    )
+                                })
+                                : <div></div>
+                            : null
+                    }
+
+                </div>
             </div>
             <AlbumCreateModal sendAlbumToServer={setAlbumFolder} />
         </div>

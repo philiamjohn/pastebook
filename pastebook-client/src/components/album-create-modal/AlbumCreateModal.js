@@ -5,23 +5,10 @@ import { MdArrowBack } from 'react-icons/md';
 const AlbumCreateModal = () => {
     const baseUrl = `http://localhost:5000`;
 
-
-    useEffect(() => {
-        // Gets the modal below
-        var createAlbumModal = document.getElementById("create-album-modal");
-
-        // Gets the button that opens the modal in Album.js  
-        var createAlbumBtn = document.getElementById("s2-album-create-btn");
-
-        // When the user clicks the button, the modal opens 
-        createAlbumBtn.onlick = () => {
-            createAlbumModal.style.display = "block";
-        }
-    }, []);
-
     const sendAlbumToServer = async () => {
         const albumName = document.getElementById("album-name").value;
         const userId = localStorage.getItem('homeUserId');
+        var createAlbumModal = document.getElementById("create-album-modal");
 
         const albumDetails = {
             User_ID: userId,
@@ -43,6 +30,7 @@ const AlbumCreateModal = () => {
         }
         else if (response.status === 200) {
             alert("Album successfully created.");
+            createAlbumModal.style.display = "none";
             document.getElementById("album-name").value = "";
         }
         else {
@@ -51,7 +39,7 @@ const AlbumCreateModal = () => {
     }
 
     return (
-        <div id="create-album-modal" className='create-album-modal block-border-shadow'>
+        <div id="create-album-modal" className='create-album-modal'>
             <div className='album-details'>
                 <div className="create-album-modal-back">< MdArrowBack /></div>
                 <div className='create-album-modal-title block-title-1'>Create Album</div>

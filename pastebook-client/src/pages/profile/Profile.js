@@ -170,10 +170,10 @@ const Profile = () => {
                         <div className='s2-c1-r3-friends-content'>
                             {friendsList ? friendsList.map((e) => {
                                 return (<div key={e.User_ID}>
-                                    <Link to={`/profile/${e.UserName}`} target="_blank">
+                                    <a href={`/profile/${e.UserName}`} >
                                         <img src={e.ProfilePicture ? e.ProfilePicture : userphoto} alt='Recently Added Friends'></img>
                                         <p className='text'>{`${e.FirstName}  ${e.LastName}`}</p>
-                                    </Link>
+                                    </a>
 
                                 </div>)
                             }) : <div>Getting your Friends</div >
@@ -210,7 +210,6 @@ const Profile = () => {
                                             postTimeStamp={post.DatePosted}
                                             postContentText={post.Content}
                                             postContentImg={post.Image}
-                                            targetID={post.Target_ID}
                                             userID={localStorage.getItem('homeUserId')}
                                         />
                                     </div>

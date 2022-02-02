@@ -3,42 +3,14 @@ import Header from '../../components/header/Header';
 import SettingEditInfoTab from '../../components/settings-tab/settings-edit-info-tab/SettingsEditInfoTab';
 import SettingEditSecTab from '../../components/settings-tab/settings-edit-sec-tab/SettingsEditSecTab';
 import '../settings/Settings.css';
-const Settings = ({ getSessionIdFromCookie, getUserData, userData }) => {
+const Settings = ({ getSessionIdFromCookie, getUserData, userData, baseUrl }) => {
     const [activeTab, setActiveTab] = useState("tab1");
-    // const [userData, setUserData] = useState({});
-    // const baseUrl = `http://localhost:5000`;
-    // const getSessionId = () => {
-    //     const searchCookie = 'pastebookSessionId=';
-    //     var cookieVal = "";
-    //     if (document.cookie.length > 0) {
-    //         let getCookieVal = document.cookie.indexOf(searchCookie);
-    //         if (getCookieVal !== -1) {
-    //             getCookieVal += searchCookie.length;
-    //             let end = document.cookie.indexOf(";", getCookieVal);
-    //             if (end === -1) {
-    //                 end = document.cookie.length;
-    //             }
-    //             cookieVal = document.cookie.substring(getCookieVal, end);
-    //         }
-    //     }
-    //     return cookieVal;
-    // }
-    // const getUserData = async () => {
-    //     const sessionIdVal = getSessionIdFromCookie();
-    //     const response = await fetch(`${baseUrl}/home`, { method: 'GET', headers: { 'X-SessionID': sessionIdVal } });
-    //     if (response.status === 200) {
-    //         const recUserDataVal = await response.json();
-    //         setUserData(recUserDataVal);
-    //     }
-    // }
-
     useEffect(() => {
         for (let id = 0; id <= 1000; id++) {
             window.clearInterval(id);
         }
         getUserData();
         getSessionIdFromCookie();
-        console.log(userData);
     }, []);
     const handleTab1 = () => {
         setActiveTab("tab1");
@@ -56,12 +28,14 @@ const Settings = ({ getSessionIdFromCookie, getUserData, userData }) => {
             <div className='settings'>
                 <div className='nav-list'>
                     <ul className='nav'>
+                        {/* tab navigation */}
                         <li className={activeTab === "tab1" ? "active" : ""} onClick={handleTab1}>General</li>
                         <li className={activeTab === "tab2" ? "active" : ""} onClick={handleTab2}>Security and Login</li>
                     </ul>
                 </div>
+                {/* tabs */}
                 <div className='out'>
-                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getSessionIdFromCookie={getSessionIdFromCookie} />}
+                    {activeTab === "tab1" ? <SettingEditInfoTab userData={userData} /> : <SettingEditSecTab userData={userData} getSessionIdFromCookie={getSessionIdFromCookie} baseUrl={baseUrl}/>}
                 </div>
             </div>
         </div>

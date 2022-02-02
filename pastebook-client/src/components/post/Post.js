@@ -154,8 +154,7 @@ const Post = (props) => {
 
     const saveEditPost = async (id) => {
 
-        alert(id);
-        const confirmAction = window.confirm("Adwasdw?");
+        const confirmAction = window.confirm("Save Edit Post?");
         if (!confirmAction) {
             //
         } else {
@@ -169,8 +168,8 @@ const Post = (props) => {
                 })
             });
             if (response.status == 200) {
-                alert("hhhehehehe");
                 window.location.reload();
+                // closeLikesModal(id);
 
             }
         }
@@ -189,10 +188,7 @@ const Post = (props) => {
                 //
                 alert("Post Deleted");
                 window.location.reload();
-
-            }
-            else {
-                alert(response.status, "hellllllo");
+                
             }
         }
     }
@@ -297,7 +293,7 @@ const Post = (props) => {
     return (
         <div className='post'>
             <div className='post-author'>
-                <Link id="" target="_blank" to={`/profile/${authorData.UserName}`}>
+                <Link id=""  to={`/profile/${authorData.UserName}`}>
                     <div className='post-author-img'>
                         <img src={authorData.ProfilePicture ? authorData.ProfilePicture : GrayStock} alt="author-img" />
                     </div>
@@ -308,7 +304,7 @@ const Post = (props) => {
                             <div className='post-author-details-name'>  
                                 {targetID==authorData.User_ID
                                     ?
-                                    <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                                    <Link className="post-component-link"  to={`/profile/${authorData.UserName}`}>
                                         <h4 className='post.component-link'> 
                                             {authorData.FirstName} {authorData.LastName}
                                         </h4>
@@ -316,13 +312,13 @@ const Post = (props) => {
                                     :
                                     <div className='post-component-link-targeted'>
                                     <h4>
-                                        <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
+                                        <Link className="post-component-link"  to={`/profile/${authorData.UserName}`}>
                                             {authorData.FirstName} {authorData.LastName} 
                                         </Link>
                                     </h4>
                                     <div>&#9654;</div>
                                     <h4>
-                                        <Link className="post-component-link" target="_blank" to={`/profile/${targetUserData.UserName}`}>
+                                        <Link className="post-component-link" to={`/profile/${targetUserData.UserName}`}>
                                             {targetUserData.FirstName} {targetUserData.LastName}
                                         </Link> 
                                     </h4>
@@ -332,15 +328,15 @@ const Post = (props) => {
                             :
                             <div className='post-author-details-name'></div>
                         }    
-                    <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
+                    <Link className="post-component-link"  to={`/posts/${postID}`}>
                         <div className='post-timestamp'>{postTimeStamp}</div>
                     </Link>
                 </div>
                 {
                     userID == authorID ?
                         <div className='post-manage'>
-                            <button onClick={() => { showEditPostModal(postID) }}><FaRegEdit size={15} /></button>
-                            <button onClick={() => { testDeleteFunction(postID) }}><AiOutlineDelete size={20} /></button>
+                            <button id='edit-post-button' onClick={() => { showEditPostModal(postID) }}><FaRegEdit size={18} /></button>
+                            <button id='del-post-button' onClick={() => { testDeleteFunction(postID) }}><AiOutlineDelete size={20} /></button>
                         </div>
                         : <div></div>
                 }
@@ -438,7 +434,8 @@ const Post = (props) => {
                         {postContentText
                             ?
                             <div className='post-content-edit-text'>
-                                <input type="text" id={"edit-post-input" + postID} defaultValue={postContentText} />
+                                <textarea id={"edit-post-input" + postID} defaultValue={postContentText} maxLength={1000} />
+                              
                             </div>
                             :
                             null
@@ -451,6 +448,7 @@ const Post = (props) => {
                             :
                             null
                         }
+
                         <div className='post-edit-save' onClick={() => saveEditPost(postID)}>
                             <p>
                                 Save

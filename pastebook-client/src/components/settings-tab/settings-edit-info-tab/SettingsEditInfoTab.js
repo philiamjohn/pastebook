@@ -15,7 +15,7 @@ const SettingEditInfoTab = ({ userData }) => {
     return <div className='edit-info-settings'>
         <h2>General Account Settings</h2>
         <div className='edit-info-container'>
-
+            {/* show the non-editable infor  and the editable info */}
             {editState === "infoTab" ? <EditInfo handleEditClick={handleEditClick} userData={userData} /> : <EditSettings handleEditCancelClick={handleEditCancelClick} userData={userData} />}
         </div>
     </div>;

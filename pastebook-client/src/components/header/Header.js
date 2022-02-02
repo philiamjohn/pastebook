@@ -84,9 +84,11 @@ const Header = (props) => {
     setUserId(localStorage.getItem('homeUserId'));
   }, [props]);
 
+  //triggers every userId change
   useEffect(async () => {
     if (userId) {
       await getNotifications();
+      // get notification every 20 seconds
       setInterval(async () => {
         await getNotifications();
       }, 20000);
@@ -116,7 +118,7 @@ const Header = (props) => {
         <input type="text" id="search-bar" placeholder="Search People" />
       </div>
 
-      <button id="search-button" /*onClick={searchUser}*/>
+      <button id="search-button">
         <ImSearch
           size={20} color='gray'
           onMouseOver={({ target }) => target.style.color = "black"}
