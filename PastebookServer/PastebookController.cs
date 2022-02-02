@@ -151,7 +151,7 @@ public class PastebookController : Controller
         {
             return Unauthorized();
         }
-        return Database.IsUserFriendsWithPostOwnerOrTarget(loggedInUserId, postOwnerUserId, postTargetUserId) ? Ok() : Unauthorized();
+        return Database.IsUserFriendsWithPostOwnerOrTarget(loggedInUserId, postOwnerUserId, postTargetUserId) ? Ok(true) : Ok(false);
     }
 
 

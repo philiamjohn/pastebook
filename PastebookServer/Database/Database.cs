@@ -642,6 +642,12 @@ public class Database
     public static bool IsUserFriendsWithPostOwnerOrTarget(int loggedInUserId, int postOwnerUserId, int postTargetUserId)
     {
         bool isUserFriendsWithPostOwnerOrTarget = false;
+        //if the currently logged in user is the post owner or target, they could view the post
+        if (loggedInUserId == postOwnerUserId || loggedInUserId == postTargetUserId)
+        {
+            isUserFriendsWithPostOwnerOrTarget = true;
+            return isUserFriendsWithPostOwnerOrTarget;
+        }
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
