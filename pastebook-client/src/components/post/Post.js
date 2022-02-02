@@ -22,6 +22,7 @@ const Post = (props) => {
         postTimeStamp,
         postContentText,
         postContentImg,
+        targetID,
         userID   // This is the ID of the currently signed-in user
         // This will be used for determining the liked status of the post
         // Can be retrieved 
@@ -39,10 +40,13 @@ const Post = (props) => {
     const [likeStatus, setLikeStatus] = useState(false);
     const [isCommentShown, setIsCommentShown] = useState(true); // the comments portion is shown by default
     const [authorData, setAuthorData] = useState({});
+    const [targetUserData, setTargetUserData] = useState({});
     const [likes, setLikes] = useState([]);
     const [comments, setComments] = useState([]);
     const [loggedInUserData, setLoggedInUserData] = useState([]);
     const [testOpen, setTestOpen] = useState(false);
+    const [isAFriendPost, setIsAFriendPost] = useState();
+
     const pastebookSessionId = sessionIdFromCookie;
     const loggedInId = localStorage.getItem('homeUserId');
 
@@ -230,6 +234,19 @@ const Post = (props) => {
                 .then(data => setAuthorData(data.Value));
         }
 
+        //fetch target user info
+        if (authorID != null) {
+            fetch(`${baseUrl}/users`, {
+                method: 'GET',
+                headers: {
+                    'UserID': targetID
+                }
+            })
+                .then(response => response.json())
+                .then(data => setTargetUserData(data.Value));
+        }
+
+        //determine if the currently logged in user has liked a this post
         likes.forEach(element => {
             if (element.UserId == loggedInId) {
                 console.log("hmm");
@@ -253,7 +270,8 @@ const Post = (props) => {
                 .then(data => setLoggedInUserData(data.Value));
         }
 
-
+        console.log("target"+targetID);
+        console.log("author"+authorData.User_ID);
 
         return () => { };
     }, []);
@@ -268,7 +286,18 @@ const Post = (props) => {
                 </Link>
                 <div className='post-author-details'>
                     <Link className="post-component-link" target="_blank" to={`/profile/${authorData.UserName}`}>
-                        <div className='post-author-details-name'><h4>{authorData.FirstName} {authorData.LastName}</h4></div>
+                        <div className='post-author-details-name'>
+                            {targetID==authorData.User_ID
+                                ?
+                                <h4> 
+                                    {authorData.FirstName} {authorData.LastName}
+                                </h4>
+                                :
+                                <h4>
+                                    {authorData.FirstName} {authorData.LastName} &#9654; {targetUserData.FirstName} {targetUserData.LastName}
+                                </h4>
+                            }
+                        </div>
                     </Link>
                     <Link className="post-component-link" target="_blank" to={`/posts/${postID}`}>
                         <div className='post-timestamp'>{postTimeStamp}</div>
