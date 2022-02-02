@@ -100,6 +100,7 @@ const Post = (props) => {
                             postTimeStamp={postData.DatePosted}
                             postContentText={postData.Content}
                             postContentImg={postData.Image}
+                            targetID={postData.Target_ID}
                             userID={localStorage.getItem('homeUserId')}
                         />
                         : <div>You are not allowed to view this post.</div>
