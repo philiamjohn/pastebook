@@ -56,8 +56,8 @@ const App = () => {
       <Route path='/post' element={<Post />} />
       <Route path='/profile/:username' element={<Profile />} />
       {/* endpoint to be changed into userName = firstName+lastname+disambiguiator */}
-      <Route path='/settings' element={<Settings getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData} />} />
-      <Route path='/register' element={<Register />} />
+      <Route path='/settings' element={<Settings getSessionIdFromCookie={getSessionIdFromCookie} getUserData={getUserData} userData={userData} baseUrl={baseUrl} />} />
+      <Route path='/register' element={<Register baseUrl={baseUrl} />} />
     </Routes>
   );
 };

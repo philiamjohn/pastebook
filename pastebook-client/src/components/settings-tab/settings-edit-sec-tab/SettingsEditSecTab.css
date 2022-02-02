@@ -24,21 +24,36 @@
     border-radius: 6px;
     border: solid 1px gray;
 }
-.edit-pass-new-pass button {
-    width: 200px;
-    margin-bottom: 5px;
+.edit-pass #edit-pass-button{
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    background-color: #8b9dc3;
+    cursor: pointer;
+}
+.edit-pass #edit-pass-button:hover{
+    text-decoration: underline;
+}
+.edit-pass #edit-pass-button:active{
+    color: white;
+}
+.edit-pass-new-pass .form-buttons button {
+    width: 100px;
+    margin:0 0 5px 5px;
     padding: 5px;
     line-height: 20px;
+    border: none;
+    border-radius: 12px;
 }
 .edit-pass-new-pass input:focus {
     outline: none !important;
     border-color: #719ece;
     box-shadow: 0 0 10px #719ece;
 }
-.edit-pass-new-pass input.active {
+.edit-pass-new-pass input.red {
     border: red 1px solid;
 }
-.edit-pass-new-pass input.test {
+.edit-pass-new-pass input.green {
     border: green 1px solid;
 }
 .edit-pass-new-pass input.testing {

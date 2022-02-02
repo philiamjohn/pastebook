@@ -73,7 +73,7 @@ const Login = () => {
           <input type='password' name='password' id='password' placeholder='Password' />
         </div>
         <div className='loginPageButtonsLoginPage'>
-          <button id='loginButtonLoginPage' /*onClick={validateInputsAndLogin}*/ type='submit'>Login</button>
+          <button id='loginButtonLoginPage' type='submit'>Login</button>
           <div className='dashline'></div>
           <button id='registerButtonLoginPage' onClick={() => { navigate("/register", { replace: true }) }}>Register</button>
         </div>
