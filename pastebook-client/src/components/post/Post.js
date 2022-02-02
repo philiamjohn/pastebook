@@ -46,6 +46,8 @@ const Post = (props) => {
     const [loggedInUserData, setLoggedInUserData] = useState([]);
     const [testOpen, setTestOpen] = useState(false);
     const [isAFriendPost, setIsAFriendPost] = useState();
+    const [likePending, setLikePending] = useState(false);
+    const [unlikePending, setUnlikePending] = useState(false);
 
     const pastebookSessionId = sessionIdFromCookie;
     const loggedInId = localStorage.getItem('homeUserId');
@@ -53,13 +55,60 @@ const Post = (props) => {
     // like/unlike  toggle
     const toggleLike = () => {
         if (likeStatus) {
-            deleteLike();
+            if(unlikePending!=true) {
+                setUnlikePending(true);
+                deleteLike();
+            }
         }
         else {
-            sendLike();
+            if(likePending!=true) {
+                setLikePending(true);
+                sendLike();
+            }  
         }
 
     };
+
+    const sendLike = async () => {
+        if (loggedInId != null && postID != null) {
+            var response = await fetch(`${baseUrl}/like`, {
+                method: 'POST',
+                headers: {
+                    'PostID': postID,
+                    'AuthorID': authorData.User_ID,
+                    'UserID': loggedInId,
+                }
+            });
+            if (response.status === 200) {
+                setLikeStatus(v => !v);
+                fetchLikes();
+                setLikePending(false);
+            }
+            else {
+                alert("Failed to like post " + postID);
+            }
+        }
+    }
+
+    const deleteLike = async () => {
+        if (loggedInId != null && postID != null) {
+            var response = await fetch(`${baseUrl}/like`, {
+                method: 'DELETE',
+                headers: {
+                    'PostID': postID,
+                    'UserID': loggedInId,
+                }
+            });
+            if (response.status === 200) {
+                setLikeStatus(v => !v);
+                fetchLikes();
+                setUnlikePending(false);
+            }
+            else {
+                alert("Failed unlike post " + postID);
+            }
+        }
+    }
 
     // show/hide comment toggle
     const toggleComment = () => {
@@ -144,44 +193,7 @@ const Post = (props) => {
         }
     }
 
-    const sendLike = async () => {
-        if (loggedInId != null && postID != null) {
-            var response = await fetch(`${baseUrl}/like`, {
-                method: 'POST',
-                headers: {
-                    'PostID': postID,
-                    'AuthorID': authorData.User_ID,
-                    'UserID': loggedInId,
-                }
-            });
-            if (response.status === 200) {
-                setLikeStatus(v => !v);
-                fetchLikes();
-            }
-            else {
-                alert("Failed to like post " + postID);
-            }
-        }
-    }
-
-    const deleteLike = async () => {
-        if (loggedInId != null && postID != null) {
-            var response = await fetch(`${baseUrl}/like`, {
-                method: 'DELETE',
-                headers: {
-                    'PostID': postID,
-                    'UserID': loggedInId,
-                }
-            });
-            if (response.status === 200) {
-                setLikeStatus(v => !v);
-                fetchLikes();
-            }
-            else {
-                alert("Failed unlike post " + postID);
-            }
-        }
-    }
+    
 
     const fetchLikes = () => {
         //fetch likes info
