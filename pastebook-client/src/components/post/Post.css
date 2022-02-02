@@ -294,3 +294,19 @@ div.post-interactions-btns-like img, div.post-interactions-btns-comment img {
     max-width: 20px;
     margin-right: 5px;
 }
+
+/* EDIT post */
+
+.post-manage{
+    display: flex;
+}
+.post-manage p{
+    margin: 0 50px 0 50px;
+    cursor: pointer;
+}
+.post-manage p:hover{
+    color: blue;
+}
+.post-manage p:active{
+    color: rgb(122, 122, 192);
+}
