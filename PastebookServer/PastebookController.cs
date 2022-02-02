@@ -444,4 +444,103 @@ public class PastebookController : Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // fetch photos of specific album from database for photos page
+    [HttpGet]
+    [Route("/albums/{albumId?}")]
+    public IActionResult getPhotoFromDatabase(int albumId)
+    {
+        System.Console.WriteLine(albumId);
+        var photoDetails = Database.GetPhotos(albumId);
+        return Json(photoDetails);
+    }
+
+    // adds photo user provided in photos page to database
+    [HttpPost]
+    [Route("/albums/{albumId?}")]
+    public IActionResult addPhotoToDatabase([FromBody] AlbumModel photoDetails)
+    {
+        Database.AddPhotos(photoDetails);
+        return Ok("Album created successfully.");
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
 }
