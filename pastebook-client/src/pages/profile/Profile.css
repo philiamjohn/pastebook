@@ -30,27 +30,35 @@
 }
 
 .s2-content {
-    width: 851px;
-    margin: 0 auto;
+    width: 100%;
+    /* margin: 0 auto; */
+    /* border: solid 1px green; */
+    display: flex;
+    justify-content: center;
+
 }
 .s2-c1 {
-    float: left;
-    width: 320px;
-    height: auto;
-    margin-right: 20px;
+    /* float: left; */
+    width: 350px;
+    /* border: solid red 1px; */
+    /* height: auto;
+    margin-right: 20px; */
 }
 .s2-c2 {
-    float: right;
+    /* float: right; */
     width: 511px;
-    height: auto;
-    width: 531px;
+    /* border: solid 1px blue; */
+    margin-left: 40px;
+    /* height: auto;
+    width: 531px; */
 }
 .s2-c1-r1-intro,
 .s2-c1-r2-photos,
 .s2-c1-r3-friends {
     background-color: white;
-    width: 100%;
+    width: 89%;
     margin-bottom: 20px;
+    margin-left: 22px;
 }
 .s2-c1-r1-intro-content {
     display: grid;
@@ -85,6 +93,7 @@
 .s2-c1-r3-friends-content div a > img,
 .s2-c1-r3-friends-content div a > p {
     width: 85px;
+    height: 85px;
 }
 .s2-c1-r3-friends-content div a > img {
     border-radius: 6px;
@@ -94,18 +103,23 @@
 }
 .s2-c2-r1-write-post {
     background-color: white;
-    width: 100%;
+    width: 86%;
     height: auto;
     margin-bottom: 20px;
+    /* border: solid 1px yellow; */
 }
 .s2-c2-r2-posts {
-    display: grid;
+    /* display: grid;
     grid: autoflow min-content / 100%;
-    gap: 20px;
+    gap: 20px; */
+    /* border: solid 1px pink; */
 }
 .s2-c2-r2-posts > div {
     border-radius: 6px;
     box-shadow: 1px 5px 15px -10px #8b9dc3;
-    padding: 20px;
+    margin: 10px 0 10px 0;
     background-color: white;
+    /* border: solid 1px purple; */
+    width: 94%;
+
 }

@@ -41,13 +41,12 @@ const ListTab = ({ getSessionIdFromCookie, userData }) => {
       {friendsList ? friendsList.map((e) => {
         return (
           <div className='friends-content-list-item' key={e.User_ID}>
-            <FriendCard username={e.UserName} profilePic={e.ProfilePicture} fullname={`${e.FirstName}  ${e.LastName}`  } />
+            <FriendCard username={e.UserName} profilePic={e.ProfilePicture} firstName={e.FirstName} lastName={e.LastName}   />
           </div>
         )
       })
       : <div>Fetching Friends, kindly wait...</div>
     }
-
     </div>
   );
 };

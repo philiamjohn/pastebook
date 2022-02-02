@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BiImageAdd } from 'react-icons/bi';
-import './HomeCreatePost.css';
+import './CreatePost.css';
 
-const HomeCreatePost = (props) => {
-    const { userId, sessionId, getHomePosts } = props;
+const CreatePost = (props) => {
+    const { userId, friendUserId, sessionId, getHomePosts, fromOwnProfile, fromFriendsProfile, fromHome } = props;
     const [imageSource, setImageSource] = useState(null)
     const baseUrl = `http://localhost:5000`;
 
@@ -46,11 +46,24 @@ const HomeCreatePost = (props) => {
             return;
         }
 
-        const postDetails = {
-            User_ID: userId,
-            Content: postContent,
-            Image: imageSource,
-            Target_ID: userId
+        let postDetails = {};
+        let postToFriendsProfile = false;
+        if (fromOwnProfile || fromHome) {
+            postDetails = {
+                User_ID: userId,
+                Content: postContent,
+                Image: imageSource,
+                Target_ID: userId
+            }
+        }
+        else if (fromFriendsProfile) {
+            postDetails = {
+                User_ID: userId,
+                Content: postContent,
+                Image: imageSource,
+                Target_ID: friendUserId
+            }
+            postToFriendsProfile = true;
         }
 
         console.table(postDetails);
@@ -59,7 +72,8 @@ const HomeCreatePost = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-SessionID': sessionId
+                'X-SessionID': sessionId,
+                'X-PostToFriendsProfile': postToFriendsProfile
             },
             body: JSON.stringify(postDetails)
         });
@@ -70,7 +84,12 @@ const HomeCreatePost = (props) => {
             alert("Post successfully added.");
             onRemovePicture();
             document.getElementById("home-post-text").value = "";
-            await getHomePosts(1);
+            if (fromHome) {
+                await getHomePosts(1);
+            }
+            else if (fromOwnProfile || fromFriendsProfile) {
+                window.location.reload();
+            }
         }
         else {
             alert(response.status)
@@ -105,4 +124,4 @@ const HomeCreatePost = (props) => {
     );
 };
 
-export default HomeCreatePost;
+export default CreatePost;
