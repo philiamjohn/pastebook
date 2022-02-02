@@ -34,7 +34,7 @@ const Post = (props) => {
    
     const baseUrl = `http://localhost:5000`;
 
-    const [likeStatus, setLikeStatus] = useState();
+    const [likeStatus, setLikeStatus] = useState(false);
     const [isCommentShown, setIsCommentShown] = useState(true); // the comments portion is shown by default
     const [authorData, setAuthorData] = useState({});
     const [likes, setLikes] = useState([]);
@@ -179,7 +179,7 @@ const Post = (props) => {
                 setLikeStatus(true);
             }
             else{
-                console.log("ack");
+                console.log("assck");
             }
         });
 
