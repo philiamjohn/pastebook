@@ -8,12 +8,14 @@ const Comment = (props) => {
   const {postAuthorId,
          postID,
          comments,
+         fetchComments,
          loggedInUserPic} = props;
 
   const baseUrl = `http://localhost:5000`;
         
   const [allCommentsShown, setAllCommentsShown] = useState(false);
   const [commentsList, setCommentsList] = useState(comments);
+  const [authorID, setAuthorID] = useState(postAuthorId);
   
   const loggedInId = localStorage.getItem('homeUserId');
 
@@ -25,12 +27,12 @@ const Comment = (props) => {
     setAllCommentsShown(v => !v);
   }
 
-  const sendComment = async (id, val) => {
+  /* const sendComment = async (id, val) => {
     
     console.log(id);
     console.log(val);
 
-    if(loggedInId != null){
+    if(loggedInId != null && (postAuthorId != null || postAuthorId != undefined) ){
       var response = await fetch(`${baseUrl}/comment`, {
           method: 'POST',
           headers: {
@@ -48,46 +50,76 @@ const Comment = (props) => {
       }
     }
 
+  } */
+
+  const sendComment = async (id, val) => {
+    if(loggedInId != null && postAuthorId != null){
+        var response = await fetch(`${baseUrl}/comment`, {
+            method: 'POST',
+            headers: {
+              'PostID': id,
+              'Content': val,
+              'AuthorID': postAuthorId,
+              'UserID': loggedInId,
+            }
+        });
+        if (response.status === 200) {
+            alert("Comment sent!");
+            fetchComments();
+            setAllCommentsShown(true);
+        }
+        else {
+          alert("Failed to like post "+postID);
+        }
+      }
   }
 
-  const addAComment = (event) => {
-    var el = document.getElementById('comment-box'+postID)
-    if (event.key === 'Enter') {
-      if(el.value!="") {
-        var val = el.value;
-        var id = el.id.replace('comment-box','');
-        sendComment(id,val);
-      }
-      else {
-        console.log("emptyshit");
-      }
+
+  const addAComment = () => {
+    var el = document.getElementById('comment-box'+postID);
+    if(el.value!="") {
+      var val = el.value;
+      var id = el.id.replace('comment-box','');
+      sendComment(id,val);
+    }
+    else {
+      console.log("emptyshit");
     }
   }
 
   useEffect(() => {
 
-    document.getElementById('comment-box'+postID).addEventListener("keyup", addAComment);
-     
+    setAuthorID(postAuthorId);
+    console.log("authIDPOST"+postAuthorId);
+    console.log("authID"+authorID);
+    
+    return () => {};
+    }, [postAuthorId]); 
+
+  useEffect(() => {
+
+    setAuthorID(postAuthorId);
     setCommentsList(comments);
-    console.log(commentsList);
+    console.log(postAuthorId+"ughhhh");
     return () => {};
     }, [comments]);  
 
   return (
     <div className='post-interactions-comments' id='comments'>
-        {commentsList.length > 1 ?
+        {commentsList.length >= 1 ?
         <div className='post-interactions-comments-list'>
             <div className='post-interactions-comments-list-item'>
-              {commentsList.length > 0 ?
+              {commentsList.length > 0 
+                ?
                 <CommentCard key={commentsList[0].Comment_ID}
                              uname={commentsList[0].UserName}
                              profilePic={commentsList[0].ProfilePicture} 
                              firstName={commentsList[0].FirstName}
                              lastName={commentsList[0].LastName}
                              content={commentsList[0].Content}/>
-                             :
+                :
                 null
-               }
+              }
              </div>
              {allCommentsShown ?
                                   null
@@ -132,8 +164,9 @@ const Comment = (props) => {
               <img src={loggedInUserPic ? loggedInUserPic  : GrayStock } alt="author-img" onClick={() => addComment(postID)}/>
             </div>
             <div className='post-interactions-comments-create-input'>
-              <input type='text' placeholder="Write a comment" className='commentBoxes' id={"comment-box"+postID}/>
+              <input type='text' placeholder="Write a comment" className='commentBoxes' id={"comment-box"+postID}/>      
             </div>
+            <div onClick={addAComment}><a>Send</a></div>
         </div>
     </div>
   );

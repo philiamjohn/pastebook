@@ -8,6 +8,7 @@ import HomeProfile from '../../components/home-profile/HomeProfile';
 import PostComponent from '../../components/post/Post';
 import './Home.css';
 
+
 const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
   let navigate = useNavigate();
   // const baseUrl = `http://localhost:5000`;
@@ -196,6 +197,7 @@ const Home = ({ getSessionIdFromCookie, baseUrl, getUserData, userData }) => {
                           postTimeStamp={post.DatePosted}
                           postContentText={post.Content}
                           postContentImg={post.Image}
+                          targetID={post.Target_ID}
                           userID={localStorage.getItem('homeUserId')}
                         />
                       </div>)

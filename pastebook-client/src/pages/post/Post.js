@@ -50,7 +50,7 @@ const Post = (props) => {
 
         //clear all setIntervals
         for (let id = 0; id <= 1000; id++) {
-        window.clearInterval(id);
+            window.clearInterval(id);
         }
 
         console.log(pastebookSessionId)
@@ -100,6 +100,7 @@ const Post = (props) => {
                             postTimeStamp={postData.DatePosted}
                             postContentText={postData.Content}
                             postContentImg={postData.Image}
+                            targetID={postData.Target_ID}
                             userID={localStorage.getItem('homeUserId')}
                         />
                         : <div>You are not allowed to view this post.</div>

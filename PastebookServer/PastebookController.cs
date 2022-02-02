@@ -263,7 +263,7 @@ public class PastebookController : Controller
     [Route("/comment")]
     public IActionResult addComment(
         [FromHeader(Name = "PostID")] string postID,
-        [FromHeader(Name = "PostID")] string authorID,
+        [FromHeader(Name = "AuthorID")] string authorID,
         [FromHeader(Name = "Content")] string content,
         [FromHeader(Name = "UserID")] string userID
     )
@@ -521,6 +521,22 @@ public class PastebookController : Controller
     {
         Database.AddPhotos(photoDetails);
         return Ok("Album created successfully.");
+    }
+        
+    [HttpDelete]
+    [Route("/deletePost")]
+    public IActionResult deletePostByPostId([FromBody] PostModel model){
+        Database.DeletePostByPostId(model.Post_ID);
+        return Ok();
+    }
+    [HttpPut]
+    [Route("/editPost")]
+    public IActionResult updatePost([FromBody] PostModel model)
+    {
+        System.Console.WriteLine(model.Content);
+        System.Console.WriteLine(model.Post_ID);
+        Database.UpdatePost(model);
+        return Ok();
     }
 
 }

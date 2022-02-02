@@ -199,11 +199,18 @@ public class Database
                 command.Parameters.AddWithValue("@Email", userCredentials.Email);
 
                 var passwordInDb = command.ExecuteScalar();
-                var result = BCrypt.Net.BCrypt.Verify(
+                if (passwordInDb != null)
+                {
+                    var result = BCrypt.Net.BCrypt.Verify(
                     userCredentials.Password,
                     passwordInDb.ToString()
                 );
-                return result ? AddSessionForUser(userCredentials) : null;
+                    return result ? AddSessionForUser(userCredentials) : null;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }
@@ -1550,6 +1557,31 @@ public class Database
         return friends;
     }
 
+    public static void DeletePostByPostId(int? id){
+        using (var db= new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM Posts WHERE Post_ID=@id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+    public static void UpdatePost(PostModel model){
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandText = @"UPDATE Posts SET Content=@c WHERE Post_ID=@id";
+                cmd.Parameters.AddWithValue("@c",model.Content);
+                cmd.Parameters.AddWithValue("@id",model.Post_ID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
     public static void AddComment(string postID, string authorID, string content, string userID)
     {
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
@@ -1564,53 +1596,87 @@ public class Database
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
                 command.Parameters.AddWithValue("@date", DateTime.Now);
+                command.CommandTimeout = 120;
                 command.ExecuteNonQuery();
             }
-            //add notification
-            using (var command = db.CreateCommand())
+        }
+        // send notif if comment is not to own post
+        if (authorID != userID)
+        {
+            using (var db = new SqlConnection(DB_CONNECTION_STRING))
             {
-                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                //add notification
+                db.Open();
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
                     VALUES (@date, @target, @source, @type, @content, @status);";
 
-                command.Parameters.AddWithValue("@date",  DateTime.Now);
-                command.Parameters.AddWithValue("@target", authorID);
-                command.Parameters.AddWithValue("@source", userID);
-                command.Parameters.AddWithValue("@type", "comment");
-                command.Parameters.AddWithValue("@content", postID);
-                command.Parameters.AddWithValue("@status", "unread");
-                command.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@date", DateTime.Now);
+                    command.Parameters.AddWithValue("@target", authorID);
+                    command.Parameters.AddWithValue("@source", userID);
+                    command.Parameters.AddWithValue("@type", "comment");
+                    command.Parameters.AddWithValue("@content", postID);
+                    command.Parameters.AddWithValue("@status", "unread");
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
 
     public static void AddLike(string postID, string authorID, string userID)
     {
+        var alreadyLiked = false;
         using (var db = new SqlConnection(DB_CONNECTION_STRING))
         {
             db.Open();
             using (var command = db.CreateCommand())
             {
-                command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
-                    VALUES (@userId, @postId);";
-
+                command.CommandText = @"SELECT User_ID FROM LikesInPosts WHERE (User_ID=@userId AND Post_ID=@postId);"; 
                 command.Parameters.AddWithValue("@userId", userID);
                 command.Parameters.AddWithValue("@postId", postID);
-                command.ExecuteNonQuery();
-            }
-            //notif
-            using (var command = db.CreateCommand())
-            {
-                command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
-                    VALUES (@date, @target, @source, @type, @content, @status);";
+                command.CommandTimeout = 120;
 
-                command.Parameters.AddWithValue("@date",  DateTime.Now);
-                command.Parameters.AddWithValue("@target", authorID);
-                command.Parameters.AddWithValue("@source", userID);
-                command.Parameters.AddWithValue("@type", "like");
-                command.Parameters.AddWithValue("@content", postID);
-                command.Parameters.AddWithValue("@status", "unread");
-                command.ExecuteNonQuery();
+                var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    alreadyLiked = true;
+                }
             }
+        }
+        using (var db = new SqlConnection(DB_CONNECTION_STRING))
+        {   
+            db.Open();
+            if(!alreadyLiked)
+            {
+                using (var command = db.CreateCommand())
+                {
+                    command.CommandText = @"INSERT INTO LikesInPosts (User_ID, Post_ID) 
+                        VALUES (@userId, @postId);";
+
+                    command.Parameters.AddWithValue("@userId", userID);
+                    command.Parameters.AddWithValue("@postId", postID);
+                    command.ExecuteNonQuery();
+                }
+                //add notif if like is not to own post
+                if (authorID != userID)
+                {
+                    using (var command = db.CreateCommand())
+                    {
+                        command.CommandText = @"INSERT INTO Notifications (DateTriggered, Target_ID, User_ID, Type, Content, ReadStatus) 
+                        VALUES (@date, @target, @source, @type, @content, @status);";
+
+                        command.Parameters.AddWithValue("@date", DateTime.Now);
+                        command.Parameters.AddWithValue("@target", authorID);
+                        command.Parameters.AddWithValue("@source", userID);
+                        command.Parameters.AddWithValue("@type", "like");
+                        command.Parameters.AddWithValue("@content", postID);
+                        command.Parameters.AddWithValue("@status", "unread");
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }    
         }
     }
 

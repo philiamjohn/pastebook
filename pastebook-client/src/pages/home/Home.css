@@ -46,10 +46,6 @@
     /* margin-top: -150px; */
     /* border:red 1px solid; */
 }
-#home-timeline-posts h5{
-    margin-left: 210px;
-    /* border: 1px red solid; */
-}
 #home-post-component {
     display: flex;
     flex-direction: column;
